@@ -66,5 +66,16 @@
                 "badge": "danger"
             }
         ]
+    },
+    "customer": {
+        "address": {
+            "full_name": {
+                "type": "text",
+                "title": "Full name",
+                "validarionRules": [
+                    "notEmpty"
+                ]
+            }
+        }
     }
 }
