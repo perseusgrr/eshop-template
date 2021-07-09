@@ -4,6 +4,9 @@ const resolve = path.resolve;
 const express = require("express");
 const router = require("./lib/routie");
 const { getModuleMiddlewares, get } = require('./lib/middee');
+const debug = require('debug')('express:server');
+const http = require('http');
+
 /**
  * App prototype
  */
@@ -97,17 +100,17 @@ var eventer = (function () {
 })();
 
 function loadCoreModule() {
-    const modules = readdirSync("./nodejscart/", { withFileTypes: true })
+    const modules = readdirSync(path.resolve(__dirname, "./modules/"), { withFileTypes: true })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => dirent.name);
     // Load routes.js from module
     modules.forEach(element => {
         try {
-            getModuleMiddlewares(path.resolve(__dirname, "nodejscart", element));
-            if (existsSync(resolve(__dirname, "nodejscart", element, "routes.js")))
-                require(resolve(__dirname, "nodejscart", element, "routes.js"))(router); // routes.js must return a function
-            if (existsSync(resolve(__dirname, "nodejscart", element, "events.js")))
-                require(resolve(__dirname, "nodejscart", element, "events.js"))(eventer); // events.js must return a function
+            getModuleMiddlewares(path.resolve(__dirname, "modules", element));
+            if (existsSync(resolve(__dirname, "modules", element, "routes.js")))
+                require(resolve(__dirname, "modules", element, "routes.js"))(router); // routes.js must return a function
+            if (existsSync(resolve(__dirname, "modules", element, "bootstrap.js")))
+                require(resolve(__dirname, "modules", element, "bootstrap.js"))(eventer); // bootstrap.js must return a function
         } catch (e) {
             throw e;
         }
