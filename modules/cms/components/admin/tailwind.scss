@@ -1,4 +1,4 @@
-/*! tailwindcss v2.2.7 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v2.2.4 | MIT License | https://tailwindcss.com */
 
 /*! modern-normalize v1.1.0 | MIT License | https://github.com/sindresorhus/modern-normalize */
 
@@ -546,14 +546,6 @@ video {
   height: auto;
 }
 
-/**
- * Ensure the default browser behavior of the `hidden` attribute.
- */
-
-[hidden] {
-  display: none;
-}
-
 *, ::before, ::after {
   border-color: currentColor;
 }
@@ -624,12 +616,20 @@ video {
   grid-column: span 2 / span 2;
 }
 
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
 .mt-1 {
   margin-top: 1rem;
 }
 
 .mt-3 {
   margin-top: 3rem;
+}
+
+.mt-15 {
+  margin-top: 1.5rem;
 }
 
 .mr-3 {
@@ -790,8 +790,21 @@ video {
   }
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .resize {
   resize: both;
+}
+
+.grid-flow-row {
+  grid-auto-flow: row;
+}
+
+.auto-rows-max {
+  grid-auto-rows: -webkit-max-content;
+  grid-auto-rows: max-content;
 }
 
 .grid-cols-1 {
@@ -806,12 +819,28 @@ video {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-cols-9 {
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+}
+
+.content-end {
+  align-content: flex-end;
+}
+
 .items-center {
   align-items: center;
 }
 
 .items-baseline {
   align-items: baseline;
+}
+
+.justify-end {
+  justify-content: flex-end;
 }
 
 .justify-center {
@@ -822,8 +851,20 @@ video {
   justify-content: space-between;
 }
 
+.justify-around {
+  justify-content: space-around;
+}
+
 .justify-items-start {
   justify-items: start;
+}
+
+.justify-items-end {
+  justify-items: end;
+}
+
+.gap-1 {
+  gap: 1rem;
 }
 
 .gap-2 {
@@ -881,6 +922,10 @@ video {
   border-width: 1px;
 }
 
+.border-t {
+  border-top-width: 1px;
+}
+
 .border-b {
   border-bottom-width: 1px;
 }
@@ -909,6 +954,14 @@ video {
   fill: currentColor;
 }
 
+.pt-15 {
+  padding-top: 1.5rem;
+}
+
+.pr-1 {
+  padding-right: 1rem;
+}
+
 .pr-2 {
   padding-right: 2rem;
 }
@@ -931,6 +984,10 @@ video {
 
 .pl-025 {
   padding-left: .25rem;
+}
+
+.pl-05 {
+  padding-left: .5rem;
 }
 
 .last\:pb-0:last-child {
@@ -974,6 +1031,10 @@ video {
 }
 
 .underline {
+  text-decoration: underline;
+}
+
+.hover\:underline:hover {
   text-decoration: underline;
 }
 
