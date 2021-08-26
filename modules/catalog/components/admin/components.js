@@ -371,16 +371,26 @@ exports = module.exports = {
             props: {
                 limit: 20
             },
+            sortOrder: 20
+        },
+        {
+            id: "pageHeading",
+            areaId: "content",
+            source: getComponentSource("cms/components/admin/PageHeading.js"),
+            props: {
+            },
             sortOrder: 10
         },
         {
-            id: 'title',
-            areaId: 'content',
-            source: getComponentSource("cms/components/admin/title.js"),
+            id: "newProductButton",
+            areaId: "pageHeadingRight",
+            source: getComponentSource("form/Button.js"),
             props: {
-                title: "Products"
+                title: 'Add product',
+                variant: 'primary',
+                url: buildAdminUrl('productNew')
             },
-            sortOrder: 1
+            sortOrder: 10
         },
         {
             id: 'title',
@@ -423,28 +433,29 @@ exports = module.exports = {
         {
             id: 'nameRow',
             areaId: 'productGridRow',
-            source: getComponentSource("grid/rows/basic.js"),
+            source: getComponentSource("catalog/components/admin/product/grid/NameRow.js"),
             props: {
-                id: "name"
+                id: "name",
+                editUrl: "editUrl"
             },
             sortOrder: 5
         },
         {
-            id: 'idColumn',
+            id: 'thumbnailColumn',
             areaId: 'productGridHeader',
-            source: getComponentSource("grid/headers/fromTo.js"),
+            source: getComponentSource("grid/headers/Dummy.js"),
             props: {
-                title: "ID",
-                id: "product_id"
+                title: "",
+                id: "image"
             },
             sortOrder: 1
         },
         {
-            id: 'idRow',
+            id: 'thumbnailRow',
             areaId: 'productGridRow',
-            source: getComponentSource("grid/rows/basic.js"),
+            source: getComponentSource("grid/rows/Thumbnail.js"),
             props: {
-                id: "product_id"
+                id: "image"
             },
             sortOrder: 1
         },
@@ -461,7 +472,7 @@ exports = module.exports = {
         {
             id: 'priceRow',
             areaId: 'productGridRow',
-            source: getComponentSource("grid/rows/basic.js"),
+            source: getComponentSource("catalog/components/admin/product/grid/PriceRow.js"),
             props: {
                 id: "price"
             },
@@ -504,24 +515,6 @@ exports = module.exports = {
                 id: "sku"
             },
             sortOrder: 15
-        },
-        {
-            id: 'actionHeader',
-            areaId: 'productGridHeader',
-            source: getComponentSource("grid/headers/action.js"),
-            props: {
-                gridOriginalUrl: buildAdminUrl("productGrid")
-            },
-            sortOrder: 35
-        },
-        {
-            id: 'actionRow',
-            areaId: 'productGridRow',
-            source: getComponentSource("grid/rows/action.js"),
-            props: {
-                id: "action"
-            },
-            sortOrder: 35
         }
     ]
 }
