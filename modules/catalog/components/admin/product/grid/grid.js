@@ -16,7 +16,36 @@ const Actions = ({ ids = [], selectedIds = [], setSelectedRows }) => {
     const actions = [
         {
             name: 'Disable',
-            onAction: (ids) => { }
+            onAction: (ids) => {
+                openAlert({
+                    heading: `Disable ${selectedIds.length} products`,
+                    content: "Are you sure?",
+                    primaryAction: {
+                        'title': 'Cancel',
+                        'onAction': closeAlert,
+                        'variant': 'primary'
+                    },
+                    secondaryAction: {
+                        'title': 'Disable',
+                        'onAction': async () => {
+                            setIsLoading(true);
+                            dispatchAlert({ type: 'update', payload: { secondaryAction: { isLoading: true } } })
+                            let disableUrl = context.disableProductUrl;
+                            let response = await axios.post(disableUrl, formData().append('ids', selectedIds).build());
+                            //setIsLoading(false);
+                            if (response.data.success === true) {
+                                window.location.href = context.currentUrl;
+                                //TODO: Should display a message and delay for 1 - 2 second
+                            } else {
+
+                            }
+                        },
+                        'variant': 'critical',
+                        isLoading: false
+                    }
+                }
+                )
+            }
         },
         {
             name: 'Enable',
@@ -55,7 +84,7 @@ const Actions = ({ ids = [], selectedIds = [], setSelectedRows }) => {
             name: 'Delete',
             onAction: (ids) => {
                 openAlert({
-                    heading: `Enable ${selectedIds.length} products`,
+                    heading: `Delete ${selectedIds.length} products`,
                     content: <div>Can't be undone</div>,
                     primaryAction: {
                         'title': 'Cancel',
