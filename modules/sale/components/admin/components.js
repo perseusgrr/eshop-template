@@ -92,16 +92,15 @@ exports = module.exports = {
             props: {
                 limit: 20
             },
-            sortOrder: 10
+            sortOrder: 20
         },
         {
-            id: 'title',
-            areaId: 'content',
-            source: getComponentSource("cms/components/admin/title.js"),
+            id: "pageHeading",
+            areaId: "content",
+            source: getComponentSource("cms/components/admin/PageHeading.js"),
             props: {
-                title: "Orders"
             },
-            sortOrder: 1
+            sortOrder: 10
         },
         {
             id: 'title',
@@ -113,9 +112,67 @@ exports = module.exports = {
             sortOrder: 1
         },
         {
+            id: 'orderNumberColumn',
+            areaId: 'orderGridHeader',
+            source: getComponentSource("grid/headers/basic.js"),
+            props: {
+                title: "ID",
+                id: "order_number"
+            },
+            sortOrder: 1
+        },
+        {
+            id: 'orderNumberRow',
+            areaId: 'orderGridRow',
+            source: getComponentSource("sale/components/admin/order/grid/OrderNumberRow.js"),
+            props: {
+                id: "order_number",
+                editUrl: "editUrl"
+            },
+            sortOrder: 1
+        },
+        {
+            id: 'dateColumn',
+            areaId: 'orderGridHeader',
+            source: getComponentSource("sale/components/admin/order/grid/OrderDateColumnHeader.js"),
+            props: {
+                title: "Date",
+                id: "created_at"
+            },
+            sortOrder: 5
+        },
+        {
+            id: 'dateRow',
+            areaId: 'orderGridRow',
+            source: getComponentSource("grid/rows/Date.js"),
+            props: {
+                id: "created_at"
+            },
+            sortOrder: 5
+        },
+        {
+            id: 'nameColumn',
+            areaId: 'orderGridHeader',
+            source: getComponentSource("grid/headers/basic.js"),
+            props: {
+                title: "Customer",
+                id: "customer_name"
+            },
+            sortOrder: 10
+        },
+        {
+            id: 'nameRow',
+            areaId: 'orderGridRow',
+            source: getComponentSource("grid/rows/basic.js"),
+            props: {
+                id: "customer_name"
+            },
+            sortOrder: 10
+        },
+        {
             id: 'shipmentStatusColumn',
             areaId: 'orderGridHeader',
-            source: getComponentSource("grid/headers/status.js"),
+            source: getComponentSource("sale/components/admin/order/grid/ShipmentStatusColumnHeader.js"),
             props: {
                 title: "Shipment status",
                 id: "shipment_status"
@@ -132,98 +189,42 @@ exports = module.exports = {
             sortOrder: 25
         },
         {
-            id: 'nameColumn',
+            id: 'paymentStatusColumn',
             areaId: 'orderGridHeader',
-            source: getComponentSource("grid/headers/basic.js"),
+            source: getComponentSource("sale/components/admin/order/grid/PaymentStatusColumnHeader.js"),
             props: {
-                title: "Customer name",
-                id: "customer_name"
+                title: "Payment status",
+                id: "payment_status"
             },
-            sortOrder: 5
+            sortOrder: 30
         },
         {
-            id: 'nameRow',
+            id: 'paymentStatusRow',
             areaId: 'orderGridRow',
-            source: getComponentSource("grid/rows/basic.js"),
+            source: getComponentSource("sale/components/admin/order/grid/PaymentStatus.js"),
             props: {
-                id: "customer_name"
+                id: "payment_status"
             },
-            sortOrder: 5
-        },
-        {
-            id: 'idColumn',
-            areaId: 'orderGridHeader',
-            source: getComponentSource("grid/headers/fromTo.js"),
-            props: {
-                title: "ID",
-                id: "order_id"
-            },
-            sortOrder: 1
-        },
-        {
-            id: 'idRow',
-            areaId: 'orderGridRow',
-            source: getComponentSource("grid/rows/basic.js"),
-            props: {
-                id: "order_id"
-            },
-            sortOrder: 1
-        },
-        {
-            id: 'emailColumn',
-            areaId: 'orderGridHeader',
-            source: getComponentSource("grid/headers/fromTo.js"),
-            props: {
-                title: "Customer email",
-                id: "customer_email"
-            },
-            sortOrder: 5
-        },
-        {
-            id: 'emailRow',
-            areaId: 'orderGridRow',
-            source: getComponentSource("grid/rows/basic.js"),
-            props: {
-                id: "customer_email"
-            },
-            sortOrder: 5
+            sortOrder: 30
         },
         {
             id: 'totalColumn',
             areaId: 'orderGridHeader',
             source: getComponentSource("grid/headers/fromTo.js"),
             props: {
-                title: "Grand total",
+                title: "Total",
                 id: "grand_total"
             },
-            sortOrder: 10
+            sortOrder: 50
         },
         {
             id: 'totalRow',
             areaId: 'orderGridRow',
-            source: getComponentSource("grid/rows/basic.js"),
+            source: getComponentSource("grid/rows/PriceRow.js"),
             props: {
                 id: "grand_total"
             },
-            sortOrder: 10
-        },
-        {
-            id: 'actionHeader',
-            areaId: 'orderGridHeader',
-            source: getComponentSource("grid/headers/action.js"),
-            props: {
-                gridOriginalUrl: buildAdminUrl("orderGrid")
-            },
-            sortOrder: 35
-        },
-        {
-            id: 'actionRow',
-            areaId: 'orderGridRow',
-            source: getComponentSource("grid/rows/action.js"),
-            props: {
-                id: "action"
-            },
-            sortOrder: 35
+            sortOrder: 50
         }
     ],
     "dashboard": [

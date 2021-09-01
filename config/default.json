@@ -1,7 +1,8 @@
 {
     "shop": {
         "currency": "USD",
-        "language": "en",
+        "language": "fr",
+        "timezone": "America/New_York",
         "adminTheme": "default",
         "frontTheme": "default"
     },
@@ -34,36 +35,34 @@
     "order": {
         "shipmentStatus": [
             {
-                "name": "Pending",
-                "code": "pending",
-                "badge": "danger"
+                "name": "Unfulfilled",
+                "code": "unfulfilled",
+                "badge": "subtuded"
             },
             {
-                "name": "Pending",
-                "code": "pending",
-                "badge": "danger"
-            },
-            {
-                "name": "Pending",
-                "code": "pending",
-                "badge": "danger"
+                "name": "Fulfilled",
+                "code": "fulfilled",
+                "badge": "primary"
             }
         ],
         "paymentStatus": [
             {
                 "name": "Pending",
                 "code": "pending",
-                "badge": "secondary"
+                "badge": "secondary",
+                "progress": "incomplete"
             },
             {
                 "name": "Paid",
                 "code": "paid",
-                "badge": "success"
+                "badge": "success",
+                "progress": "complete"
             },
             {
                 "name": "Refunded",
                 "code": "refunded",
-                "badge": "danger"
+                "badge": "critical",
+                "progress": "complete"
             }
         ]
     },
