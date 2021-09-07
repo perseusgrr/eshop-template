@@ -116,6 +116,13 @@ exports = module.exports = {
             source: getComponentSource("catalog/components/admin/category/edit/seo.js"),
             props: {},
             sortOrder: 20
+        },
+        {
+            id: "categoryEditBanner",
+            areaId: "rightSide",
+            source: getComponentSource("catalog/components/admin/category/edit/Image.js"),
+            props: {},
+            sortOrder: 10
         }
     ],
     "categoryGrid": [
@@ -133,6 +140,17 @@ exports = module.exports = {
             areaId: "content",
             source: getComponentSource("cms/components/admin/PageHeading.js"),
             props: {
+            },
+            sortOrder: 10
+        },
+        {
+            id: "newCategoryButton",
+            areaId: "pageHeadingRight",
+            source: getComponentSource("form/Button.js"),
+            props: {
+                title: 'Add category',
+                variant: 'primary',
+                url: buildAdminUrl('categoryNew')
             },
             sortOrder: 10
         },
