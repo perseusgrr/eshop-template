@@ -1,10 +1,27 @@
-import { resolve } from "path";
-import { existsSync, readdirSync } from 'fs';
-import Topo from '@hapi/topo';
+const { resolve } = require('path');
+const { existsSync, readdirSync } = require('fs');
+const Topo = require('@hapi/topo');
+
+module.exports = exports = {};
 
 var middee = {
     stack: [],
-    middlewares: []
+    middlewares: [
+        {
+            id: 'cleanStack',
+            routeId: null,
+            before: null,
+            after: null,
+            middleware: function (request, response, next) {
+                let route = request._route;
+                middee.stack[route.id] = [];
+                response.on('end', function () {
+                    console.log('Request is ended')
+                });
+                next();
+            }
+        }
+    ]
 };
 
 function addMiddleware(id, middleware, routeId = null, before = null, after = null) {
@@ -23,7 +40,7 @@ function addMiddleware(id, middleware, routeId = null, before = null, after = nu
                 before: before,
                 after: after,
                 middleware: function (error, request, response, next) {
-                    middleware(error, request, response, middee.stack, next);
+                    middleware(error, request, response, middee.stack[request._route.id], next);
                 }
             }
         );
@@ -35,16 +52,27 @@ function addMiddleware(id, middleware, routeId = null, before = null, after = nu
                 before: before,
                 after: after,
                 middleware: function (request, response, next) {
+                    //console.log(id)
                     // Workaround for default middlewares
-                    if (middleware.length == 4)
-                        middleware(request, response, middee.stack, next);
+                    if (middleware.length == 4) {
+                        middee.stack[request._route.id][id] = middleware(request, response, middee.stack[request._route.id], next);
+                        if (middee.stack[request._route.id][id] instanceof Promise)
+                            middee.stack[request._route.id][id].catch(e => {
+                                console.log("I catched a rejection. I am not gonna tell anybody", id)
+                                console.log(e)
+                            })
+                    }
                     else {
-                        middee.stack[id] = middleware(request, response, middee.stack);
-
-                        if (middee.stack[id] instanceof Error) {
-                            next(middee.stack[id]);
+                        middee.stack[request._route.id][id] = middleware(request, response, middee.stack[request._route.id]);
+                        if (middee.stack[request._route.id][id] instanceof Promise)
+                            middee.stack[request._route.id][id].catch(e => {
+                                console.log("I catched a rejection. I am not gonna tell anybody", id)
+                                console.log(e)
+                            })
+                        if (middee.stack[request._route.id][id] instanceof Error) {
+                            next(middee.stack[request._route.id][id]);
                         } else {
-                            if (middee.stack[id] === "STOP")
+                            if (middee.stack[request._route.id][id] === "STOP")
                                 return;
                             else
                                 next();
@@ -56,17 +84,13 @@ function addMiddleware(id, middleware, routeId = null, before = null, after = nu
     }
 }
 
-function getAdminMiddlewares(routeId) {
+exports.getAdminMiddlewares = function getAdminMiddlewares(routeId) {
     return sortMiddlewares(middee.middlewares.filter(m => m.routeId === "admin" || m.routeId === routeId || m.routeId === null));
 }
 
-function getFrontMiddlewares(routeId) {
+exports.getFrontMiddlewares = function getFrontMiddlewares(routeId) {
     return sortMiddlewares(middee.middlewares.filter(m => m.routeId === "front" || m.routeId === routeId || m.routeId === null));
 }
-
-export { getAdminMiddlewares };
-
-export { getFrontMiddlewares };
 
 function sortMiddlewares(middlewares = []) {
     let _middlewares = middlewares.filter(m => {
@@ -133,15 +157,15 @@ function scanForMiddleware(_path) {
                 }
             }
             if (m.id !== 'context' && m.id !== 'errorHandler') {
-                m.before = !m.before ? (["bundlee"]) : m.before;
-                m.after = !m.after ? (["componee"]) : m.after;
+                m.before = !m.before ? (["response"]) : m.before;
+                m.after = !m.after ? (["session"]) : m.after;
             }
 
             return m;
         });
 }
 
-export function getModuleMiddlewares(_path) {
+exports.getModuleMiddlewares = function getModuleMiddlewares(_path) {
     if (!existsSync(resolve(_path, "middlewares")))
         return false;
     // Scan for the application level middleware
@@ -200,6 +224,6 @@ export function getModuleMiddlewares(_path) {
     }
 }
 
-export function get() {
+exports.get = function get() {
     return sortMiddlewares(middee.middlewares);
 }

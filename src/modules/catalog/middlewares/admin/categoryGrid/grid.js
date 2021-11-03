@@ -1,11 +1,7 @@
-const { getComponentSource } = require("../../../../../lib/helpers");
-import { pool } from '../../../../../lib/mysql/connection';
-import { assign } from "../../../../../lib/util/assign";
+const { pool } = require('../../../../../lib/mysql/connection');
+const { assign } = require("../../../../../lib/util/assign");
 
 module.exports = async (request, response, stack) => {
-    // Add name column to the grid
-    response.addComponent("categoryGrid", "content", getComponentSource("catalog/components/admin/category/grid/grid.js"), { "limit": 20 }, 1);
-
     // execute query
     let query = stack["queryInit"];
 
@@ -38,6 +34,7 @@ module.exports = async (request, response, stack) => {
     query.limit(0, 1);
     let ps = await query.execute(pool);
     assign(response.context, { grid: { total: ps[0]["total"] } });
+    assign(response.context, { page: { heading: 'Categories' } });
 
     return categories;
 }

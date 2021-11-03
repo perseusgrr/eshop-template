@@ -1,11 +1,10 @@
-const { getComponentSource } = require("../../../../../lib/helpers");
-import { pool } from '../../../../../lib/mysql/connection';
-import { assign } from "../../../../../lib/util/assign";
+const { pool } = require('../../../../../lib/mysql/connection');
+const { assign } = require("../../../../../lib/util/assign");
+const fs = require("fs");
+const path = require("path");
+const { CONSTANTS } = require('../../../../../lib/helpers');
 
 module.exports = async (request, response, stack) => {
-    // Add name column to the grid
-    response.addComponent("productGrid", "content", getComponentSource("catalog/components/admin/product/grid/grid.js"), { "limit": 20 }, 1);
-
     // execute query
     let query = stack["queryInit"];
 
@@ -32,12 +31,23 @@ module.exports = async (request, response, stack) => {
 
     query.orderBy(orderBy, direction);
     let products = await query.execute(pool);
+
+    // Process the thumbnail
+    products = products.map(product => {
+        if (product["image"]) {
+            let thumb = product["image"].replace(/.([^.]*)$/, '-thumb.$1');
+            product["image"] = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, thumb)) ? `/assets${thumb}` : null
+        }
+
+        return product
+    })
     assign(response.context, { grid: { products: JSON.parse(JSON.stringify(products)) } });
 
     query.select("COUNT(`product_id`)", "total");
     query.limit(0, 1);
     let ps = await query.execute(pool);
     assign(response.context, { grid: { total: ps[0]["total"] } });
+    assign(response.context, { page: { heading: 'Products' } });
 
     return products;
 }

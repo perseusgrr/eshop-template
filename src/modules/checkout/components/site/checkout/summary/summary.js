@@ -1,23 +1,13 @@
 import React from 'react';
-import { Items } from "./items";
-import { CartSummary } from "./cart";
+import { Items } from "./Items";
+import { CartSummary } from "./Cart";
 import Area from "../../../../../../lib/components/area";
-
-function Title() {
-    return <h4 className="mb-4">Order summary</h4>
-}
 
 function Summary() {
     return <Area
         id={"checkoutSummary"}
-        className="col-12 col-md-4"
-        coreWidgets={[
-            {
-                'component': { default: Title },
-                'props': {},
-                'sortOrder': 10,
-                'id': 'checkoutOrderSummary'
-            },
+        className="checkout-summary hidden md:block"
+        coreComponents={[
             {
                 'component': { default: Items },
                 'props': {},

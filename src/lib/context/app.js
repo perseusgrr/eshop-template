@@ -1,4 +1,4 @@
-import React from "react";
+const React = require("react");
 
 const AppStateContext = React.createContext();
 const AppContextDispatch = React.createContext()

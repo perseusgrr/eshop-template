@@ -1,7 +1,7 @@
 const util = require("util");
 const { pool } = require('../../../../../lib/mysql/connection');
-import { getConnection, commit, rollback, startTransaction, del, insert, update } from '@nodejscart/mysql-query-builder';
-import { assign } from "../../../../../lib/util/assign";
+const { getConnection, commit, rollback, startTransaction, del, insert, update } = require('@nodejscart/mysql-query-builder');
+const { assign } = require("../../../../../lib/util/assign");
 
 module.exports = async (request, response, stack, next) => {
     const connection = await getConnection(pool);

@@ -1,0 +1,19 @@
+.logo {
+    display: flex;
+    a.logo-icon {
+        align-self: center;
+        color: var(--primary);
+        display: flex;
+        border-radius: 100%;
+        border: 2px solid var(--primary);
+        svg {
+            width: 2rem;
+            height: 2rem;
+        }
+        margin-right: 0.5rem;
+    }
+    .store-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+}

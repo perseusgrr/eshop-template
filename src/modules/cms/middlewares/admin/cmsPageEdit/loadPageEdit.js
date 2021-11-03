@@ -1,7 +1,7 @@
 const { select } = require('@nodejscart/mysql-query-builder')
-import { pool } from '../../../../../lib/mysql/connection';
+const { pool } = require('../../../../../lib/mysql/connection');
 const { buildAdminUrl } = require('../../../../../lib/routie');
-import { assign } from "../../../../../lib/util/assign";
+const { assign } = require("../../../../../lib/util/assign");
 
 module.exports = async (request, response, stack, next) => {
     let query = select();
@@ -18,6 +18,7 @@ module.exports = async (request, response, stack, next) => {
         response.redirect(302, buildAdminUrl("pageGrid"));
     } else {
         assign(response.context, { page: JSON.parse(JSON.stringify(page)) });
+        assign(response.context, { page: { heading: page.name } });
         next();
     }
 }

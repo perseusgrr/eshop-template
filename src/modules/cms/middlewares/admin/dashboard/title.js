@@ -1,5 +1,5 @@
-const { getComponentSource } = require("../../../../../lib/helpers");
+const { assign } = require("../../../../../lib/util/assign");
 
 module.exports = (request, response) => {
-    response.addComponent("title", "content", getComponentSource("cms/components/admin/title.js"), { "title": "Dashboard" }, 1);
-}
+    assign(response.context, { page: { heading: "Dashboard" } });
+};

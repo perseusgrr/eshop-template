@@ -20,13 +20,13 @@ helpers.getConfig = (function () {
 helpers.getAdminCssFile = function getAdminCssFile(path) {
     const adminTheme = config.get("shop.adminTheme");
 
-    return `/theme/admin/${adminTheme}/css/${path}`;
+    return `/admin/${adminTheme}/css/${path}`;
 }
 
 helpers.getAdminJsFile = function getAdminJsFile(_path) {
     const adminTheme = config.get("shop.adminTheme");
     if (existsSync(path.resolve(__dirname, "../public", "theme", "admin", adminTheme, _path)))
-        return `/theme/admin/${adminTheme}/js/${_path}`;
+        return `/admin/${adminTheme}/js/${_path}`;
     else
         return `/js/${_path}`;
 }
@@ -34,13 +34,13 @@ helpers.getAdminJsFile = function getAdminJsFile(_path) {
 helpers.getSiteCssFile = function getSiteCssFile(path) {
     const theme = config.get("shop.frontTheme");
 
-    return `/theme/site/${theme}/css/${path}`;
+    return `/site/${theme}/css/${path}`;
 }
 
 helpers.getSiteJsFile = function getSiteJsFile(path) {
     const theme = config.get("shop.frontTheme");
     if (existsSync(path.resolve(__dirname, "../public", "theme", "site", theme, _path)))
-        return `/theme/site/${theme}/js/${_path}`;
+        return `/site/${theme}/js/${_path}`;
     else
         return `/js/${_path}`;
 }
@@ -73,9 +73,9 @@ helpers.getComponentSource = function getComponentSource(_path, isAdmin = false)
 }
 
 const rootPath = (() => {
-    let _path = path.resolve(__dirname, "..", "..");
-    if (existsSync(path.resolve(_path, "public"))) {
-        return path.resolve(__dirname, "..", "..");
+    let _path = path.resolve(__dirname, "..", '..');
+    if (existsSync(path.resolve(_path, "package-lock.json"))) {
+        return _path;
     } else {
         return path.resolve(__dirname, "..", "..", "..", "..", "..");
     }
@@ -86,7 +86,7 @@ helpers.CONSTANTS = Object.freeze({
     LIBPATH: path.resolve(__dirname),
     MOLDULESPATH: path.resolve(__dirname, "../modules"),
     PUBLICPATH: path.resolve(rootPath, "public"),
-    MEDIAPATH: path.resolve(rootPath, "public", "media"),
+    MEDIAPATH: path.resolve(rootPath, "media"),
     NODEMODULEPATH: path.resolve(rootPath, "node_modules"),
     ADDMINTHEMEPATH: path.resolve(rootPath, "public", "theme", "admin"),
     SITETHEMEPATH: path.resolve(rootPath, "public", "theme", "front"),

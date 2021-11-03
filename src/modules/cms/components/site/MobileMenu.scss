@@ -1,0 +1,15 @@
+.main-menu-mobile {
+    position: relative;
+    .menu-icon {
+        svg {
+            width: 2.5rem;
+            height: 2.5rem;
+        }
+    }
+    .nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        display: none;
+    }
+}

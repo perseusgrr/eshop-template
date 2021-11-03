@@ -1,11 +1,14 @@
 const mysql = require('mysql');
 const util = require('util');
 
+module.exports = exports = {};
+
 const pool = mysql.createPool({
     host: "localhost",
-    user: "root",
+    port: 3306,
+    user: "admin",
     password: "123456",
-    database: "testinstallation",
+    database: "nodejscart",
     dateStrings: true
 });
 
@@ -13,4 +16,4 @@ async function getConnection() {
     return await util.promisify(pool.getConnection).bind(pool)();
 }
 
-export { pool, getConnection }
+module.exports = exports = { pool, getConnection }

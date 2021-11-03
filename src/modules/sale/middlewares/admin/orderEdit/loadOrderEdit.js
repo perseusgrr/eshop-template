@@ -1,7 +1,7 @@
 const { select } = require('@nodejscart/mysql-query-builder')
-import { pool } from '../../../../../lib/mysql/connection';
+const { pool } = require('../../../../../lib/mysql/connection');
 const { buildAdminUrl } = require('../../../../../lib/routie');
-import { assign } from "../../../../../lib/util/assign";
+const { assign } = require("../../../../../lib/util/assign");
 const config = require("config");
 
 module.exports = async (request, response, stack, next) => {
@@ -35,6 +35,7 @@ module.exports = async (request, response, stack, next) => {
                 code: order.payment_status,
                 badge: ""
             }
+        assign(response.context, { page: { heading: `#${order.order_number}` } });
         assign(response.context, { order: JSON.parse(JSON.stringify(order)) });
         next();
     }

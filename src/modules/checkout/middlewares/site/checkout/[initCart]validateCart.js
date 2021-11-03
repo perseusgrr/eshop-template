@@ -1,5 +1,5 @@
 const { buildSiteUrl } = require("../../../../../lib/routie");
-import { assign } from '../../../../../lib/util/assign'
+const { assign } = require('../../../../../lib/util/assign');
 
 module.exports = async (request, response, stack) => {
     let cart = await stack["initCart"];

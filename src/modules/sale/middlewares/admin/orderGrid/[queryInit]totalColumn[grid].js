@@ -1,14 +1,23 @@
-const { getComponentSource } = require("../../../../../lib/helpers");
-import { assign } from "../../../../../lib/util/assign";
+const { assign } = require("../../../../../lib/util/assign");
 
 module.exports = (request, response, stack) => {
-    // Add total column to the grid
-    response.addComponent("totalColumn", "orderGridHeader", getComponentSource("grid/headers/basic.js"), { "title": "Total", "id": "grand_total" }, 5);
-    response.addComponent("totalRow", "orderGridRow", getComponentSource("grid/rows/basic.js"), { "id": "grand_total" }, 5);
     // Handle filter
     if (request.query["grand_total"] !== undefined) {
         let query = stack["queryInit"];
-        query.andWhere("order.`grand_total`", "LIKE", `%${request.query["grand_total"]}%`);
-        assign(response.context, { grid: { currentFilter: { grand_total: request.query["grand_total"] } } });
+        if (/^\d+(\.\d+)?[-]\d+(\.\d+)?$/.test(request.query["grand_total"])) {
+            let ranges = request.query["grand_total"].split("-");
+            query.andWhere("`order`.`grand_total`", ">=", ranges[0]);
+            query.andWhere("`order`.`grand_total`", "<=", ranges[1]);
+            assign(response.context, { grid: { currentFilter: { grand_total: { from: ranges[0], to: ranges[1] } } } });
+        } else if (/^\d+(\.\d+)?[-]$/.test(request.query["grand_total"])) {
+            let ranges = request.query["grand_total"].split("-");
+            query.andWhere("`order`.`grand_total`", ">=", ranges[0]);
+            assign(response.context, { grid: { currentFilter: { grand_total: { from: ranges[0], to: undefined } } } });
+        } else if (/^[-]\d+(\.\d+)?$/.test(request.query["grand_total"])) {
+            let ranges = request.query["grand_total"].split("-");
+            query.andWhere("`order`.`grand_total`", "<=", ranges[1]);
+            assign(response.context, { grid: { currentFilter: { grand_total: { from: undefined, to: ranges[1] } } } });
+        } else
+            return
     }
 }

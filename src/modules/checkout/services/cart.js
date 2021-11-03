@@ -1,11 +1,12 @@
-import isEqualWith from "lodash/isEqualWith";
-import { CONSTANTS } from "../../../lib/helpers";
+const isEqualWith = require("lodash/isEqualWith");
+const { CONSTANTS } = require("../../../lib/helpers");
 const Topo = require("@hapi/topo");
 const config = require("config");
 const { pool } = require("../../../lib/mysql/connection");
 const { select, del } = require('@nodejscart/mysql-query-builder');
 const fs = require("fs");
 const path = require("path");
+const { buildSiteUrl } = require("../../../lib/routie");
 
 class DataObject {
     constructor() {
@@ -273,6 +274,21 @@ class Item extends DataObject {
                 return null; // Will be added later
             },
             dependencies: ["product_id"]
+        },
+        {
+            key: "productUrl",
+            resolver: async function () {
+                return buildSiteUrl('productView', { url_key: this._dataSource.product.url_key })
+            },
+            dependencies: ["product_id"]
+        },
+        {
+            key: "removeUrl",
+            resolver: async function () {
+                if (this.getData('cart_item_id'))
+                    return buildSiteUrl('cartItemRemove', { id: this.getData('cart_item_id') })
+            },
+            dependencies: ["cart_item_id"]
         }
     ];
 
@@ -287,7 +303,9 @@ class Item extends DataObject {
     }
 }
 
-export class Cart extends DataObject {
+module.exports = exports = {};
+
+exports.Cart = class Cart extends DataObject {
     static fields = [
         {
             key: "cart_id",
@@ -430,6 +448,20 @@ export class Cart extends DataObject {
             dependencies: ["shipping_method"]
         },
         {
+            key: "shipping_fee_excl_tax",
+            resolver: async function () {
+                return 0;// TODO: This field should be handled by each of shipping method
+            },
+            dependencies: ["shipping_method"]
+        },
+        {
+            key: "shipping_fee_incl_tax",
+            resolver: async function () {
+                return 0;// TODO: This field should be handled by each of shipping method
+            },
+            dependencies: ["shipping_method"]
+        },
+        {
             key: "billing_address_id",
             resolver: async function () {
                 return this._dataSource['billing_address_id'];
@@ -532,7 +564,6 @@ export class Cart extends DataObject {
             let flag = false;
             for (let i = 0; i < items.length; i++) {
                 if (items[i].getData("product_sku") === item.getData("product_sku") && isEqualWith(items[i].getData("product_custom_options"), item.getData("product_custom_options"))) {
-                    console.log("jejejejejeje")
                     await items[i].setData("qty", item.getData("qty") + items[i].getData("qty"));
                     if (item._error)
                         throw new Error(item._error);

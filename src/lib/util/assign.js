@@ -16,4 +16,4 @@ function assign(object, data) {
     }
 }
 
-export { assign }
+module.exports = exports = { assign }

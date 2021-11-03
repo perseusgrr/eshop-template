@@ -1,5 +1,5 @@
-const { getComponentSource } = require("../../../../../lib/helpers");
+const { assign } = require("../../../../../lib/util/assign");
 
 module.exports = (request, response) => {
-    response.addComponent("title", "head", getComponentSource("title.js"), { "title": "Create new category" }, 1);
-}
+    assign(response.context, { page: { heading: "Create a new category" } });
+};

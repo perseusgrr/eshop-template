@@ -1,13 +1,13 @@
 import React from 'react';
-import { ShipmentStep } from "./shipment/shipmentStep";
-import { PaymentStep } from "./payment/paymentStep";
+import { ShipmentStep } from "./shipment/ShipmentStep";
+import { PaymentStep } from "./payment/PaymentStep";
 import Area from "../../../../../lib/components/area";
 
 export default function CheckoutSteps() {
     return <Area
         id={"checkoutSteps"}
-        className="col-12 col-md-8 checkout-steps"
-        coreWidgets={[
+        className="checkout-steps"
+        coreComponents={[
             {
                 'component': { default: ShipmentStep },
                 'props': {},
@@ -17,7 +17,7 @@ export default function CheckoutSteps() {
             {
                 'component': { default: PaymentStep },
                 'props': {},
-                'sortOrder': 10,
+                'sortOrder': 20,
                 'id': 'checkoutPaymentStep'
             }
         ]}

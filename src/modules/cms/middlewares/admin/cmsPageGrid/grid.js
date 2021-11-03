@@ -1,21 +1,19 @@
-const { getComponentSource } = require("../../../../../lib/helpers");
-import { pool } from '../../../../../lib/mysql/connection';
-import { assign } from "../../../../../lib/util/assign";
+const { pool } = require('../../../../../lib/mysql/connection');
+const { assign } = require("../../../../../lib/util/assign");
 
 module.exports = async (request, response, stack) => {
-    // Add name column to the grid
-    response.addComponent("pageGrid", "content", getComponentSource("cms/components/admin/page/grid/grid.js"), { "limit": 20 }, 1);
 
-    // execute query
+    assign(response.context, { page: { heading: 'CMS pages' } });
+    /** Execute query */
     let query = stack["queryInit"];
 
-    let limit = 20;// Default limit
-    // Limit
+    let limit = 20;/** Default limit */
+    /** Limit */
     if (/^[0-9]+$/.test(request.query["limit"]))
         limit = parseInt(request.query["limit"]);
 
     let page = 1;
-    // pagination
+    /** Pagination */
     if (/^[0-9]+$/.test(request.query["page"]))
         page = parseInt(request.query["page"]);
     assign(response.context, { grid: { page, limit } });

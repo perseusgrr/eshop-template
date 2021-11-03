@@ -1,6 +1,5 @@
-var express = require('express');
-var staticMiddleware = express.static('public');
+var bodyParser = require('body-parser')
 
 module.exports = (request, response, stack, next) => {
-    staticMiddleware(request, response, next);
+    bodyParser.json()(request, response, next);
 }

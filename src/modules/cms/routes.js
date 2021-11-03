@@ -8,19 +8,17 @@ module.exports = function ({ registerSiteRoute, registerAdminRoute }) {
 
     registerAdminRoute("dashboard", ["GET"], "/");
 
-    registerAdminRoute("cmsPageEdit", ["GET"], "/page/edit/:id(\\d+)")
+    registerAdminRoute("cmsPageNew", ["GET"], "/pages/new");
 
-    registerAdminRoute("cmsPageSaveNew", ["POST"], "/page/create");
+    registerAdminRoute("cmsPageEdit", ["GET"], "/pages/edit/:id(\\d+)")
 
-    registerAdminRoute("cmsPageSaveEdit", ["POST"], "/page/update/:id(\\d+)");
+    registerAdminRoute("cmsPageBulkDelete", ["POST"], "/page/bulkDelete");
+
+    registerAdminRoute("cmsPageSavePost", ["POST"], "/page/save");
 
     registerAdminRoute("cmsPageGrid", ["GET"], "/pages/")
 
     registerAdminRoute("cmsWidgetGrid", ["GET"], "/widgets/");
-
-    registerAdminRoute("adminBundle", ["GET"], "/bundle/*");
-
-    registerSiteRoute("siteBundle", ["GET"], "/bundle/*");
 
     registerAdminRoute("imageUpload", ["POST"], "/image/upload/*");
 
@@ -29,4 +27,6 @@ module.exports = function ({ registerSiteRoute, registerAdminRoute }) {
     registerAdminRoute("fileDelete", ["POST", "GET"], "/file_delete/*");
 
     registerAdminRoute("folderCreate", ["POST", "GET"], "/folder_create/*");
+
+    registerAdminRoute("search", ["POST", "GET"], "/search");
 }

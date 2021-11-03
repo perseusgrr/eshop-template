@@ -4,7 +4,7 @@ import { useAppState } from "../../../../../../lib/context/app";
 import { get } from "../../../../../../lib/util/get";
 
 const Name = ({ name }) => {
-    return <h1 className="category-name">{name}</h1>
+    return <h1 className="category-name text-center mt-25 mb-15">{name}</h1>
 };
 
 const Description = ({ description }) => {
@@ -14,22 +14,16 @@ const Description = ({ description }) => {
 export default function CategoryInfo() {
     const category = get(useAppState(), "category");
 
-    return <div className="container">
+    return <div className="page-width">
         <Area
             id={"category-general-info"}
             className="category-general-info"
-            coreWidgets={[
+            coreComponents={[
                 {
                     component: { default: Name },
                     props: { name: category.name },
                     sortOrder: 10,
                     id: "category-name"
-                },
-                {
-                    component: { default: Description },
-                    props: { description: category.description },
-                    sortOrder: 20,
-                    id: "category-description"
                 }
             ]}
         />

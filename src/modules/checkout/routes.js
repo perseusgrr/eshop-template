@@ -3,9 +3,9 @@ module.exports = function ({ registerSiteRoute, registerAdminRoute }) {
 
     registerSiteRoute("addToCart", ["POST"], "/cart/add/");
 
-    registerSiteRoute("cartItemRemove", ["GET"], " / cart/item/remove/:id");
+    registerSiteRoute("cartItemRemove", ["GET", "POST"], "/cart/item/remove/:id");
 
-    registerSiteRoute("cartEmpty", ["GET"], "/cart/empty");
+    registerSiteRoute("cartEmpty", ["GET", "POST"], "/cart/empty");
 
     registerSiteRoute("checkout", ["GET"], "/checkout/");
 
@@ -17,8 +17,11 @@ module.exports = function ({ registerSiteRoute, registerAdminRoute }) {
 
     registerSiteRoute("checkoutSetShipmentInfo", ["POST"], "/checkout/setShipmentInfo");
 
-    registerSiteRoute("checkoutSetPaymentInfo", ["POST"], "/checkout/setPaymentInfo");
-    registerSiteRoute("checkoutPlaceOrderAPI", ["POST"], "/checkout/placeOrder");
+    registerSiteRoute("checkoutSetBillingAddressInfo", ["POST"], "/checkout/setBillingAddressInfo");
 
-    registerSiteRoute("checkoutSuccess", ["POST"], "/checkout/success");
+    registerSiteRoute("checkoutSetPaymentInfo", ["POST"], "/checkout/setPaymentInfo");
+
+    registerSiteRoute("checkoutPlaceOrder", ["POST"], "/checkout/placeOrder");
+
+    registerSiteRoute("checkoutSuccess", ["GET"], "/checkout/success");
 }

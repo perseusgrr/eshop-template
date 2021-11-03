@@ -1,5 +1,5 @@
-import { pool } from "../../../lib/mysql/connection";
-import { commit, getConnection, insert, rollback, select, startTransaction, update } from "@nodejscart/mysql-query-builder";
+const { pool } = require("../../../lib/mysql/connection");
+const { commit, getConnection, insert, rollback, select, startTransaction, update } = require("@nodejscart/mysql-query-builder");
 
 /* Default validation rules */
 var validationServices = [
@@ -41,12 +41,13 @@ var validationServices = [
 
 var validationErrors = [];
 
-export async function createOrder(cart, eventDispatcher) {
+module.exports = exports = {};
+exports.createOrder = async function createOrder(cart, eventDispatcher) {
     // Start creating order
     let connection = await getConnection(pool);
 
     try {
-        startTransaction(connection);
+        await startTransaction(connection);
 
         for (const rule of validationServices) {
             if (await rule.func(cart, validationErrors) === false) {
@@ -66,20 +67,22 @@ export async function createOrder(cart, eventDispatcher) {
         let billAddr = await insert("order_address")
             .given(await select()
                 .from("cart_address")
-                .where("cart_address_id", "=", cart.getData("billing_address_id"))
+                .where("cart_address_id", "=", cart.getData("billing_address_id") || cart.getData("shipping_address_id"))
                 .load(connection)
             )
             .execute(connection);
         // Save order to DB
         // TODO: Maybe we should allow plugin to prepare order data before created?
+        let previous = await select('order_id').from('order').orderBy('order_id', 'DESC').limit(0, 1).execute(pool);
+
         let order = await insert("order")
             .given({
                 ...cart.export(),
-                order_number: Math.random() * (899) + 100,// FIXME: Must be structured
+                order_number: 10000 + parseInt(previous[0]['order_id']) + 1,// FIXME: Must be structured
                 shipping_address_id: shipAddr.insertId,
                 billing_address_id: billAddr.insertId,
                 payment_status: 'pending',
-                shipment_status: 'pending'
+                shipment_status: 'unfullfilled' // TODO: Payment and shipment status should be provided by the method
             })
             .execute(connection);
 
@@ -97,26 +100,26 @@ export async function createOrder(cart, eventDispatcher) {
         }).execute(connection);
 
         // Disable the cart
-        await update("cart")
-            .given({ status: 0 })
-            .where("cart_id", "=", cart.getData("cart_id"))
-            .execute(connection);
+        // await update("cart")
+        //     .given({ status: 0 })
+        //     .where("cart_id", "=", cart.getData("cart_id"))
+        //     .execute(connection);
 
-        commit(connection);
+        await commit(connection);
         return order.insertId;
     } catch (e) {
-        rollback(connection);
+        await rollback(connection);
         throw e;
     }
 }
 
-export function addCreateOrderValidationRule(id, func) {
+exports.addCreateOrderValidationRule = function addCreateOrderValidationRule(id, func) {
     if (typeof obj != 'function')
         throw new Error("Validator must be a function");
 
     validationServices.push({ id, func });
 }
 
-export function removeCreateOrderValidationRule(id) {
+exports.removeCreateOrderValidationRule = function removeCreateOrderValidationRule(id) {
     validationServices = validationServices.filter(r => r.id !== id);
 }

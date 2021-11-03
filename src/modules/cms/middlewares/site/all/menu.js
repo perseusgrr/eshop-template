@@ -2,11 +2,8 @@ const { pool } = require("../../../../../lib/mysql/connection");
 const { select } = require('@nodejscart/mysql-query-builder');
 const { buildSiteUrl } = require("../../../../../lib/routie");
 const { assign } = require("../../../../../lib/util/assign");
-const { getComponentSource } = require("../../../../../lib/helpers");
 
 module.exports = async function (request, response) {
-    response.addComponent("menu", 'header', getComponentSource("cms/components/site/menu.js", true), {}, 10);
-
     let query = select("name")
         .select("url_key")
         .from("category", "cat");

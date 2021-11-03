@@ -1,23 +1,45 @@
 module.exports = function ({ registerSiteRoute, registerAdminRoute }) {
-    registerAdminRoute("productNew", ["GET"], "/product/new");
+    registerAdminRoute("productNew", ["GET"], "/products/new");
 
-    registerAdminRoute("productEdit", ["GET"], "/product/edit/:id(\\d+)");
+    registerAdminRoute("productEdit", ["GET"], "/products/edit/:id(\\d+)");
 
     registerAdminRoute("variantSearch", ["GET", "POST"], "/variant/search");
 
-    registerAdminRoute("productSaveNew", ["POST"], "/product/create");
+    registerAdminRoute("unlinkVariant", ["POST"], "/variant/unlink");
 
-    registerAdminRoute("productSaveEdit", ["POST"], "/product/update/:id(\\d+)");
+    registerAdminRoute("productSavePost", ["POST"], "/product/save");
+
+    registerAdminRoute("productDelete", ["POST", "GET"], "/product/delete/:id(\\d+)");
+
+    registerAdminRoute("productBulkDelete", ["POST"], "/product/bulkDelete");
+
+    registerAdminRoute("productBulkEnable", ["POST"], "/product/bulkEnable");
+
+    registerAdminRoute("productBulkDisable", ["POST"], "/product/bulkDisable");
 
     registerAdminRoute("productGrid", ["GET"], "/products");
 
     registerAdminRoute("categoryGrid", ["GET"], "/categories");
 
-    registerAdminRoute("categoryEdit", ["GET"], "/category/edit/:id(\\d+)");
+    registerAdminRoute("categoryBulkDelete", ["POST"], "/category/bulkDelete");
 
-    registerAdminRoute("categorySaveNew", ["POST"], "/category/create");
+    registerAdminRoute("categoryNew", ["GET"], "/categories/new");
 
-    registerAdminRoute("categorySaveEdit", ["POST"], "/category/update/:id(\\d+)");
+    registerAdminRoute("categoryEdit", ["GET"], "/categories/edit/:id(\\d+)");
+
+    registerAdminRoute("categorySavePost", ["POST"], "/category/save");
+
+    registerAdminRoute("attributeGrid", ["GET"], "/attributes");
+
+    registerAdminRoute("attributeBulkDelete", ["POST"], "/attribute/bulkDelete");
+
+    registerAdminRoute("attributeNew", ["GET"], "/attributes/new");
+
+    registerAdminRoute("attributeEdit", ["GET"], "/attributes/edit/:id(\\d+)");
+
+    registerAdminRoute("attributeSavePost", ["POST"], "/attribute/save");
+
+    registerAdminRoute("attributeGroupSavePost", ["POST"], "/attributeGroup/save");
 
     // Site routes
     registerSiteRoute("categoryView", ["GET"], "/category/:url_key");

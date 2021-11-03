@@ -1,5 +1,5 @@
 var { select } = require('@nodejscart/mysql-query-builder')
-import { pool } from '../../../../../lib/mysql/connection';
+const { pool } = require('../../../../../lib/mysql/connection');
 
 module.exports = async (request, response) => {
   let query = select();
