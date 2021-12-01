@@ -6,7 +6,7 @@
         "language": "fr",
         "timezone": "America/New_York",
         "adminTheme": "default",
-        "siteTheme": "justatheme"
+        "frontTheme": "default"
     },
     "catalog": {
         "product": {

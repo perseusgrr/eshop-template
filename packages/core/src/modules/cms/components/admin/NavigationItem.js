@@ -1,14 +1,5 @@
 import React from "react";
 
-const Icon = ({ name }) => {
-    try {
-        const ICON = require(`@heroicons/react/solid/${name}.js`);
-        return <ICON />
-    } catch (e) {
-        return (null)
-    }
-}
-
 export default function MenuItem({ icon, url, title }) {
     let [isActive, setIsActive] = React.useState(false);
     React.useEffect(() => {
@@ -26,10 +17,8 @@ export default function MenuItem({ icon, url, title }) {
         }
     }, []);
 
-    return <li className={isActive ? 'active nav-item' : 'nav-item'}><a href={url} className='flex justify-left'>
-        <i className='menu-icon'>
-            <Icon name={icon} />
-        </i>
+    return <li className={isActive ? 'active nav-item' : 'nav-item'}><a href={url}>
+        <i className={`fas fa-${icon}`}></i>
         {title}
     </a></li>
 }

@@ -1,4 +1,4 @@
-const { useSiteComponent } = require("../../../../lib/componee")
+const { getComponentSource } = require("../../../../lib/helpers");
 const { buildSiteUrl } = require("../../../../lib/routie");
 
 exports = module.exports = {
@@ -7,21 +7,21 @@ exports = module.exports = {
             // General block
             id: "categoryGeneral",
             areaId: "content",
-            source: useSiteComponent("catalog/components/site/category/view/General.js"),
+            source: getComponentSource("catalog/components/site/category/view/General.js"),
             props: {},
             sortOrder: 10
         },
         {
             id: "productsFilter",
             areaId: "content",
-            source: useSiteComponent("catalog/components/site/product/list/Filter.js"),
+            source: getComponentSource("catalog/components/site/product/list/Filter.js"),
             props: {},
             sortOrder: 20
         },
         {
             id: "products",
             areaId: "content",
-            source: useSiteComponent("catalog/components/site/category/view/Products.js"),
+            source: getComponentSource("catalog/components/site/category/view/Products.js"),
             props: {},
             sortOrder: 30
         }
@@ -31,14 +31,14 @@ exports = module.exports = {
             // General block
             id: "productLayout",
             areaId: "content",
-            source: useSiteComponent("catalog/components/site/product/view/Layout.js"),
+            source: getComponentSource("catalog/components/site/product/view/Layout.js"),
             props: {},
             sortOrder: 10
         },
         {
             id: "productForm",
             areaId: "productPageMiddleRight",
-            source: useSiteComponent("catalog/components/site/product/view/Form.js"),
+            source: getComponentSource("catalog/components/site/product/view/Form.js"),
             props: {
                 action: buildSiteUrl("addToCart")
             },
@@ -47,7 +47,7 @@ exports = module.exports = {
         {
             id: "productGeneralInfo",
             areaId: "productPageMiddleRight",
-            source: useSiteComponent("catalog/components/site/product/view/GeneralInfo.js"),
+            source: getComponentSource("catalog/components/site/product/view/GeneralInfo.js"),
             props: {
                 action: buildSiteUrl("addToCart")
             },
@@ -56,21 +56,21 @@ exports = module.exports = {
         {
             id: "productImages",
             areaId: "productPageMiddleLeft",
-            source: useSiteComponent("catalog/components/site/product/view/Images.js"),
+            source: getComponentSource("catalog/components/site/product/view/Images.js"),
             props: {},
             sortOrder: 10
         },
         {
             id: "productDescription",
             areaId: "productPageMiddleRight",
-            source: useSiteComponent("catalog/components/site/product/view/Description.js"),
+            source: getComponentSource("catalog/components/site/product/view/Description.js"),
             props: {},
             sortOrder: 60
         },
         {
             id: "productVariants",
             areaId: "productPageMiddleRight",
-            source: useSiteComponent("catalog/components/site/product/view/Variants.js"),
+            source: getComponentSource("catalog/components/site/product/view/Variants.js"),
             props: {},
             sortOrder: 20
         }
@@ -79,14 +79,14 @@ exports = module.exports = {
         {
             id: "featuredCat",
             areaId: "content",
-            source: useSiteComponent("catalog/components/site/homepage/FeaturedCategories.js"),
+            source: getComponentSource("catalog/components/site/homepage/FeaturedCategories.js"),
             props: {},
             sortOrder: 20
         },
         {
             id: "featuredProducts",
             areaId: "content",
-            source: useSiteComponent("catalog/components/site/homepage/FeaturedProducts.js"),
+            source: getComponentSource("catalog/components/site/homepage/FeaturedProducts.js"),
             props: {},
             sortOrder: 30
         }
