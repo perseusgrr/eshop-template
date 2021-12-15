@@ -19,8 +19,16 @@ An Ecommerce platform using ReactJS and MySQL.
 ### [Store](https://demo.nodejscart.com/)
 ### [Admin panel](https://demo.nodejscart.com/admin/)
 
+## Next steps
+
+- [ ] Customer module
+- [ ] Discount module
+- [ ] Tax module
+- [ ] Docker
+- [ ] Unit test
+
 ## Installation guide
-- [Installation guide](https://nodejscart.com/docs/getting-started/installation)
+- [Installation guide](https://nodejscart.com/docs/getting-started)
 
 ## LICENCE
 - [GPL-3.0 License](https://github.com/nodeonline/nodejscart/blob/main/LICENSE)
