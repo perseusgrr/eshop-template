@@ -14,14 +14,14 @@ exports.Cart = class Cart extends DataObject {
     {
       key: 'cart_id',
       async resolver() {
-        if (this._dataSource.cart_id) {
+        if (this.dataSource.cart_id) {
           const cart = await select()
             .from('cart')
-            .where('cart_id', '=', this._dataSource.cart_id)
+            .where('cart_id', '=', this.dataSource.cart_id)
             .load(pool);
           if (!cart || cart.status === 0) {
-            this._error = 'Cart does not exist';
-            this._dataSource = {};
+            this.error = 'Cart does not exist';
+            this.dataSource = {};
             return null;
           } else {
             return cart.cart_id;
@@ -40,25 +40,25 @@ exports.Cart = class Cart extends DataObject {
     {
       key: 'user_ip',
       async resolver() {
-        return this._request.ip;
+        return this.request.ip;
       }
     },
     {
       key: 'customer_email',
       async resolver() {
-        return this._dataSource.customer_email ?? this.getData('customer_email') ?? null;
+        return this.dataSource.customer_email ?? this.getData('customer_email') ?? null;
       }
     },
     {
       key: 'customer_full_name',
       async resolver() {
-        return this._dataSource.customer_full_name ?? this.getData('customer_full_name') ?? null;
+        return this.dataSource.customer_full_name ?? this.getData('customer_full_name') ?? null;
       }
     },
     {
       key: 'status',
       async resolver() {
-        return this._dataSource.status ?? this.getData('status') ?? 1;
+        return this.dataSource.status ?? this.getData('status') ?? 1;
       }
     },
     {
@@ -124,7 +124,7 @@ exports.Cart = class Cart extends DataObject {
     {
       key: 'shipping_address_id',
       async resolver() {
-        return this._dataSource.shipping_address_id;
+        return this.dataSource.shipping_address_id;
       },
       dependencies: ['cart_id']
     },
@@ -143,7 +143,7 @@ exports.Cart = class Cart extends DataObject {
       key: 'shipping_method',
       async resolver() {
         // TODO: This field should be handled by each of shipping method
-        return this._dataSource.shipping_method;
+        return this.dataSource.shipping_method;
       },
       dependencies: ['shipping_address_id']
     },
@@ -151,7 +151,7 @@ exports.Cart = class Cart extends DataObject {
       key: 'shipping_method_name',
       async resolver() {
         // TODO: This field should be handled by each of shipping method
-        return this._dataSource.shipping_method_name;
+        return this.dataSource.shipping_method_name;
       },
       dependencies: ['shipping_method']
     },
@@ -172,7 +172,7 @@ exports.Cart = class Cart extends DataObject {
     {
       key: 'billing_address_id',
       async resolver() {
-        return this._dataSource.billing_address_id;
+        return this.dataSource.billing_address_id;
       },
       dependencies: ['cart_id']
     },
@@ -191,14 +191,14 @@ exports.Cart = class Cart extends DataObject {
       key: 'payment_method',
       async resolver() {
         // TODO: This field should be handled by each of payment method
-        return this._dataSource.payment_method;
+        return this.dataSource.payment_method;
       }
     },
     {
       key: 'payment_method_name',
       async resolver() {
         // TODO: This field should be handled by each of payment method
-        return this._dataSource.payment_method_name;
+        return this.dataSource.payment_method_name;
       },
       dependencies: ['payment_method']
     },
@@ -206,14 +206,14 @@ exports.Cart = class Cart extends DataObject {
       key: 'items',
       async resolver() {
         const items = [];
-        if (this._dataSource.items) {
-          this._dataSource.items.forEach((item) => {
+        if (this.dataSource.items) {
+          this.dataSource.items.forEach((item) => {
             // If this is just new added item, add it to the list
-            if (item.getData('cart_item_id') === null && item._error === undefined) {
+            if (item.getData('cart_item_id') === null && item.error === undefined) {
               items.push(item);
             } else if (item.getData('cart_item_id') !== null) {
               // If the item is not build
-              if (item._dataSource.product === undefined) item.build();
+              if (item.dataSource.product === undefined) item.build();
               items.push(item);
             }
           });
@@ -245,7 +245,7 @@ exports.Cart = class Cart extends DataObject {
                 .execute(pool);
             } else items.push(item);
           }));
-          this._dataSource.items = items;
+          this.dataSource.items = items;
         }
 
         return items;
@@ -256,9 +256,9 @@ exports.Cart = class Cart extends DataObject {
 
   constructor(request, data = {}) {
     super();
-    this._dataSource = data;
-    this._request = request;
-    this._prepareFields(Cart.fields);
+    this.dataSource = data;
+    this.request = request;
+    this.prepareFields();
   }
 
   getItems() {
@@ -268,14 +268,18 @@ exports.Cart = class Cart extends DataObject {
   async addItem(data) {
     const item = new Item(data);
     await item.build();
-    if (item._error) { throw new Error(item._error); } else {
+    if (item.error) {
+      throw new Error(item.error);
+    } else {
       let items = this.getItems();
       let flag = false;
       for (let i = 0; i < items.length; i += 1) {
         if (items[i].getData('product_sku') === item.getData('product_sku') && isEqualWith(items[i].getData('product_custom_options'), item.getData('product_custom_options'))) {
           // eslint-disable-next-line no-await-in-loop
           await items[i].setData('qty', item.getData('qty') + items[i].getData('qty'));
-          if (item._error) { throw new Error(item._error); }
+          if (item.error) {
+            throw new Error(item.error);
+          }
           flag = true;
         }
       }
@@ -284,7 +288,6 @@ exports.Cart = class Cart extends DataObject {
         items = items.concat(item);
       }
       await this.setData('items', items);
-
       return item;
     }
   }
@@ -293,7 +296,7 @@ exports.Cart = class Cart extends DataObject {
     const items = this.getItems();
     let flag = false;
     for (let i = 0; i < items.length; i += 1) {
-      if (items[i]._error) {
+      if (items[i].error) {
         flag = true;
         break;
       }
