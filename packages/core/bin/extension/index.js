@@ -1,33 +1,34 @@
+const { existsSync } = require('fs');
 const { resolve } = require('path');
-const { readdirSync } = require('fs');
+const { CONSTANTS } = require('../../src/lib/helpers');
 const { getConfig } = require('../../src/lib/util/getConfig');
+const { getCoreModules } = require('../lib/loadModules');
 
-module.exports.getAllExtensions = function getAllExtensions(path) {
-  return readdirSync(resolve(path), { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => {
-      return {
-        name: dirent.name, path: resolve(path, dirent.name)
-      }
-    });
-}
-module.exports.getEnabledExtensions = function getEnabledExtensions(path) {
-  const extenstions = getConfig('system.extensions', []);
-  const all = module.exports.getAllExtensions(path);
-  return extenstions.filter((extension) => {
-    if (
-      all.find((e) => e.name === extension.name)
-      && extension.enabled === true
+var extensions = [];
+
+function loadExtensions() {
+  const coreModules = getCoreModules()
+  const list = getConfig('system.extensions', []);
+  const extensions = [];
+  list.forEach((extension) => {
+    if (coreModules.find((module) => module.name === extension.name) ||
+      extensions.find((e) => e.name === extension.name)
     ) {
-      return true;
-    } else {
-      return false;
+      throw new Error(`Extension ${extension.name} is invalid. extension name must be unique.`);
     }
-  })
-    .map((extension) => {
-      return {
-        name: extension.name,
-        path: resolve(path, extension.name)
-      }
-    })
+    if (extension.enabled === true && existsSync(resolve(CONSTANTS.ROOTPATH, extension.resolve))) {
+      extensions.push({ ...extension, path: resolve(CONSTANTS.ROOTPATH, extension.resolve) });
+    } else {
+      console.log(`Extension ${extension.name} is either disabled or the path is not existed.`);
+    }
+  });
+
+  return extensions;
+}
+
+module.exports.getEnabledExtensions = function getEnabledExtensions() {
+  if (extensions.length === 0) {
+    extensions = loadExtensions();
+  }
+  return extensions;
 }
