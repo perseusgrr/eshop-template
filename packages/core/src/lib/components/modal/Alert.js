@@ -97,7 +97,7 @@ function Alert({ children }) {
 }
 
 Alert.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.element.isRequired
 };
 
 export { Alert };

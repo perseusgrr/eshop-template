@@ -62,7 +62,7 @@
             {
                 "name": "Pending",
                 "code": "pending",
-                "badge": "default",
+                "badge": "secondary",
                 "progress": "incomplete"
             },
             {
