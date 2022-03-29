@@ -1,0 +1,50 @@
+type Category {
+  categoryId: ID!
+  name: String!
+  description: String
+  image: String
+  products(filters: [FilterInput]): ProductCollection
+  url: String
+  editUrl: String
+  availableFilters: [FilterAttribute]
+}
+
+type CategoryCollection {
+  categories: [Category]
+}
+
+input FilterInput {
+  key: String!
+  operation: String!
+  value: String!
+}
+
+type Filter {
+  key: String!
+  operation: String!
+  value: String!
+}
+
+type FilterOption {
+  optionId: Int!
+  optionText: String!
+}
+
+type FilterAttribute {
+  attributeName: String!
+  attributeCode: String!
+  attributeId: Int!
+  options: [FilterOption]
+}
+
+type ProductCollection {
+  items: [Product]
+  currentPage: Int!
+  total: Int!
+  currentFilters: [Filter]
+}
+
+extend type Query {
+  categories: CategoryCollection
+  category(id: Int!): Category
+}
