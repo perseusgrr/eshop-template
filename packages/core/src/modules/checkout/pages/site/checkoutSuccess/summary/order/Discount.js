@@ -17,7 +17,7 @@ export function Discount({ discount, code }) {
 
 Discount.propTypes = {
   code: PropTypes.string,
-  discount: PropTypes.string
+  discount: PropTypes.number
 };
 
 Discount.defaultProps = {
