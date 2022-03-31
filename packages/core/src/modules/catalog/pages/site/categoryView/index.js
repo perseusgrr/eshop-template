@@ -1,6 +1,6 @@
 const { select } = require('@evershop/mysql-query-builder');
 const { pool } = require('../../../../../lib/mysql/connection');
-const { setContextValue } = require('../../../../graphql/services/buildContext');
+const { setContextValue } = require('../../../../graphql/services/contextHelper');
 
 module.exports = async (request, response, stack, next) => {
   try {
@@ -15,8 +15,8 @@ module.exports = async (request, response, stack, next) => {
       response.status(404);
       next();
     } else {
-      setContextValue('categoryId', category.category_id);
-      setContextValue('pageInfo', {
+      setContextValue(request, 'categoryId', category.category_id);
+      setContextValue(request, 'pageInfo', {
         title: category.meta_title || category.name,
         description: category.meta_description || category.short_description,
         url: request.url

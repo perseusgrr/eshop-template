@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import axios from 'axios';
-import Area from '../../../../../../lib/components/Area';
-import { useAppState } from '../../../../../../lib/context/app';
-import Pagination from '../../../../../../lib/components/grid/Pagination';
-import { get } from '../../../../../../lib/util/get';
-import { useAlertContext } from '../../../../../../lib/components/modal/Alert';
-import formData from '../../../../../../lib/util/formData';
-import { Checkbox } from '../../../../../../lib/components/form/fields/Checkbox';
-import { Card } from '../../Card';
+import { useAppState } from '../../../../../lib/context/app';
+import Pagination from '../../../../../lib/components/grid/Pagination';
+import { useAlertContext } from '../../../../../lib/components/modal/Alert';
+import formData from '../../../../../lib/util/formData';
+import { Checkbox } from '../../../../../lib/components/form/fields/Checkbox';
+import { Card } from '../../../components/admin/Card';
+import Area from '../../../../../lib/components/Area';
+import BasicColumnHeader from '../../../../../lib/components/grid/headers/Basic';
+import StatusColumnHeader from '../../../../../lib/components/grid/headers/Status';
+import BasicRow from '../../../../../lib/components/grid/rows/Basic';
+import StatusRow from '../../../../../lib/components/grid/rows/Status';
 
 function Actions({ selectedIds = [] }) {
   const { openAlert, closeAlert, dispatchAlert } = useAlertContext();
@@ -70,11 +73,9 @@ Actions.propTypes = {
   selectedIds: PropTypes.arrayOf(PropTypes.number).isRequired
 };
 
-export default function CMSPageGrid() {
-  const pages = get(useAppState(), 'grid.pages', []);
-  const total = get(useAppState(), 'grid.total', 0);
-  const limit = get(useAppState(), 'grid.limit', 20);
-  const page = get(useAppState(), 'grid.page', 1);
+export default function CMSPageGrid({ cmsPages: { items: pages, total, currentFilters = [] } }) {
+  const page = currentFilters.find((filter) => filter.key === 'page') ? currentFilters.find((filter) => filter.key === 'page')['value'] : 1;
+  const limit = currentFilters.find((filter) => filter.key === 'limit') ? currentFilters.find((filter) => filter.key === 'limit')['value'] : 20;
   const [selectedRows, setSelectedRows] = useState([]);
 
   return (
@@ -84,7 +85,7 @@ export default function CMSPageGrid() {
           <tr>
             <th className="align-bottom">
               <Checkbox onChange={(e) => {
-                if (e.target.checked) setSelectedRows(pages.map((p) => p.cms_page_id));
+                if (e.target.checked) setSelectedRows(pages.map((p) => p.cmsPageId));
                 else setSelectedRows([]);
               }}
               />
@@ -93,12 +94,22 @@ export default function CMSPageGrid() {
               className=""
               id="pageGridHeader"
               noOuter
+              coreComponents={[
+                {
+                  component: { default: () => <BasicColumnHeader title='Name' id='name' currentFilter={currentFilters.find(f => f.key === 'name')} /> },
+                  sortOrder: 10
+                },
+                {
+                  component: { default: () => <StatusColumnHeader title='Status' id='status' currentFilter={currentFilters.find(f => f.key === 'status')} /> },
+                  sortOrder: 20
+                }
+              ]}
             />
           </tr>
         </thead>
         <tbody>
           <Actions
-            ids={pages.map((p) => p.cms_page_id)}
+            ids={pages.map((p) => p.cmsPageId)}
             selectedIds={selectedRows}
             setSelectedRows={setSelectedRows}
           />
@@ -107,10 +118,10 @@ export default function CMSPageGrid() {
             <tr key={i}>
               <td style={{ width: '2rem' }}>
                 <Checkbox
-                  isChecked={selectedRows.includes(p.cms_page_id)}
+                  isChecked={selectedRows.includes(p.cmsPageId)}
                   onChange={(e) => {
-                    if (e.target.checked) setSelectedRows(selectedRows.concat([p.cms_page_id]));
-                    else setSelectedRows(selectedRows.filter((row) => row !== p.cms_page_id));
+                    if (e.target.checked) setSelectedRows(selectedRows.concat([p.cmsPageId]));
+                    else setSelectedRows(selectedRows.filter((row) => row !== p.cmsPageId));
                   }}
                 />
               </td>
@@ -119,6 +130,16 @@ export default function CMSPageGrid() {
                 id="pageGridRow"
                 row={p}
                 noOuter
+                coreComponents={[
+                  {
+                    component: { default: ({ areaProps }) => <BasicRow id='name' areaProps={areaProps} /> },
+                    sortOrder: 10
+                  },
+                  {
+                    component: { default: ({ areaProps }) => <StatusRow id='status' areaProps={areaProps} /> },
+                    sortOrder: 20
+                  }
+                ]}
               />
             </tr>
           ))}
@@ -130,3 +151,28 @@ export default function CMSPageGrid() {
     </Card>
   );
 }
+
+export const layout = {
+  areaId: 'content',
+  sortOrder: 20
+}
+
+export const query = `
+  query Query {
+    cmsPages (filters: getContextValue("filtersFromUrl")) {
+      items {
+        cmsPageId
+        name
+        status
+        content
+        layout
+      }
+      total
+      currentFilters {
+        key
+        operation
+        value
+      }
+    }
+  }
+`;
