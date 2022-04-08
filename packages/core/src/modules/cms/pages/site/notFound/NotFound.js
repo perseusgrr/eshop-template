@@ -51,3 +51,14 @@ export default function NotFound({ continueShoppingUrl }) {
 NotFound.propTypes = {
   continueShoppingUrl: PropTypes.string.isRequired
 };
+
+export const layout = {
+  areaId: 'content',
+  sortOrder: 10
+}
+
+export const query = `
+  query Query {
+    continueShoppingUrl: url(routeId: "homepage")
+  }
+`
