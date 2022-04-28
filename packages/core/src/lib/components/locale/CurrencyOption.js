@@ -186,7 +186,7 @@ function CurrencyOptions(props) {
 }
 
 CurrencyOptions.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.element.isRequired,
   currencies: PropTypes.arrayOf(PropTypes.string)
 };
 

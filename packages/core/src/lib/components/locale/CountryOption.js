@@ -267,7 +267,7 @@ function CountryOptions(props) {
 }
 
 CountryOptions.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.element.isRequired,
   countries: PropTypes.arrayOf(PropTypes.string)
 };
 

@@ -202,7 +202,7 @@ function LanguageOptions(props) {
 }
 
 LanguageOptions.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.element.isRequired,
   languages: PropTypes.arrayOf(PropTypes.string)
 };
 

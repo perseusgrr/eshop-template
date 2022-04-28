@@ -165,7 +165,7 @@ Form.propTypes = {
   action: PropTypes.string.isRequired,
   btnText: PropTypes.string,
   children: PropTypes.oneOfType(
-    [PropTypes.arrayOf(PropTypes.node), PropTypes.node]
+    [PropTypes.arrayOf(PropTypes.element), PropTypes.element]
   ).isRequired,
   id: PropTypes.string.isRequired,
   method: PropTypes.string.isRequired,

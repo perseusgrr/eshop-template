@@ -3543,7 +3543,7 @@ function ProvinceOptions(props) {
 }
 
 ProvinceOptions.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.element.isRequired,
   country: PropTypes.string.isRequired
 };
 

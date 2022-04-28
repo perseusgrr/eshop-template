@@ -450,7 +450,7 @@ function TimezoneOptions(props) {
 }
 
 TimezoneOptions.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.element.isRequired,
   timezones: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 

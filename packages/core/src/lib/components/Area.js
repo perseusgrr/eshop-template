@@ -61,12 +61,12 @@ Area.propTypes = {
     id: PropTypes.string,
     sortOrder: PropTypes.number,
     component: PropTypes.shape({
-      default: PropTypes.nodeType
+      default: PropTypes.elementType
     })
   })),
   id: PropTypes.string.isRequired,
   noOuter: PropTypes.bool,
-  wrapper: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+  wrapper: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
   // eslint-disable-next-line react/forbid-prop-types
   wrapperProps: PropTypes.object
 };
