@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 function ProvinceOptions(props) {
   const { country, children } = props;
@@ -3543,7 +3543,7 @@ function ProvinceOptions(props) {
 }
 
 ProvinceOptions.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   country: PropTypes.string.isRequired
 };
 

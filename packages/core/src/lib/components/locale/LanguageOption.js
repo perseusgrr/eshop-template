@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 function LanguageOptions(props) {
   const { languages, children } = props;
@@ -202,7 +202,7 @@ function LanguageOptions(props) {
 }
 
 LanguageOptions.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   languages: PropTypes.arrayOf(PropTypes.string)
 };
 

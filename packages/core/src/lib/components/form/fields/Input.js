@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 import Error from './Error';
 import './../Field.scss';
 
@@ -61,7 +61,7 @@ Input.propTypes = {
   instruction: PropTypes.string,
   label: PropTypes.string,
   name: PropTypes.string,
-  prefix: PropTypes.element,
+  prefix: PropTypes.node,
   suffix: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import React, { useState } from 'react';
 import PubSub from 'pubsub-js';
 import { validator } from './validator';
@@ -165,7 +165,7 @@ Form.propTypes = {
   action: PropTypes.string.isRequired,
   btnText: PropTypes.string,
   children: PropTypes.oneOfType(
-    [PropTypes.arrayOf(PropTypes.element), PropTypes.element]
+    [PropTypes.arrayOf(PropTypes.node), PropTypes.node]
   ).isRequired,
   id: PropTypes.string.isRequired,
   method: PropTypes.string.isRequired,

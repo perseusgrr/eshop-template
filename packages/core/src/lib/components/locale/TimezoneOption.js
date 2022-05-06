@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 function TimezoneOptions(props) {
   const { timezones, children } = props;
@@ -450,7 +450,7 @@ function TimezoneOptions(props) {
 }
 
 TimezoneOptions.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   timezones: PropTypes.arrayOf(PropTypes.string).isRequired
 };
 

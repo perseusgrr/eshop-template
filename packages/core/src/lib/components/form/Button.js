@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 import './Button.scss';
 
 function Button({
@@ -40,7 +40,7 @@ Button.propTypes = {
   isLoading: PropTypes.bool,
   onAction: PropTypes.func,
   outline: PropTypes.bool,
-  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   url: PropTypes.string,
   variant: PropTypes.string
 };

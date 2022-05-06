@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import PropTypes from "prop-types";
+import React from "react";
 
 function CurrencyOptions(props) {
   const { currencies, children } = props;
@@ -186,7 +186,7 @@ function CurrencyOptions(props) {
 }
 
 CurrencyOptions.propTypes = {
-  children: PropTypes.element.isRequired,
+  children: PropTypes.node.isRequired,
   currencies: PropTypes.arrayOf(PropTypes.string)
 };
 
