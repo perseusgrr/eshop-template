@@ -6,7 +6,7 @@
   </a>
 </p>
 <p align="center">
-  <h1 align="center">A React E-Commerce Project</h1>
+  <h1 align="center">A Full Stack React Ecommerce Template</h1>
 </p>
 <p align="center">
     <a href="https://evershop.io/docs/development/getting-started/introduction">Documentation</a>
@@ -21,7 +21,7 @@
   </a>
 </p>
 
-## GraphQL Based and Dynamic Layout
+## GraphQL Query For Server Side Props
 
 ```javascript
 import React from 'react';
@@ -34,10 +34,7 @@ export default function NewArrival({ products }) {
     </div>
 }
 
-export const layout = {
-  areaId: 'content',
-  sortOrder: 5
-}
+// The GraphQL query result will be passed to the page component as props
 
 export const query = `
   query NewArrival {
@@ -83,9 +80,11 @@ You can get started with EverShop in minutes by running the following command:
 npx create-evershop-app my-app --playAround
 ```
 
-Full installation guide can be found in the [documentation](https://evershop.io/docs/development/getting-started/installation-guide).
+- [Installation guide](https://evershop.io/docs/development/getting-started/installation-guide).
 
-Check out [EverShop docs](https://evershop.io/docs/development/getting-started/introduction) for the development documentation.
+- [Extension development](https://evershop.io/docs/development/module/create-your-first-extension).
+
+- [Theme development](https://evershop.io/docs/development/theme/theme-overview).
 
 ## Features
 - Catalog management(with product attribute, custom option and variants)
