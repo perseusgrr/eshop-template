@@ -23,8 +23,7 @@ const inputProps = function buidProps(props) {
     'onBlur',
     'onKeyPress',
     'onKeyDown',
-    'onKeyUp',
-    'value'
+    'onKeyUp'
   ].forEach((a) => {
     if (props[a]) obj[a] = props[a];
     obj.defaultValue = props.value;
