@@ -1,7 +1,7 @@
 module.exports = {
   Setting: {
     stripePaymentStatus: (setting, { _ }, { pool }) => {
-      const stripePaymentStatus = setting.find(s => s.name === 'stripePaymentMethod');
+      const stripePaymentStatus = setting.find(s => s.name === 'stripePaymentStatus');
       if (stripePaymentStatus) {
         return parseInt(stripePaymentStatus.value);
       } else {
@@ -25,9 +25,13 @@ module.exports = {
       }
     },
     stripeSecretKey: (setting, { _ }, { tokenPayload }) => {
-      const stripeSecretKey = setting.find(s => s.name === 'stripeSecretKey');
-      if (stripeSecretKey) {
-        return stripeSecretKey.value;
+      if (tokenPayload && tokenPayload?.user?.isAdmin === true) {
+        const stripeSecretKey = setting.find(s => s.name === 'stripeSecretKey');
+        if (stripeSecretKey) {
+          return stripeSecretKey.value;
+        } else {
+          return null;
+        }
       } else {
         return null;
       }
