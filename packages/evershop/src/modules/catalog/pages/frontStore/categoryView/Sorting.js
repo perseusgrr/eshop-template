@@ -6,10 +6,13 @@ export default function Sorting() {
   // TODO: make this list configurable
   const sortingOptions = [{ code: 'price', name: 'Price' }, { code: 'name', name: 'Name' }];
 
-  let params = (new URL(document.location)).searchParams;
-
-  const sortOrder = params.get("sortOrder") || 'asc';
-  const sortBy = params.get("sortBy") || 'id';
+  let sortOrder = 'asc', sortBy = 'id';
+  // Check if this is browser or server
+  if (typeof window !== 'undefined') {
+    let params = (new URL(document.location)).searchParams;
+    sortOrder = params.get("sortOrder") || 'asc';
+    sortBy = params.get("sortBy") || 'id';
+  }
 
   const onChangeSort = (e) => {
     const currentUrl = window.location.href;
@@ -35,18 +38,21 @@ export default function Sorting() {
   if (sortingOptions.length === 0) { return (null); }
 
   return (
-    <div className="product-sorting">
-      <div className="product-sorting-inner flex justify-end space-x-05">
-        <Select
-          className="form-control"
-          onChange={(e) => onChangeSort(e)}
-          value={sortBy.toLowerCase()}
-          options={[{
-            value: '',
-            text: 'Please select'
-          }]
-            .concat(sortingOptions.map((o) => ({ value: o.code, text: o.name })))}
-        />
+    <div className="product-sorting mb-1">
+      <div className="product-sorting-inner flex justify-end items-center space-x-05">
+        <div><span>Sort By:</span></div>
+        <div style={{ width: '160px' }}>
+          <Select
+            className="form-control"
+            onChange={(e) => onChangeSort(e)}
+            value={sortBy.toLowerCase()}
+            options={[{
+              value: '',
+              text: 'Please select'
+            }]
+              .concat(sortingOptions.map((o) => ({ value: o.code, text: o.name })))}
+          />
+        </div>
         <div className="sort-direction self-center">
           <a onClick={(e) => onChangeDirection(e)} href="#">
             {sortOrder.toLowerCase() === 'desc' ? (
