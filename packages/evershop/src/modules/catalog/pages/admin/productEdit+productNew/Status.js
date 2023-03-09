@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Select from 'react-select';
 import { useQuery } from 'urql';
@@ -15,11 +16,11 @@ const categoryQuery = `
   }
 `;
 
-export function Category({
-  product
-}) {
-  const [categories, setCategories] = React.useState(product ? product.categories : []);
-  const [result, reexecuteQuery] = useQuery({
+export function Category({ product }) {
+  const [categories, setCategories] = React.useState(
+    product ? product.categories : []
+  );
+  const [result] = useQuery({
     query: categoryQuery
   });
   const { data, fetching, error } = result;
@@ -52,19 +53,36 @@ export function Category({
   );
 }
 
+Category.propTypes = {
+  product: PropTypes.shape({
+    categories: PropTypes.arrayOf(
+      PropTypes.shape({
+        value: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired
+      })
+    )
+  })
+};
+
+Category.defaultProps = {
+  product: {
+    categories: []
+  }
+};
+
 export default function Status({ product }) {
   return (
-    <Card
-      title="Product status"
-      subdued
-    >
+    <Card title="Product status" subdued>
       <Card.Session>
         <Field
           id="status"
           name="status"
           value={product?.status}
           label="Status"
-          options={[{ value: 0, text: 'Disabled' }, { value: 1, text: 'Enabled' }]}
+          options={[
+            { value: 0, text: 'Disabled' },
+            { value: 1, text: 'Enabled' }
+          ]}
           type="radio"
         />
       </Card.Session>
@@ -74,7 +92,10 @@ export default function Status({ product }) {
           name="visibility"
           value={product?.visibility}
           label="Visibility"
-          options={[{ value: 0, text: 'Not visible' }, { value: 1, text: 'Visible' }]}
+          options={[
+            { value: 0, text: 'Not visible' },
+            { value: 1, text: 'Visible' }
+          ]}
           type="radio"
         />
       </Card.Session>
@@ -84,6 +105,20 @@ export default function Status({ product }) {
     </Card>
   );
 }
+
+Status.propTypes = {
+  product: PropTypes.shape({
+    status: PropTypes.number.isRequired,
+    visibility: PropTypes.number.isRequired
+  })
+};
+
+Status.defaultProps = {
+  product: {
+    status: 1,
+    visibility: 1
+  }
+};
 
 export const layout = {
   areaId: 'rightSide',

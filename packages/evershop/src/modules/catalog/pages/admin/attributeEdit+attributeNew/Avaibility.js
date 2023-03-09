@@ -1,13 +1,11 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Field } from '../../../../../lib/components/form/Field';
 import { Card } from '../../../../cms/components/admin/Card';
 
 export default function General({ attribute }) {
   return (
-    <Card
-      title="Setting"
-      subdued
-    >
+    <Card title="Setting" subdued>
       <Card.Session>
         <Field
           id="is_required"
@@ -60,6 +58,19 @@ export default function General({ attribute }) {
     </Card>
   );
 }
+
+General.propTypes = {
+  attribute: PropTypes.shape({
+    displayOnFrontend: PropTypes.number,
+    isFilterable: PropTypes.number,
+    isRequired: PropTypes.number,
+    sortOrder: PropTypes.number
+  })
+};
+
+General.defaultProps = {
+  attribute: {}
+};
 
 export const layout = {
   areaId: 'rightSide',

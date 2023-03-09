@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { toast } from 'react-toastify';
 import Area from '../../../../../lib/components/Area';
@@ -24,16 +25,17 @@ export default function PaymentSetting({ saveSettingApi }) {
               }
             }}
           >
-            <Area
-              id="paymentSetting"
-              className="grid gap-2"
-            />
+            <Area id="paymentSetting" className="grid gap-2" />
           </Form>
         </div>
       </div>
     </div>
   );
 }
+
+PaymentSetting.propTypes = {
+  saveSettingApi: PropTypes.string.isRequired
+};
 
 export const layout = {
   areaId: 'content',

@@ -7,15 +7,19 @@ module.exports = {
       if (paypalConfig.status) {
         return paypalConfig.status;
       }
-      const paypalPaymentStatus = setting.find((s) => s.name === 'paypalPaymentStatus');
+      const paypalPaymentStatus = setting.find(
+        (s) => s.name === 'paypalPaymentStatus'
+      );
       if (paypalPaymentStatus) {
-        return parseInt(paypalPaymentStatus.value);
+        return parseInt(paypalPaymentStatus.value, 10);
       } else {
         return 0;
       }
     },
     paypalDislayName: (setting) => {
-      const paypalDislayName = setting.find((s) => s.name === 'paypalDislayName');
+      const paypalDislayName = setting.find(
+        (s) => s.name === 'paypalDislayName'
+      );
       if (paypalDislayName) {
         return paypalDislayName.value;
       } else {
@@ -23,7 +27,9 @@ module.exports = {
       }
     },
     paypalPaymentIntent: (setting) => {
-      const paypalPaymentIntent = setting.find((s) => s.name === 'paypalPaymentIntent');
+      const paypalPaymentIntent = setting.find(
+        (s) => s.name === 'paypalPaymentIntent'
+      );
       if (paypalPaymentIntent) {
         return paypalPaymentIntent.value;
       } else {
@@ -42,13 +48,15 @@ module.exports = {
         return null;
       }
     },
-    paypalClientSecret: (setting, { _ }, { userTokenPayload }) => {
+    paypalClientSecret: (setting, _, { userTokenPayload }) => {
       const paypalConfig = getConfig('system.paypal', {});
       if (paypalConfig.clientSecret) {
         return '*******************************';
       }
       if (userTokenPayload && userTokenPayload?.user?.uuid) {
-        const paypalClientSecret = setting.find((s) => s.name === 'paypalClientSecret');
+        const paypalClientSecret = setting.find(
+          (s) => s.name === 'paypalClientSecret'
+        );
         if (paypalClientSecret) {
           return paypalClientSecret.value;
         } else {
@@ -58,13 +66,15 @@ module.exports = {
         return null;
       }
     },
-    paypalWebhookSecret: (setting, { _ }, { userTokenPayload }) => {
+    paypalWebhookSecret: (setting, _, { userTokenPayload }) => {
       const paypalConfig = getConfig('system.paypal', {});
       if (paypalConfig.webhookSecret) {
         return '*******************************';
       }
       if (userTokenPayload && userTokenPayload?.user?.uuid) {
-        const paypalWebhookSecret = setting.find((s) => s.name === 'paypalWebhookSecret');
+        const paypalWebhookSecret = setting.find(
+          (s) => s.name === 'paypalWebhookSecret'
+        );
         if (paypalWebhookSecret) {
           return paypalWebhookSecret.value;
         } else {
@@ -79,7 +89,9 @@ module.exports = {
       if (paypalConfig.environment) {
         return paypalConfig.environment;
       }
-      const paypalEnvironment = setting.find((s) => s.name === 'paypalEnvironment');
+      const paypalEnvironment = setting.find(
+        (s) => s.name === 'paypalEnvironment'
+      );
       if (paypalEnvironment) {
         return paypalEnvironment.value;
       } else {

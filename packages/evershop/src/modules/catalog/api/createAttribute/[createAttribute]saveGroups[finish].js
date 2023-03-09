@@ -1,9 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable no-restricted-syntax */
-const {
-  insertOnUpdate, select
-} = require('@evershop/mysql-query-builder');
+const { insertOnUpdate, select } = require('@evershop/mysql-query-builder');
 const { get } = require('../../../../lib/util/get');
 
 module.exports = async (request, response, delegate) => {
@@ -17,7 +15,7 @@ module.exports = async (request, response, delegate) => {
   }
   const groups = get(attributeData, 'groups', []);
 
-  for (let index = 0; index < groups.length; index++) {
+  for (let index = 0; index < groups.length; index += 1) {
     const group = await select()
       .from('attribute_group')
       .where('attribute_group_id', '=', groups[index])

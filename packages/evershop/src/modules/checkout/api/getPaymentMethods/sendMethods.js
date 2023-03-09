@@ -1,4 +1,7 @@
-const { OK, INTERNAL_SERVER_ERROR } = require('../../../../lib/util/httpStatus');
+const {
+  OK,
+  INTERNAL_SERVER_ERROR
+} = require('../../../../lib/util/httpStatus');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (request, response, deledate, next) => {
@@ -16,7 +19,7 @@ module.exports = async (request, response, deledate, next) => {
     const results = await Promise.all(promises);
     // Parse the returned value from previous middleware
     // Each payment method is encouraged to have a middleware to register itself
-    for (let i = 0; i < results.length; i++) {
+    for (let i = 0; i < results.length; i += 1) {
       const result = results[i];
       if (result && result.methodCode && result.methodName) {
         // This value will be considered as a payment method

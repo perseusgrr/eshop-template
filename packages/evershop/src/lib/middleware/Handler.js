@@ -4,7 +4,6 @@ const isErrorHandlerTriggered = require('./isErrorHandlerTriggered');
 const { sortMiddlewares } = require('./sort');
 const { parseFromFile } = require('./parseFromFile');
 const { noDublicateId } = require('./noDuplicateId');
-const { buildMiddlewareFunction } = require('./buildMiddlewareFunction');
 const { getRoutes } = require('../router/Router');
 
 class Handler {
@@ -28,12 +27,23 @@ class Handler {
 
   static getMiddlewareByRoute(route) {
     const region = route.isApi ? 'api' : 'pages';
-    let middlewares = this.middlewares.filter((m) => (m.routeId === route.id || m.scope === 'app') && m.region === region);
+    let middlewares = this.middlewares.filter(
+      (m) =>
+        (m.routeId === route.id || m.scope === 'app') && m.region === region
+    );
 
     if (route.isAdmin === true) {
-      middlewares = middlewares.concat(this.middlewares.filter((m) => m.routeId === 'admin' && m.region === region));
+      middlewares = middlewares.concat(
+        this.middlewares.filter(
+          (m) => m.routeId === 'admin' && m.region === region
+        )
+      );
     } else {
-      middlewares = middlewares.concat(this.middlewares.filter((m) => m.routeId === 'frontStore' && m.region === region));
+      middlewares = middlewares.concat(
+        this.middlewares.filter(
+          (m) => m.routeId === 'frontStore' && m.region === region
+        )
+      );
     }
     middlewares = sortMiddlewares(middlewares);
 
@@ -54,7 +64,9 @@ class Handler {
   }
 
   static getAppLevelMiddlewares(region) {
-    return sortMiddlewares(this.middlewares.filter((m) => m.scope === 'app' && m.region === region));
+    return sortMiddlewares(
+      this.middlewares.filter((m) => m.scope === 'app' && m.region === region)
+    );
   }
 
   static removeMiddleware(path) {
@@ -70,6 +82,7 @@ class Handler {
         if (noDublicateId(this.middlewares, middleware)) {
           this.addMiddleware(middleware);
         } else {
+          // eslint-disable-next-line no-console
           console.error(`Duplicate middleware id: ${middleware.id}`);
         }
       });
@@ -87,24 +100,28 @@ class Handler {
       }
 
       const goodHandlers = middlewares.filter((m) => m.middleware.length === 3);
-      const errorHandlers = middlewares.filter((m) => m.middleware.length === 4);
+      const errorHandlers = middlewares.filter(
+        (m) => m.middleware.length === 4
+      );
       let currentGood = 0;
       let currentError = -1;
       const eNext = function eNext() {
         if (arguments.length === 0 && currentGood === goodHandlers.length - 1) {
           next();
         } else if (currentError === errorHandlers.length - 1) {
+          // eslint-disable-next-line prefer-rest-params
           next(arguments[0]);
         } else if (arguments.length > 0) {
           // Call the error handler middleware if it is not called yet
           if (!isErrorHandlerTriggered(response)) {
-            currentError++;
+            currentError += 1;
             // console.log(errorHandlers[currentError]);
             const middlewareFunc = errorHandlers[currentError].middleware;
+            // eslint-disable-next-line prefer-rest-params
             middlewareFunc(arguments[0], request, response, eNext);
           }
         } else {
-          currentGood++;
+          currentGood += 1;
           // console.log(goodHandlers[currentGood]);
           const middlewareFunc = goodHandlers[currentGood].middleware;
           middlewareFunc(request, response, eNext);

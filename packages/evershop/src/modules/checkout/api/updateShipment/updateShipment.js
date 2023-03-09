@@ -1,9 +1,18 @@
+/* eslint-disable camelcase */
 const {
-  rollback, insert, commit, select, update, startTransaction
+  rollback,
+  insert,
+  commit,
+  select,
+  update,
+  startTransaction
 } = require('@evershop/mysql-query-builder');
 const { getConnection, pool } = require('../../../../lib/mysql/connection');
-const { get } = require('../../../../lib/util/get');
-const { INVALID_PAYLOAD, OK, INTERNAL_SERVER_ERROR } = require('../../../../lib/util/httpStatus');
+const {
+  INVALID_PAYLOAD,
+  OK,
+  INTERNAL_SERVER_ERROR
+} = require('../../../../lib/util/httpStatus');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (request, response, delegate, next) => {
@@ -73,7 +82,6 @@ module.exports = async (request, response, delegate, next) => {
       data: updatedShipment
     });
   } catch (e) {
-    console.log(e);
     await rollback(connection);
     response.status(INTERNAL_SERVER_ERROR);
     response.json({

@@ -4,6 +4,7 @@ const { INVALID_PAYLOAD, OK } = require('../../../../lib/util/httpStatus');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (request, response, delegate, next) => {
+  // eslint-disable-next-line camelcase
   const { order_id } = request.body;
 
   // Validate the order;
@@ -19,7 +20,8 @@ module.exports = async (request, response, delegate, next) => {
     response.json({
       error: {
         status: INVALID_PAYLOAD,
-        message: 'Requested order does not exist or is not in pending payment status'
+        message:
+          'Requested order does not exist or is not in pending payment status'
       }
     });
   } else {
@@ -41,11 +43,13 @@ module.exports = async (request, response, delegate, next) => {
       .execute(pool);
 
     // Save order activities
-    await insert('order_activity').given({
-      order_activity_order_id: order.order_id,
-      comment: 'Customer paid using cash.',
-      customer_notified: 0 // TODO: check config of SendGrid
-    }).execute(pool);
+    await insert('order_activity')
+      .given({
+        order_activity_order_id: order.order_id,
+        comment: 'Customer paid using cash.',
+        customer_notified: 0 // TODO: check config of SendGrid
+      })
+      .execute(pool);
 
     response.status(OK);
     response.json({

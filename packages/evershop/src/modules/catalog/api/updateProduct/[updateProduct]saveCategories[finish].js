@@ -3,7 +3,9 @@
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
 const {
-  insertOnUpdate, select, del
+  insertOnUpdate,
+  select,
+  del
 } = require('@evershop/mysql-query-builder');
 const { get } = require('../../../../lib/util/get');
 
@@ -17,7 +19,7 @@ module.exports = async (request, response, delegate) => {
     .where('product_id', '=', productId)
     .execute(connection, false);
 
-  for (let i = 0; i < categories.length; i++) {
+  for (let i = 0; i < categories.length; i += 1) {
     const category = await select()
       .from('category')
       .where('category_id', '=', categories[i])

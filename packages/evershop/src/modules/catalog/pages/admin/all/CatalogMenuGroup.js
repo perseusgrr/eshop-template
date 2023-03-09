@@ -1,10 +1,15 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import AttributeIcon from '@heroicons/react/solid/esm/HashtagIcon';
 import CategoryIcon from '@heroicons/react/solid/esm/TagIcon';
 import ProductIcon from '@heroicons/react/solid/esm/ArchiveIcon';
 import NavigationItemGroup from '../../../../cms/components/admin/NavigationItemGroup';
 
-export default function CatalogMenuGroup({ productGrid, categoryGrid, attributeGrid }) {
+export default function CatalogMenuGroup({
+  productGrid,
+  categoryGrid,
+  attributeGrid
+}) {
   return (
     <NavigationItemGroup
       id="catalogMenuGroup"
@@ -29,6 +34,12 @@ export default function CatalogMenuGroup({ productGrid, categoryGrid, attributeG
     />
   );
 }
+
+CatalogMenuGroup.propTypes = {
+  attributeGrid: PropTypes.string.isRequired,
+  categoryGrid: PropTypes.string.isRequired,
+  productGrid: PropTypes.string.isRequired
+};
 
 export const layout = {
   areaId: 'adminMenu',

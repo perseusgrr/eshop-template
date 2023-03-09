@@ -1,7 +1,10 @@
 const { commit, rollback, select } = require('@evershop/mysql-query-builder');
 const { pool } = require('../../../../lib/mysql/connection');
 const { buildUrl } = require('../../../../lib/router/buildUrl');
-const { OK, INTERNAL_SERVER_ERROR } = require('../../../../lib/util/httpStatus');
+const {
+  OK,
+  INTERNAL_SERVER_ERROR
+} = require('../../../../lib/util/httpStatus');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (request, response, delegate, next) => {
@@ -15,12 +18,11 @@ module.exports = async (request, response, delegate, next) => {
   const result = await delegate.createCoupon;
   const connection = await delegate.getConnection;
   const results = await Promise.allSettled(promises);
-  const failed = results.find((result) => result.status === 'rejected');
+  const failed = results.find((r) => r.status === 'rejected');
   if (!failed) {
     await commit(connection);
     // Load the updated coupon
-    const query = select()
-      .from('coupon');
+    const query = select().from('coupon');
 
     const coupon = await query
       .where('coupon_id', '=', result.insertId)

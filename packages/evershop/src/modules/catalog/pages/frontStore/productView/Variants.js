@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-syntax */
+import PropTypes from 'prop-types';
 import React from 'react';
 import PubSub from 'pubsub-js';
 import { FORM_VALIDATED } from '../../../../../lib/util/events';
@@ -6,12 +7,8 @@ import './Variants.scss';
 import { useAppDispatch } from '../../../../../lib/context/app';
 
 export default function Variants({
-  product: {
-    variantGroup: vs
-  },
-  pageInfo: {
-    url: currentProductUrl
-  }
+  product: { variantGroup: vs },
+  pageInfo: { url: currentProductUrl }
 }) {
   const AppContextDispatch = useAppDispatch();
   const [attributes, setAttributes] = React.useState(() => {
@@ -22,11 +19,18 @@ export default function Variants({
         const url = new URL(currentProductUrl);
         const params = new URLSearchParams(url.search).entries();
         const check = Array.from(params).find(
-          ([key, value]) => key === attribute.attributeCode
-            && attribute.options.find((option) => parseInt(option.optionId) === parseInt(value))
+          ([key, value]) =>
+            key === attribute.attributeCode &&
+            attribute.options.find(
+              (option) => parseInt(option.optionId, 10) === parseInt(value, 10)
+            )
         );
         if (check) {
-          return { ...attribute, selected: true, selectedOption: parseInt(check[1]) };
+          return {
+            ...attribute,
+            selected: true,
+            selectedOption: parseInt(check[1], 10)
+          };
         } else {
           return { ...attribute, selected: false, selectedOption: null };
         }
@@ -42,13 +46,14 @@ export default function Variants({
     if (formId !== 'productForm') {
       return true;
     }
-    const attributes = attributesRef.current;
-    if (attributes.find((a) => a.selected === false)) {
+    const currentAttributes = attributesRef.current;
+    if (currentAttributes.find((a) => a.selected === false)) {
       // eslint-disable-next-line no-param-reassign
       errors.variants = 'Missing variant';
       setError('Please select variant option');
       return false;
     } else {
+      // eslint-disable-next-line no-param-reassign
       delete errors.variants;
       setError(null);
       return true;
@@ -71,21 +76,24 @@ export default function Variants({
     url.searchParams.set(attributeCode, optionId);
     await AppContextDispatch.fetchPageData(url);
     url.searchParams.delete('ajax');
+    // eslint-disable-next-line no-restricted-globals
     history.pushState(null, '', url);
-    setAttributes((previous) => previous.map((a) => {
-      if (a.attributeCode === attributeCode) {
-        return { ...a, selected: true, selectedOption: optionId };
-      }
-      return a;
-    }));
+    setAttributes((previous) =>
+      previous.map((a) => {
+        if (a.attributeCode === attributeCode) {
+          return { ...a, selected: true, selectedOption: optionId };
+        }
+        return a;
+      })
+    );
   };
 
   return (
     <div className="variant variant-container grid grid-cols-1 gap-1 mt-2">
       {attributes.map((a, i) => {
         const options = a.options.filter(
-          (v, j, s) => s.findIndex((o) => o.optionId === v.optionId) === j
-            && v.productId
+          (v, j, s) =>
+            s.findIndex((o) => o.optionId === v.optionId) === j && v.productId
         );
         return (
           <div key={a.attributeCode}>
@@ -126,10 +134,46 @@ export default function Variants({
           </div>
         );
       })}
-      {error && <div className="variant-validate error text-critical">{error}</div>}
+      {error && (
+        <div className="variant-validate error text-critical">{error}</div>
+      )}
     </div>
   );
 }
+
+Variants.propTypes = {
+  product: PropTypes.shape({
+    variantGroup: PropTypes.shape({
+      variantAttributes: PropTypes.arrayOf(
+        PropTypes.shape({
+          attributeId: PropTypes.number,
+          attributeCode: PropTypes.string,
+          attributeName: PropTypes.string,
+          options: PropTypes.arrayOf(
+            PropTypes.shape({
+              optionId: PropTypes.number,
+              optionText: PropTypes.string,
+              productId: PropTypes.number
+            })
+          )
+        })
+      ),
+      items: PropTypes.arrayOf(
+        PropTypes.shape({
+          attributes: PropTypes.arrayOf(
+            PropTypes.shape({
+              attributeCode: PropTypes.string,
+              optionId: PropTypes.number
+            })
+          )
+        })
+      )
+    })
+  }).isRequired,
+  pageInfo: PropTypes.shape({
+    url: PropTypes.string
+  }).isRequired
+};
 
 export const layout = {
   areaId: 'productPageMiddleRight',

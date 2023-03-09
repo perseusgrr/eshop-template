@@ -6,8 +6,7 @@ const { getConfig } = require('../../../../../lib/util/getConfig');
 module.exports = {
   Query: {
     order: async (_, { id }, { pool }) => {
-      const query = select()
-        .from('order');
+      const query = select().from('order');
       query.where('uuid', '=', id);
       const order = await query.load(pool);
       if (!order) {
@@ -33,16 +32,21 @@ module.exports = {
         // Order Date filter
         const createdAtFilter = filters.find((f) => f.key === 'createdAt');
         if (createdAtFilter) {
-          const [min, max] = createdAtFilter.value.split('-').map((v) => parseFloat(v));
+          const [min, max] = createdAtFilter.value
+            .split('-')
+            .map((v) => parseFloat(v));
           let currentCreatedAtFilter;
-          if (isNaN(min) === false) {
+          if (Number.isNaN(min) === false) {
             query.andWhere('order.`created_at`', '>=', min);
             currentCreatedAtFilter = { key: 'createdAt', value: `${min}` };
           }
 
-          if (isNaN(max) === false) {
+          if (Number.isNaN(max) === false) {
             query.andWhere('order.`created_at`', '<=', max);
-            currentCreatedAtFilter = { key: 'createdAt', value: `${currentCreatedAtFilter.value}-${max}` };
+            currentCreatedAtFilter = {
+              key: 'createdAt',
+              value: `${currentCreatedAtFilter.value}-${max}`
+            };
           }
           if (currentCreatedAtFilter) {
             currentFilters.push(currentCreatedAtFilter);
@@ -82,16 +86,21 @@ module.exports = {
         // Order Total filter
         const totalFilter = filters.find((f) => f.key === 'total');
         if (totalFilter) {
-          const [min, max] = totalFilter.value.split('-').map((v) => parseFloat(v));
+          const [min, max] = totalFilter.value
+            .split('-')
+            .map((v) => parseFloat(v));
           let currentTotalFilter;
-          if (isNaN(min) === false) {
+          if (Number.isNaN(min) === false) {
             query.andWhere('order.`grand_total`', '>=', min);
             currentTotalFilter = { key: 'total', value: `${min}` };
           }
 
-          if (isNaN(max) === false) {
+          if (Number.isNaN(max) === false) {
             query.andWhere('order.`grand_total`', '<=', max);
-            currentTotalFilter = { key: 'total', value: `${currentTotalFilter.value}-${max}` };
+            currentTotalFilter = {
+              key: 'total',
+              value: `${currentTotalFilter.value}-${max}`
+            };
           }
           if (currentTotalFilter) {
             currentFilters.push(currentTotalFilter);
@@ -100,7 +109,9 @@ module.exports = {
       });
 
       const sortBy = filters.find((f) => f.key === 'sortBy');
-      const sortOrder = filters.find((f) => f.key === 'sortOrder' && ['ASC', 'DESC'].includes(f.value)) || { value: 'ASC' };
+      const sortOrder = filters.find(
+        (f) => f.key === 'sortOrder' && ['ASC', 'DESC'].includes(f.value)
+      ) || { value: 'ASC' };
       if (sortBy && sortBy.value === 'orderNumber') {
         query.orderBy('`order`.`order_number`', sortOrder.value);
         currentFilters.push({
@@ -109,7 +120,7 @@ module.exports = {
           value: sortBy.value
         });
       } else {
-        query.orderBy('`order`.`order_id`', 'DESC');// TODO: Fix 'order' table name should be wrapped in backticks
+        query.orderBy('`order`.`order_id`', 'DESC'); // TODO: Fix 'order' table name should be wrapped in backticks
       }
 
       if (sortOrder.key) {
@@ -124,7 +135,7 @@ module.exports = {
       cloneQuery.select('COUNT(`order`.`order_id`)', 'total');
       // Paging
       const page = filters.find((f) => f.key === 'page') || { value: 1 };
-      const limit = filters.find((f) => f.key === 'limit') || { value: 20 };// TODO: Get from config
+      const limit = filters.find((f) => f.key === 'limit') || { value: 20 }; // TODO: Get from config
       currentFilters.push({
         key: 'page',
         operation: '=',
@@ -135,7 +146,10 @@ module.exports = {
         operation: '=',
         value: limit.value
       });
-      query.limit((page.value - 1) * parseInt(limit.value), parseInt(limit.value));
+      query.limit(
+        (page.value - 1) * parseInt(limit.value, 10),
+        parseInt(limit.value, 10)
+      );
       return {
         items: (await query.execute(pool)).map((row) => camelCase(row)),
         total: (await cloneQuery.load(pool)).total,
@@ -146,36 +160,37 @@ module.exports = {
     paymentStatusList: () => getConfig('order.paymentStatus', [])
   },
   Order: {
-    items: async ({ orderId }, { }, { pool, user }) => {
+    items: async ({ orderId }, _, { pool }) => {
       const items = await select()
         .from('order_item')
         .where('order_item_order_id', '=', orderId)
         .execute(pool);
       return items.map((item) => camelCase(item));
     },
-    shippingAddress: async ({ shippingAddressId }, { }, { pool, user }) => {
+    shippingAddress: async ({ shippingAddressId }, _, { pool }) => {
       const address = await select()
         .from('order_address')
         .where('order_address_id', '=', shippingAddressId)
         .load(pool);
       return address ? camelCase(address) : null;
     },
-    billingAddress: async ({ billingAddressId }, { }, { pool, user }) => {
+    billingAddress: async ({ billingAddressId }, _, { pool }) => {
       const address = await select()
         .from('order_address')
         .where('order_address_id', '=', billingAddressId)
         .load(pool);
       return address ? camelCase(address) : null;
     },
-    activities: async ({ orderId }, { }, { pool }) => {
-      const query = select()
-        .from('order_activity');
+    activities: async ({ orderId }, _, { pool }) => {
+      const query = select().from('order_activity');
       query.where('order_activity_order_id', '=', orderId);
       query.orderBy('order_activity_id', 'DESC');
       const activities = await query.execute(pool);
-      return activities ? activities.map((activity) => camelCase(activity)) : null;
+      return activities
+        ? activities.map((activity) => camelCase(activity))
+        : null;
     },
-    shipment: async ({ orderId, uuid }, { }, { pool }) => {
+    shipment: async ({ orderId, uuid }, _, { pool }) => {
       const shipment = await select()
         .from('shipment')
         .where('shipment_order_id', '=', orderId)
@@ -184,9 +199,11 @@ module.exports = {
     },
     editUrl: ({ uuid }) => buildUrl('orderEdit', { id: uuid }),
     fullFillApi: ({ uuid }) => buildUrl('createShipment', { id: uuid }),
-    customerUrl: ({ customerId }) => (customerId ? buildUrl('customerEdit', { id: customerId }) : null)
+    customerUrl: ({ customerId }) =>
+      customerId ? buildUrl('customerEdit', { id: customerId }) : null
   },
   Shipment: {
-    updateShipmentApi: ({ orderUuid, uuid }) => buildUrl('updateShipment', { order_id: orderUuid, shipment_id: uuid })
+    updateShipmentApi: ({ orderUuid, uuid }) =>
+      buildUrl('updateShipment', { order_id: orderUuid, shipment_id: uuid })
   }
 };

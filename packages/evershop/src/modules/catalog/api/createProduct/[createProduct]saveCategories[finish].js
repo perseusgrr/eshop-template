@@ -2,9 +2,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable guard-for-in */
 /* eslint-disable no-restricted-syntax */
-const {
-  insert, select
-} = require('@evershop/mysql-query-builder');
+const { insert, select } = require('@evershop/mysql-query-builder');
 const { get } = require('../../../../lib/util/get');
 
 module.exports = async (request, response, delegate) => {
@@ -13,7 +11,7 @@ module.exports = async (request, response, delegate) => {
   const connection = await delegate.getConnection;
   const categories = get(request, 'body.categories', []);
   // Add new
-  for (let i = 0; i < categories.length; i++) {
+  for (let i = 0; i < categories.length; i += 1) {
     const category = await select()
       .from('category')
       .where('category_id', '=', categories[i])

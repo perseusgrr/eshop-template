@@ -1,6 +1,8 @@
 const { select } = require('@evershop/mysql-query-builder');
 const { pool } = require('../../../../../lib/mysql/connection');
-const { setContextValue } = require('../../../../graphql/services/contextHelper');
+const {
+  setContextValue
+} = require('../../../../graphql/services/contextHelper');
 
 module.exports = async (request, response, delegate, next) => {
   try {
@@ -10,7 +12,6 @@ module.exports = async (request, response, delegate, next) => {
     const order = await query.load(pool);
 
     if (order === null) {
-      console.log('order not found');
       response.status(404);
       next();
     } else {

@@ -1,9 +1,14 @@
-const { INVALID_PAYLOAD, OK, INTERNAL_SERVER_ERROR } = require('../../../../lib/util/httpStatus');
+const {
+  INVALID_PAYLOAD,
+  OK,
+  INTERNAL_SERVER_ERROR
+} = require('../../../../lib/util/httpStatus');
 const { getCartByUUID } = require('../../../checkout/services/getCartByUUID');
 const { saveCart } = require('../../../checkout/services/saveCart');
 
 module.exports = async (request, response, delegate, next) => {
   try {
+    // eslint-disable-next-line camelcase
     const { cart_id } = request.params;
     const { coupon } = request.body;
     const cart = await getCartByUUID(cart_id);

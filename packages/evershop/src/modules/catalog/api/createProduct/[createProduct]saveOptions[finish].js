@@ -1,13 +1,18 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 const {
-  insert, del, select, update
+  insert,
+  del,
+  select,
+  update
 } = require('@evershop/mysql-query-builder');
 const { merge } = require('../../../../lib/util/merge');
 
 async function saveOptionValues(optionId, values, connection) {
   if (!values || values === 0) {
-    await del('product_custom_option_value').where('option_id', '=', optionId).execute(connection);
+    await del('product_custom_option_value')
+      .where('option_id', '=', optionId)
+      .execute(connection);
     return;
   }
 
@@ -19,12 +24,16 @@ async function saveOptionValues(optionId, values, connection) {
   // Get all remaining option values for comparison
   const optionValues = await select('product_custom_option_value_id')
     .from('product_custom_option_value')
-    .where('option_id', '=', optionId).execute(connection);
+    .where('option_id', '=', optionId)
+    .execute(connection);
 
   for (const id in values) {
-    if (optionValues.find(
-      (v) => parseInt(v.product_custom_option_value_id, 10) === parseInt(id, 10)
-    )) {
+    if (
+      optionValues.find(
+        (v) =>
+          parseInt(v.product_custom_option_value_id, 10) === parseInt(id, 10)
+      )
+    ) {
       await update('product_custom_option_value')
         .given(merge(values[id], { sort_order: 0 }))
         .where('product_custom_option_value_id', '=', id)
@@ -48,19 +57,17 @@ module.exports = async (request, response, deledate) => {
   }
   // eslint-disable-next-line no-restricted-syntax
   // eslint-disable-next-line guard-for-in
-  for (let i = 0; i < options.length; i++) {
+  for (let i = 0; i < options.length; i += 1) {
     const option = options[i];
-    const result = await insert('product_custom_option')
-      .given(
-        {
-          ...option,
-          product_custom_option_product_id: productId
-        }
-      )
+    const newOption = await insert('product_custom_option')
+      .given({
+        ...option,
+        product_custom_option_product_id: productId
+      })
       .prime('product_custom_option_product_id', productId)
       .execute(connection);
     await saveOptionValues(
-      parseInt(result.insertId, 10),
+      parseInt(newOption.insertId, 10),
       option.values || [],
       connection
     );

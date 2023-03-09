@@ -1,7 +1,10 @@
 const { commit, rollback, select } = require('@evershop/mysql-query-builder');
 const { pool } = require('../../../../lib/mysql/connection');
 const { buildUrl } = require('../../../../lib/router/buildUrl');
-const { OK, INTERNAL_SERVER_ERROR } = require('../../../../lib/util/httpStatus');
+const {
+  OK,
+  INTERNAL_SERVER_ERROR
+} = require('../../../../lib/util/httpStatus');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (request, response, delegate, next) => {
@@ -15,7 +18,8 @@ module.exports = async (request, response, delegate, next) => {
   const result = await delegate.createAttribute;
   const connection = await delegate.getConnection;
   const results = await Promise.allSettled(promises);
-  if (results.findIndex((r) => r.status === 'rejected') === -1) {
+  const rejected = results.find((r) => r.status === 'rejected');
+  if (!rejected) {
     await commit(connection);
 
     const attribute = await select()
@@ -56,7 +60,7 @@ module.exports = async (request, response, delegate, next) => {
       data: null,
       error: {
         status: INTERNAL_SERVER_ERROR,
-        message: e.message
+        message: rejected.reason.message
       }
     });
   }

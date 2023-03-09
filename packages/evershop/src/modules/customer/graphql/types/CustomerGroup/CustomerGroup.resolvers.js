@@ -15,13 +15,11 @@ module.exports = {
 
       return group ? camelCase(group) : null;
     },
-    customerGroups: async (root, { id }, { pool, userTokenPayload }) => {
+    customerGroups: async (root, _, { pool, userTokenPayload }) => {
       if (!userTokenPayload?.user?.uuid) {
         return [];
       }
-      const groups = await select()
-        .from('customer_group')
-        .execute(pool);
+      const groups = await select().from('customer_group').execute(pool);
       return groups.map((group) => camelCase(group));
     }
   },
@@ -33,6 +31,7 @@ module.exports = {
         .execute(pool);
       return customers.map((customer) => camelCase(customer));
     },
-    editUrl: (group, _, { }) => buildUrl('customerGroupEdit', { id: group.customerGroupId })
+    editUrl: (group) =>
+      buildUrl('customerGroupEdit', { id: group.customerGroupId })
   }
 };

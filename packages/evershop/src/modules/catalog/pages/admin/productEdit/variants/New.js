@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Card } from '../../../../../cms/components/admin/Card';
 import { CreateVariantGroup } from './CreateVariantGroup';
@@ -11,7 +12,9 @@ export function New({ createVariantGroupApi, setGroup }) {
           <div>
             <div className="justify-center text-center">
               <div className="mb-4">
-                <span className="pr-1">This product has some variants like color or size?</span>
+                <span className="pr-1">
+                  This product has some variants like color or size?
+                </span>
                 <a
                   className="text-interactive hover:underline"
                   href="#"
@@ -52,3 +55,8 @@ export function New({ createVariantGroupApi, setGroup }) {
     </>
   );
 }
+
+New.propTypes = {
+  createVariantGroupApi: PropTypes.string.isRequired,
+  setGroup: PropTypes.func.isRequired
+};

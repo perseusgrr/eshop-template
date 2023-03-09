@@ -21,8 +21,7 @@ function Price({ regular, special }) {
       )}
       {special.value < regular.value && (
         <div>
-          <span className="sale-price">{special.text}</span>
-          {' '}
+          <span className="sale-price">{special.text}</span>{' '}
           <span className="regular-price">{regular.text}</span>
         </div>
       )}
@@ -34,11 +33,11 @@ Price.propTypes = {
   regular: PropTypes.shape({
     value: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired
-  }),
+  }).isRequired,
   special: PropTypes.shape({
     value: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired
-  })
+  }).isRequired
 };
 
 function Sku({ sku }) {
@@ -89,6 +88,23 @@ export default function GeneralInfo({ product }) {
     />
   );
 }
+
+GeneralInfo.propTypes = {
+  product: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    sku: PropTypes.string.isRequired,
+    price: PropTypes.shape({
+      regular: PropTypes.shape({
+        value: PropTypes.number.isRequired,
+        text: PropTypes.string.isRequired
+      }),
+      special: PropTypes.shape({
+        value: PropTypes.number.isRequired,
+        text: PropTypes.string.isRequired
+      })
+    })
+  }).isRequired
+};
 
 export const layout = {
   areaId: 'productPageMiddleRight',

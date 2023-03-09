@@ -2,7 +2,6 @@ const path = require('path');
 const WebpackBar = require('webpackbar');
 const { CONSTANTS } = require('../../helpers');
 const { createBaseConfig } = require('../createBaseConfig');
-const { getRouteBuildPath } = require('../getRouteBuildPath');
 const { getRouteBuildSubPath } = require('../getRouteBuildSubPath');
 const { isBuildRequired } = require('../isBuildRequired');
 
@@ -15,7 +14,13 @@ module.exports.createConfigServer = function createConfigServer(routes) {
     const subPath = getRouteBuildSubPath(route);
     entry[subPath] = [
       path.resolve(CONSTANTS.BUILDPATH, subPath, 'server', 'entry.js'),
-      path.resolve(CONSTANTS.LIBPATH, 'components', 'react', 'server', 'render.js')
+      path.resolve(
+        CONSTANTS.LIBPATH,
+        'components',
+        'react',
+        'server',
+        'render.js'
+      )
     ];
   });
   const config = createBaseConfig(true);
@@ -27,7 +32,10 @@ module.exports.createConfigServer = function createConfigServer(routes) {
     test: /\.scss$/i,
     use: [
       {
-        loader: path.resolve(CONSTANTS.LIBPATH, 'webpack/loaders/styleLoader.js')
+        loader: path.resolve(
+          CONSTANTS.LIBPATH,
+          'webpack/loaders/styleLoader.js'
+        )
       }
     ]
   });

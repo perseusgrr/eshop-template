@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { toast } from 'react-toastify';
 import Button from '../../../../../../lib/components/form/Button';
@@ -25,32 +26,35 @@ export function SubmitButton({
     } else if (Object.keys(variantFormErrors).length > 0) {
       setLoading(false);
     } else {
-      const productFormData = new FormData(document.getElementById('productForm'));
-      const variantFormData = new FormData(document.getElementById('variantForm'));
+      const productFormData = new FormData(
+        document.getElementById('productForm')
+      );
+      const variantFormData = new FormData(
+        document.getElementById('variantForm')
+      );
 
       // Merge product and variant form data
       const formData = new FormData();
+      // eslint-disable-next-line no-restricted-syntax
       for (const [key, value] of productFormData.entries()) {
         formData.append(key, value);
       }
+      // eslint-disable-next-line no-restricted-syntax
       for (const [key, value] of variantFormData.entries()) {
         // If key not include 'attributes'
         if (key.indexOf('attributes') === -1) {
           formData.set(key, value);
-        } else {
-
         }
       }
       const productData = serializeForm(formData.entries());
       productData.attributes = productData.attributes || [];
-      productData.attributes = productData.attributes.map(
-        (attribute) => {
-          if (variantFormData.has(attribute.attribute_code)) {
-            attribute.value = variantFormData.get(attribute.attribute_code);
-          }
-          return attribute;
+      productData.attributes = productData.attributes.map((attribute) => {
+        if (variantFormData.has(attribute.attribute_code)) {
+          // eslint-disable-next-line no-param-reassign
+          attribute.value = variantFormData.get(attribute.attribute_code);
         }
-      );
+        return attribute;
+      });
 
       const response = await fetch(createProductApi, {
         method: 'POST',
@@ -108,3 +112,16 @@ export function SubmitButton({
     />
   );
 }
+
+SubmitButton.propTypes = {
+  addVariantItemApi: PropTypes.string.isRequired,
+  createProductApi: PropTypes.string.isRequired,
+  productFormContextDispatch: PropTypes.shape({
+    validate: PropTypes.func.isRequired
+  }).isRequired,
+  productId: PropTypes.string.isRequired,
+  refresh: PropTypes.func.isRequired,
+  modal: PropTypes.shape({
+    closeModal: PropTypes.func.isRequired
+  }).isRequired
+};

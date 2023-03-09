@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import PropTypes from 'prop-types';
 import React from 'react';
 import Area from '../../../../../lib/components/Area';
 import { Field } from '../../../../../lib/components/form/Field';
@@ -51,7 +52,9 @@ export default function Seo({ page }) {
       sortOrder: 30
     }
   ].filter((f) => {
-    if (get(page, `${f.props.id}`) !== undefined) { f.props.value = get(page, `${f.props.id}`); }
+    if (get(page, `${f.props.id}`) !== undefined) {
+      f.props.value = get(page, `${f.props.id}`);
+    }
     return f;
   });
 
@@ -63,6 +66,19 @@ export default function Seo({ page }) {
     </Card>
   );
 }
+
+Seo.propTypes = {
+  page: PropTypes.shape({
+    urlKey: PropTypes.string,
+    metaTitle: PropTypes.string,
+    metaKeywords: PropTypes.string,
+    metaDescription: PropTypes.string
+  })
+};
+
+Seo.defaultProps = {
+  page: {}
+};
 
 export const layout = {
   areaId: 'leftSide',

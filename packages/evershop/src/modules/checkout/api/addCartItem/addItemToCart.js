@@ -2,7 +2,11 @@ const { select } = require('@evershop/mysql-query-builder');
 const { setContextValue } = require('../../../graphql/services/contextHelper');
 const { getCartByUUID } = require('../../services/getCartByUUID');
 const { saveCart } = require('../../services/saveCart');
-const { INVALID_PAYLOAD, INTERNAL_SERVER_ERROR, OK } = require('../../../../lib/util/httpStatus');
+const {
+  INVALID_PAYLOAD,
+  INTERNAL_SERVER_ERROR,
+  OK
+} = require('../../../../lib/util/httpStatus');
 const { pool } = require('../../../../lib/mysql/connection');
 
 module.exports = async (request, response, delegate, next) => {
@@ -56,7 +60,6 @@ module.exports = async (request, response, delegate, next) => {
     };
     next();
   } catch (error) {
-    console.log(error);
     response.status(INTERNAL_SERVER_ERROR);
     response.json({
       error: {

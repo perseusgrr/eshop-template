@@ -51,13 +51,16 @@ export function StepContent({
         btnText="Continue to payment"
         onSuccess={(response) => {
           if (!response.error) {
-            client.query(QUERY, { cartId })
+            client
+              .query(QUERY, { cartId })
               .toPromise()
               .then((result) => {
                 const address = result.data.cart.shippingAddress;
-                setShipmentInfo(produce(shipmentInfo, (draff) => {
-                  draff.address = address;
-                }));
+                setShipmentInfo(
+                  produce(shipmentInfo, (draff) => {
+                    draff.address = address;
+                  })
+                );
               });
           } else {
             toast.error(response.error.message);
@@ -67,7 +70,6 @@ export function StepContent({
         <CustomerAddressForm
           areaId="checkoutShippingAddressForm"
           address={shipmentInfo.address}
-          method={shipmentInfo.method}
         />
         <input type="hidden" name="type" value="shipping" />
       </Form>
@@ -76,9 +78,36 @@ export function StepContent({
 }
 
 StepContent.propTypes = {
+  addShippingAddressApi: PropTypes.string.isRequired,
+  setShipmentInfo: PropTypes.func.isRequired,
+  shipmentInfo: PropTypes.shape({
+    address: PropTypes.shape({
+      address1: PropTypes.string,
+      address2: PropTypes.string,
+      city: PropTypes.string,
+      country: PropTypes.shape({
+        code: PropTypes.string,
+        name: PropTypes.string
+      }),
+      fullName: PropTypes.string,
+      id: PropTypes.string,
+      postcode: PropTypes.string,
+      province: PropTypes.shape({
+        code: PropTypes.string,
+        name: PropTypes.string
+      }),
+      telephone: PropTypes.string
+    })
+  }),
   step: PropTypes.shape({
     id: PropTypes.string,
     isCompleted: PropTypes.bool,
     isEditing: PropTypes.bool
   }).isRequired
+};
+
+StepContent.defaultProps = {
+  shipmentInfo: {
+    address: {}
+  }
 };

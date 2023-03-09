@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useQuery } from 'urql';
@@ -34,11 +35,7 @@ const QUERY = `
   }
 `;
 export function StepContent({
-  cart: {
-    billingAddress,
-    addBillingAddressApi,
-    addPaymentMethodApi
-  }
+  cart: { billingAddress, addBillingAddressApi, addPaymentMethodApi }
 }) {
   const { completeStep } = useCheckoutStepsDispatch();
   const [useShippingAddress, setUseShippingAddress] = useState(!billingAddress);
@@ -72,7 +69,7 @@ export function StepContent({
     getPaymentMethods();
   }, []);
 
-  const [result, reexecuteQuery] = useQuery({
+  const [result] = useQuery({
     query: QUERY,
     variables: {
       cartId
@@ -128,7 +125,10 @@ export function StepContent({
           <>
             <div className="divide-y border rounded border-divider px-2 mb-2">
               {paymentMethods.map((method) => (
-                <div key={method.code} className="border-divider payment-method-list">
+                <div
+                  key={method.code}
+                  className="border-divider payment-method-list"
+                >
                   <div className="py-2">
                     <Area id={`checkoutPaymentMethod${method.code}`} />
                   </div>
@@ -139,12 +139,18 @@ export function StepContent({
               type="hidden"
               name="method_code"
               value={paymentMethods.find((e) => e.selected === true)?.code}
-              validationRules={[{
-                rule: 'notEmpty',
-                message: 'Please select a payment method'
-              }]}
+              validationRules={[
+                {
+                  rule: 'notEmpty',
+                  message: 'Please select a payment method'
+                }
+              ]}
             />
-            <input type="hidden" value={paymentMethods.find((e) => e.selected === true)?.name} name="method_name" />
+            <input
+              type="hidden"
+              value={paymentMethods.find((e) => e.selected === true)?.name}
+              name="method_name"
+            />
             <input type="hidden" value="billing" name="type" />
           </>
         )}
@@ -155,12 +161,14 @@ export function StepContent({
         )}
         <div className="form-submit-button">
           <Button
-            onAction={
-              () => {
-                setLoading(true);
-                document.getElementById('checkoutPaymentForm').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-              }
-            }
+            onAction={() => {
+              setLoading(true);
+              document
+                .getElementById('checkoutPaymentForm')
+                .dispatchEvent(
+                  new Event('submit', { cancelable: true, bubbles: true })
+                );
+            }}
             title="Place Order"
             isLoading={loading}
           />
@@ -169,3 +177,27 @@ export function StepContent({
     </div>
   );
 }
+
+StepContent.propTypes = {
+  cart: PropTypes.shape({
+    billingAddress: PropTypes.shape({
+      id: PropTypes.string,
+      fullName: PropTypes.string,
+      postcode: PropTypes.string,
+      telephone: PropTypes.string,
+      country: PropTypes.shape({
+        code: PropTypes.string,
+        name: PropTypes.string
+      }),
+      province: PropTypes.shape({
+        code: PropTypes.string,
+        name: PropTypes.string
+      }),
+      city: PropTypes.string,
+      address1: PropTypes.string,
+      address2: PropTypes.string
+    }),
+    addBillingAddressApi: PropTypes.string.isRequired,
+    addPaymentMethodApi: PropTypes.string.isRequired
+  }).isRequired
+};

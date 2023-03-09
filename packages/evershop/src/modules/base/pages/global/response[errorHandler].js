@@ -39,8 +39,10 @@ module.exports = async (request, response, delegate, next) => {
           isAdmin: route.isAdmin
         };
         if (
-          (isDevelopmentMode() && request.query && request.query.fashRefresh === 'true')
-          || (request.query && request.query.ajax === 'true')
+          (isDevelopmentMode() &&
+            request.query &&
+            request.query.fashRefresh === 'true') ||
+          (request.query && request.query.ajax === 'true')
         ) {
           response.json({
             success: true,
@@ -58,7 +60,8 @@ module.exports = async (request, response, delegate, next) => {
     if (!isErrorHandlerTriggered(response)) {
       next(error);
     } else {
-      // Do nothing here since the next(error) is already called when the error is thrown on each middleware
+      // Do nothing here since the next(error) is already called
+      // when the error is thrown on each middleware
     }
   }
 };

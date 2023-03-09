@@ -3,12 +3,13 @@ import React from 'react';
 import { toast } from 'react-toastify';
 import { Form } from '../../../../../lib/components/form/Form';
 import { Field } from '../../../../../lib/components/form/Field';
-import { useCheckoutSteps, useCheckoutStepsDispatch } from '../../../../../lib/context/checkoutSteps';
+import {
+  useCheckoutSteps,
+  useCheckoutStepsDispatch
+} from '../../../../../lib/context/checkoutSteps';
 import { useCheckout } from '../../../../../lib/context/checkout';
 
-function Edit({
-  user, addContactInfoApi, email, setEmail, loginUrl
-}) {
+function Edit({ customer, addContactInfoApi, email, setEmail, loginUrl }) {
   const { completeStep } = useCheckoutStepsDispatch();
 
   const onSuccess = (response) => {
@@ -22,7 +23,7 @@ function Edit({
 
   React.useEffect(() => {
     async function setContactIfLoggedIn() {
-      if (!user) {
+      if (!customer) {
         return;
       }
       // Post fetch to set contact info
@@ -32,7 +33,7 @@ function Edit({
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: user.email
+          email: customer.email
         })
       });
       const data = await response.json();
@@ -49,12 +50,13 @@ function Edit({
   return (
     <div className="">
       <h4 className="mb-1 mt-1">Contact information</h4>
-      {!user && (
-      <div className="mb-1">
-        <span>Already have an account?</span>
-        {' '}
-        <a className="text-interactive hover:underline" href={loginUrl}>Login</a>
-      </div>
+      {!customer && (
+        <div className="mb-1">
+          <span>Already have an account?</span>{' '}
+          <a className="text-interactive hover:underline" href={loginUrl}>
+            Login
+          </a>
+        </div>
       )}
       <Form
         id="checkout-contact-info-form"
@@ -79,15 +81,18 @@ function Edit({
 }
 
 Edit.propTypes = {
-  addContactInfoApi: PropTypes.string.isRequired
+  addContactInfoApi: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
+  loginUrl: PropTypes.string.isRequired,
+  setEmail: PropTypes.func.isRequired,
+  customer: PropTypes.shape({
+    email: PropTypes.string.isRequired
+  }).isRequired
 };
 
 export default function ContactInformationStep({
-  cart: {
-    customerEmail,
-    addContactInfoApi
-  },
-  user,
+  cart: { customerEmail, addContactInfoApi },
+  customer,
   loginUrl
 }) {
   const steps = useCheckoutSteps();
@@ -105,7 +110,7 @@ export default function ContactInformationStep({
       isCompleted: !!customerEmail,
       preview: customerEmail || '',
       sortOrder: 5,
-      editable: !user
+      editable: !customer
     });
   }, []);
 
@@ -118,22 +123,33 @@ export default function ContactInformationStep({
   return (
     <div className="checkout-contact checkout-step">
       {display && (
-      <Edit
-        user={user}
-        step={step}
-        cartId={cartId}
-        email={email}
-        addContactInfoApi={addContactInfoApi}
-        setEmail={setEmail}
-        loginUrl={loginUrl}
-      />
+        <Edit
+          customer={customer}
+          step={step}
+          cartId={cartId}
+          email={email}
+          addContactInfoApi={addContactInfoApi}
+          setEmail={setEmail}
+          loginUrl={loginUrl}
+        />
       )}
     </div>
   );
 }
 
 ContactInformationStep.propTypes = {
-  setContactInfoUrl: PropTypes.string.isRequired
+  loginUrl: PropTypes.string.isRequired,
+  customer: PropTypes.shape({
+    email: PropTypes.string.isRequired
+  }),
+  cart: PropTypes.shape({
+    customerEmail: PropTypes.string.isRequired,
+    addContactInfoApi: PropTypes.string.isRequired
+  }).isRequired
+};
+
+ContactInformationStep.defaultProps = {
+  customer: null
 };
 
 export const layout = {
@@ -147,7 +163,7 @@ export const query = `
       customerEmail
       addContactInfoApi
     }
-    user: customer(id: getContextValue("customerId", null)) {
+    customer(id: getContextValue("customerId", null)) {
       email
     }
     loginUrl: url(routeId: "login")

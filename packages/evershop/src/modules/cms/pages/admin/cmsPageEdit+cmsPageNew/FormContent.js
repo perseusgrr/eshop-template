@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Area from '../../../../../lib/components/Area';
 import Button from '../../../../../lib/components/form/Button';
@@ -21,29 +22,29 @@ export default function FormContent({ gridUrl }) {
           title="Cancel"
           variant="critical"
           outline
-          onAction={
-            () => {
-              window.location = gridUrl;
-            }
-          }
+          onAction={() => {
+            window.location = gridUrl;
+          }}
         />
         <Button
           title="Save"
-          onAction={
-            () => {
-              document
-                .getElementById('cmsPageForm')
-                .dispatchEvent(
-                  new Event('submit', { cancelable: true, bubbles: true })
-                );
-            }
-          }
+          onAction={() => {
+            document
+              .getElementById('cmsPageForm')
+              .dispatchEvent(
+                new Event('submit', { cancelable: true, bubbles: true })
+              );
+          }}
           isLoading={state === 'submitting'}
         />
       </div>
     </>
   );
 }
+
+FormContent.propTypes = {
+  gridUrl: PropTypes.string.isRequired
+};
 
 export const layout = {
   areaId: 'cmsPageForm',

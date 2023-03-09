@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import produce from 'immer';
 import axios from 'axios';
@@ -21,12 +22,15 @@ export function HotReload({ hot }) {
           }
         });
         if (response.status < 300) {
-          appDispatch(produce(appContext, (draff) => {
-            // eslint-disable-next-line no-param-reassign
-            draff = response.data.eContext;
-            return draff;
-          }));
+          appDispatch(
+            produce(appContext, (draff) => {
+              // eslint-disable-next-line no-param-reassign
+              draff = response.data.eContext;
+              return draff;
+            })
+          );
         } else {
+          // eslint-disable-next-line no-restricted-globals
           location.reload();
         }
       }
@@ -35,3 +39,9 @@ export function HotReload({ hot }) {
 
   return isRefreshing ? <div>Refreshing</div> : null;
 }
+
+HotReload.propTypes = {
+  hot: PropTypes.shape({
+    subscribe: PropTypes.func
+  }).isRequired
+};

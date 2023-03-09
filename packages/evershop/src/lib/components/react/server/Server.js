@@ -10,7 +10,9 @@ function ServerHtml({ css, js, appContext }) {
       <head>
         <meta charset="utf-8" />
         <script dangerouslySetInnerHTML={{ __html: appContext }} />
-        {css.map((src) => <link href={src} rel="stylesheet" />)}
+        {css.map((src) => (
+          <link href={src} rel="stylesheet" />
+        ))}
         <Area noOuter id="head" />
       </head>
       <body id="body">
@@ -19,14 +21,16 @@ function ServerHtml({ css, js, appContext }) {
             <Area id="body" className="wrapper" />
           </Alert>
         </div>
-        {js.map((src) => <script src={src} />)}
+        {js.map((src) => (
+          <script src={src} />
+        ))}
       </body>
     </>
   );
 }
 
 ServerHtml.propTypes = {
-  js: PropTypes.arrayOf(PropTypes.string).isRequired,
+  css: PropTypes.arrayOf(PropTypes.string).isRequired,
   js: PropTypes.arrayOf(PropTypes.string).isRequired,
   appContext: PropTypes.string.isRequired
 };

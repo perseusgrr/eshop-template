@@ -1,16 +1,15 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from '@heroicons/react/solid/esm/GiftIcon';
 import NavigationItem from '../../../../cms/components/admin/NavigationItem';
 
 export default function NewProductQuickLink({ couponNew }) {
-  return (
-    <NavigationItem
-      Icon={Icon}
-      title="New Coupon"
-      url={couponNew}
-    />
-  );
+  return <NavigationItem Icon={Icon} title="New Coupon" url={couponNew} />;
 }
+
+NewProductQuickLink.propTypes = {
+  couponNew: PropTypes.string.isRequired
+};
 
 export const layout = {
   areaId: 'quickLinks',

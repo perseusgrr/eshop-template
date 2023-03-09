@@ -45,9 +45,12 @@ const CurrencyQuery = `
 `;
 
 function Province({
-  selectedCountry = 'US', selectedProvince, allowedCountries = [], fieldName = 'storeProvince'
+  selectedCountry = 'US',
+  selectedProvince,
+  allowedCountries = [],
+  fieldName = 'storeProvince'
 }) {
-  const [result, reexecuteQuery] = useQuery({
+  const [result] = useQuery({
     query: ProvincesQuery,
     variables: { countries: allowedCountries }
   });
@@ -71,27 +74,37 @@ function Province({
       label="Province"
       placeholder="Province"
       validationRules={['notEmpty']}
-      options={
-        data.provinces
-          .filter((p) => p.countryCode === selectedCountry)
-          .map((p) => ({ value: p.code, text: p.name }))
-      }
+      options={data.provinces
+        .filter((p) => p.countryCode === selectedCountry)
+        .map((p) => ({ value: p.code, text: p.name }))}
     />
   );
 }
 
 Province.propTypes = {
-  selectedProvince: PropTypes.string,
-  allowedCountries: PropTypes.arrayOf(PropTypes.string)
+  allowedCountries: PropTypes.arrayOf(PropTypes.string),
+  fieldName: PropTypes.string,
+  selectedCountry: PropTypes.string,
+  selectedProvince: PropTypes.string
+};
+
+Province.defaultProps = {
+  allowedCountries: [],
+  fieldName: 'storeProvince',
+  selectedCountry: 'US',
+  selectedProvince: ''
 };
 
 function Country({
-  selectedCountry, setSelectedCountry, allowedCountries = [], fieldName = 'storeCountry'
+  selectedCountry,
+  setSelectedCountry,
+  allowedCountries = [],
+  fieldName = 'storeCountry'
 }) {
   const onChange = (e) => {
     setSelectedCountry(e.target.value);
   };
-  const [result, reexecuteQuery] = useQuery({
+  const [result] = useQuery({
     query: CountriesQuery,
     variables: { countries: allowedCountries }
   });
@@ -125,13 +138,19 @@ function Country({
 }
 
 Country.propTypes = {
-  allowedCountries: PropTypes.arrayOf(PropTypes.string).isRequired,
+  allowedCountries: PropTypes.arrayOf(PropTypes.string),
+  fieldName: PropTypes.string,
   selectedCountry: PropTypes.string.isRequired,
   setSelectedCountry: PropTypes.func.isRequired
 };
 
+Country.defaultProps = {
+  allowedCountries: [],
+  fieldName: 'storeCountry'
+};
+
 function Timezone({ selectedTimeZone, fieldName = 'storeTimeZone' }) {
-  const [result, reexecuteQuery] = useQuery({
+  const [result] = useQuery({
     query: TimezonesQuery
   });
   const { data, fetching, error } = result;
@@ -153,20 +172,18 @@ function Timezone({ selectedTimeZone, fieldName = 'storeTimeZone' }) {
       name={fieldName}
       label="TimeZone"
       placeholder="TimeZone"
-      options={
-        data.timezones.map((t) => ({ value: t.code, text: t.name }))
-      }
+      options={data.timezones.map((t) => ({ value: t.code, text: t.name }))}
     />
   );
 }
 
 Timezone.propTypes = {
-  selectedTimeZone: PropTypes.string,
-  fieldName: PropTypes.string
+  fieldName: PropTypes.string.isRequired,
+  selectedTimeZone: PropTypes.string.isRequired
 };
 
 function Currency({ selectedCurrency, fieldName = 'storeCurrency' }) {
-  const [result, reexecuteQuery] = useQuery({
+  const [result] = useQuery({
     query: CurrencyQuery
   });
   const { data, fetching, error } = result;
@@ -188,16 +205,18 @@ function Currency({ selectedCurrency, fieldName = 'storeCurrency' }) {
       name={fieldName}
       label="Currency"
       placeholder="Currency"
-      options={
-        data.currencies.map((c) => ({ value: c.code, text: c.name }))
-      }
+      options={data.currencies.map((c) => ({ value: c.code, text: c.name }))}
     />
   );
 }
 
 Currency.propTypes = {
-  selectedCurrency: PropTypes.string,
-  fieldName: PropTypes.string
+  fieldName: PropTypes.string,
+  selectedCurrency: PropTypes.string.isRequired
+};
+
+Currency.defaultProps = {
+  fieldName: 'storeCurrency'
 };
 
 export default function StoreSetting({
@@ -262,9 +281,7 @@ export default function StoreSetting({
                 />
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <div>
-                    <Currency
-                      selectedCurrency={storeCurrency}
-                    />
+                    <Currency selectedCurrency={storeCurrency} />
                   </div>
                   <div>
                     <Timezone selectedTimeZone={storeTimeZone} />
@@ -339,6 +356,23 @@ export default function StoreSetting({
     </div>
   );
 }
+
+StoreSetting.propTypes = {
+  saveSettingApi: PropTypes.string.isRequired,
+  setting: PropTypes.shape({
+    storeName: PropTypes.string,
+    storeDescription: PropTypes.string,
+    storeCurrency: PropTypes.string,
+    storeTimeZone: PropTypes.string,
+    storePhoneNumber: PropTypes.string,
+    storeEmail: PropTypes.string,
+    storeCountry: PropTypes.string,
+    storeAddress: PropTypes.string,
+    storeCity: PropTypes.string,
+    storeProvince: PropTypes.string,
+    storePostalCode: PropTypes.string
+  }).isRequired
+};
 
 export const layout = {
   areaId: 'content',

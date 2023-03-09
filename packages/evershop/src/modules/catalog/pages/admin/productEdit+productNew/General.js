@@ -5,9 +5,7 @@ import { Field } from '../../../../../lib/components/form/Field';
 import { TextArea } from '../../../../../lib/components/form/fields/Textarea';
 import { Card } from '../../../../cms/components/admin/Card';
 
-function SKUPriceWeight({
-  sku, price, weight, setting
-}) {
+function SKUPriceWeight({ sku, price, weight, setting }) {
   return (
     <div className="grid grid-cols-3 gap-1 mt-15">
       <div>
@@ -52,7 +50,11 @@ function SKUPriceWeight({
 SKUPriceWeight.propTypes = {
   price: PropTypes.number,
   sku: PropTypes.string,
-  weight: PropTypes.number
+  weight: PropTypes.number,
+  setting: PropTypes.shape({
+    storeCurrency: PropTypes.string,
+    weightUnit: PropTypes.string
+  }).isRequired
 };
 
 SKUPriceWeight.defaultProps = {
@@ -62,12 +64,15 @@ SKUPriceWeight.defaultProps = {
 };
 
 export default function General({
-  product, browserApi, deleteApi, uploadApi, folderCreateApi, setting
+  product,
+  browserApi,
+  deleteApi,
+  uploadApi,
+  folderCreateApi,
+  setting
 }) {
   return (
-    <Card
-      title="General"
-    >
+    <Card title="General">
       <Card.Session>
         <Area
           id="productEditGeneral"
@@ -134,7 +139,31 @@ General.propTypes = {
   browserApi: PropTypes.string.isRequired,
   deleteApi: PropTypes.string.isRequired,
   folderCreateApi: PropTypes.string.isRequired,
-  uploadApi: PropTypes.string.isRequired
+  uploadApi: PropTypes.string.isRequired,
+  product: PropTypes.shape({
+    description: PropTypes.string,
+    name: PropTypes.string,
+    price: PropTypes.shape({
+      regular: PropTypes.shape({
+        currency: PropTypes.string,
+        value: PropTypes.number
+      })
+    }),
+    productId: PropTypes.string,
+    sku: PropTypes.string,
+    weight: PropTypes.shape({
+      unit: PropTypes.string,
+      value: PropTypes.number
+    })
+  }),
+  setting: PropTypes.shape({
+    storeCurrency: PropTypes.string,
+    weightUnit: PropTypes.string
+  }).isRequired
+};
+
+General.defaultProps = {
+  product: undefined
 };
 
 export const layout = {

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { useQuery } from 'urql';
 import { toast } from 'react-toastify';
@@ -16,10 +17,8 @@ const CountriesQuery = `
   }
 `;
 
-export function AllowCountries({
-  selectedCountries = ''
-}) {
-  const [result, reexecuteQuery] = useQuery({
+export function AllowCountries({ selectedCountries = [] }) {
+  const [result] = useQuery({
     query: CountriesQuery
   });
   const { data, fetching, error } = result;
@@ -42,13 +41,27 @@ export function AllowCountries({
         options={data.countries}
         hideSelectedOptions
         isMulti
-        defaultValue={selectedCountries.map((c) => ({ value: c, label: (data.countries.find((ctr) => ctr.value === c))?.label }))}
+        defaultValue={selectedCountries.map((c) => ({
+          value: c,
+          label: data.countries.find((ctr) => ctr.value === c)?.label
+        }))}
       />
     </div>
   );
 }
 
-export default function StoreSetting({ saveSettingApi, setting: { allowedCountries, weightUnit } }) {
+AllowCountries.propTypes = {
+  selectedCountries: PropTypes.arrayOf(PropTypes.string)
+};
+
+AllowCountries.defaultProps = {
+  selectedCountries: []
+};
+
+export default function StoreSetting({
+  saveSettingApi,
+  setting: { allowedCountries, weightUnit }
+}) {
   return (
     <div className="main-content-inner">
       <div className="grid grid-cols-6 gap-x-2 grid-flow-row ">
@@ -71,9 +84,7 @@ export default function StoreSetting({ saveSettingApi, setting: { allowedCountri
             <Card>
               <Card.Session title="Shipping Details">
                 <div>
-                  <AllowCountries
-                    selectedCountries={allowedCountries}
-                  />
+                  <AllowCountries selectedCountries={allowedCountries} />
                   <Field
                     name="weightUnit"
                     label="Weight Unit"
@@ -94,6 +105,14 @@ export default function StoreSetting({ saveSettingApi, setting: { allowedCountri
     </div>
   );
 }
+
+StoreSetting.propTypes = {
+  saveSettingApi: PropTypes.string.isRequired,
+  setting: PropTypes.shape({
+    allowedCountries: PropTypes.arrayOf(PropTypes.string),
+    weightUnit: PropTypes.string
+  }).isRequired
+};
 
 export const layout = {
   areaId: 'content',

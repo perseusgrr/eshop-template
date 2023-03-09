@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Field } from '../../../../../lib/components/form/Field';
 import { Form } from '../../../../../lib/components/form/Form';
@@ -39,12 +40,20 @@ export default function LoginForm({ action, homeUrl, registerUrl }) {
           />
         </Form>
         <div className="text-center mt-1">
-          <a className="text-interactive" href={registerUrl}>Create an account</a>
+          <a className="text-interactive" href={registerUrl}>
+            Create an account
+          </a>
         </div>
       </div>
     </div>
   );
 }
+
+LoginForm.propTypes = {
+  action: PropTypes.string.isRequired,
+  homeUrl: PropTypes.string.isRequired,
+  registerUrl: PropTypes.string.isRequired
+};
 
 export const layout = {
   areaId: 'content',

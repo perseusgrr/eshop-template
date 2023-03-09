@@ -1,13 +1,17 @@
-/* eslint-disable import/order */
+/* eslint-disable camelcase */
+const { default: axios } = require('axios');
+const { select, update } = require('@evershop/mysql-query-builder');
 const { getContextValue } = require('../../../graphql/services/contextHelper');
 const { getSetting } = require('../../../setting/services/setting');
-const { default: axios } = require('axios');
 const { toPrice } = require('../../../checkout/services/toPrice');
 const { buildUrl } = require('../../../../lib/router/buildUrl');
-const { select, update } = require('@evershop/mysql-query-builder');
 const { pool } = require('../../../../lib/mysql/connection');
 const { getApiBaseUrl } = require('../../services/getApiBaseUrl');
-const { INVALID_PAYLOAD, OK, INTERNAL_SERVER_ERROR } = require('../../../../lib/util/httpStatus');
+const {
+  INVALID_PAYLOAD,
+  OK,
+  INTERNAL_SERVER_ERROR
+} = require('../../../../lib/util/httpStatus');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (request, response, stack, next) => {
@@ -72,8 +76,14 @@ module.exports = async (request, response, stack, next) => {
         }
       ],
       application_context: {
-        cancel_url: `${getContextValue(request, 'homeUrl')}${buildUrl('paypalCancel', { order_id })}`,
-        return_url: `${getContextValue(request, 'homeUrl')}${buildUrl('paypalReturn', { order_id })}`,
+        cancel_url: `${getContextValue(request, 'homeUrl')}${buildUrl(
+          'paypalCancel',
+          { order_id }
+        )}`,
+        return_url: `${getContextValue(request, 'homeUrl')}${buildUrl(
+          'paypalReturn',
+          { order_id }
+        )}`,
         shipping_preference: 'SET_PROVIDED_ADDRESS',
         user_action: 'PAY_NOW',
         brand_name: await getSetting('storeName', 'Evershop')
@@ -91,7 +101,6 @@ module.exports = async (request, response, stack, next) => {
         address: {
           address_line_1: shippingAddress.address_1,
           address_line_2: shippingAddress.address_2,
-          // Convert province code to '2-letter ISO 3166-2' format by splitting the code by '-' and take the last part
           admin_area_1: shippingAddress.province.split('-').pop(),
           admin_area_2: shippingAddress.city,
           postal_code: shippingAddress.postcode,
@@ -132,12 +141,15 @@ module.exports = async (request, response, stack, next) => {
     }
     // Call PayPal API to create order using axios
     const { data } = await axios.post(
-      `${(await getApiBaseUrl())}/v2/checkout/orders`,
+      `${await getApiBaseUrl()}/v2/checkout/orders`,
       orderData,
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${getContextValue(request, 'paypalAccessToken')}`
+          Authorization: `Bearer ${getContextValue(
+            request,
+            'paypalAccessToken'
+          )}`
         },
         validateStatus: (status) => status < 500
       }
@@ -151,7 +163,7 @@ module.exports = async (request, response, stack, next) => {
         .execute(pool);
 
       response.status(OK);
-      response.json({
+      return response.json({
         data: {
           paypalOrderId: data.id,
           approveUrl: data.links.find((link) => link.rel === 'approve').href
@@ -159,7 +171,7 @@ module.exports = async (request, response, stack, next) => {
       });
     } else {
       response.status(INTERNAL_SERVER_ERROR);
-      response.json({
+      return response.json({
         error: {
           status: INTERNAL_SERVER_ERROR,
           message: data.message

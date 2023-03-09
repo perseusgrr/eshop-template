@@ -15,28 +15,33 @@ module.exports = async function graphql(request, response, delegate, next) {
     } else {
       // Try remove all white space and line break
       const query = graphqlQuery.replace(/(\r\n|\n|\r|\s)/gm, '');
-      if (query === 'queryQuery{}') { // TODO: oh no, so dirty. find a better way to check if the query is empty
+      if (query === 'queryQuery{}') {
+        // TODO: oh no, so dirty. find a better way to check if the query is empty
         next();
       } else {
         const document = parse(graphqlQuery);
         // Validate the query
         const validationErrors = validate(schema, document);
         if (validationErrors.length > 0) {
-          console.log(document);
           next(validationErrors[0]);
         } else {
           if (isDevelopmentMode()) {
+            // eslint-disable-next-line global-require
             schema = require('../../services/buildSchema');
           }
-          const context = getContext(request);
           const data = await execute({
-            schema, contextValue: getContext(request), document, variableValues: graphqlVariables
+            schema,
+            contextValue: getContext(request),
+            document,
+            variableValues: graphqlVariables
           });
           if (data.errors) {
             next(data.errors[0]);
           } else {
             response.locals = response.locals || {};
-            response.locals.graphqlResponse = JSON.parse(JSON.stringify(data.data));
+            response.locals.graphqlResponse = JSON.parse(
+              JSON.stringify(data.data)
+            );
             // Get id and props from the queryRaw object and assign to response.locals.propsMap
             response.locals.propsMap = propsMap;
             next();

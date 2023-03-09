@@ -29,18 +29,20 @@ module.exports = async function graphql(request, response, delegate, next) {
     // Validate the query
     const validationErrors = validate(schema, document);
     if (validationErrors.length > 0) {
-      console.log(validationErrors[0].locations);
       next(new Error(validationErrors[0].message));
     } else {
       if (isDevelopmentMode()) {
+        // eslint-disable-next-line global-require
         schema = require('../../services/buildSchema');
       }
       const data = await execute({
-        schema, contextValue: getContext(request), document, variableValues: variables
+        schema,
+        contextValue: getContext(request),
+        document,
+        variableValues: variables
       });
       if (data.errors) {
         // Create an Error instance with message and stack trace
-        console.log(data.errors);
         next(new Error(data.errors[0].message));
       } else {
         response.status(OK).json({
@@ -49,7 +51,6 @@ module.exports = async function graphql(request, response, delegate, next) {
       }
     }
   } catch (error) {
-    console.log('query', query);
     next(error);
   }
 };
