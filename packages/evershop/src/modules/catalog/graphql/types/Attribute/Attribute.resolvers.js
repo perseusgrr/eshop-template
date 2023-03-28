@@ -38,12 +38,12 @@ module.exports = {
       if (nameFilter) {
         query.andWhere(
           'attribute.`attribute_name`',
-          'LIKE',
-          `%${nameFilter.value}%`
+          nameFilter.operation,
+          nameFilter.value
         );
         currentFilters.push({
           key: 'name',
-          operation: '=',
+          operation: nameFilter.operation,
           value: nameFilter.value
         });
       }
