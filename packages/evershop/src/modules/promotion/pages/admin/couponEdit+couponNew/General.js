@@ -46,8 +46,8 @@ export default function General({ coupon = {} }) {
         {
           component: { default: Setting },
           props: {
-            startDate: get(coupon, 'startDate.text', ''),
-            endDate: get(coupon, 'endDate.text', ''),
+            startDate: get(coupon, 'startDate', ''),
+            endDate: get(coupon, 'endDate', ''),
             discountAmount: get(coupon, 'discountAmount')
           },
           sortOrder: 40
@@ -97,12 +97,8 @@ export const query = `
       description
       discountAmount
       freeShipping
-      startDate {
-        text
-      }
-      endDate {
-        text
-      }
+      startDate
+      endDate
     }
   }
 `;

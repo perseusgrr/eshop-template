@@ -46,11 +46,6 @@ export function SubmitButton({
           formData.set(key, value);
         }
       }
-      // Modify the url key to be unique
-      formData.set(
-        'url_key',
-        `${formData.get('url_key')}-${formData.get('sku')}`
-      );
       const productData = serializeForm(formData.entries());
       productData.attributes = productData.attributes || [];
       productData.attributes = productData.attributes.map((attribute) => {
