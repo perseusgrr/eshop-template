@@ -1,16 +1,17 @@
 {
   "type": "object",
   "properties": {
-    "name": {
-      "type": "string"
-    },
     "cost": {
       "type": ["string", "number"],
       "pattern": "^\\d+(\\.\\d{1,2})?$"
     },
     "is_enabled": {
-      "type": ["integer", "string"],
-      "enum": [0, 1, "0", "1"]
+      "type": ["integer", "string", "boolean"],
+      "enum": [0, 1, "0", "1", true, false]
+    },
+    "calculation_type": {
+      "type": "string",
+      "enum": ["flat_rate", "api"]
     },
     "condition_type": {
       "type": "string",
@@ -19,27 +20,18 @@
     "calculate_api": {
       "type": "string"
     },
-    "min_weight": {
+    "min": {
       "type": ["string", "number"],
       "pattern": "^\\d+(\\.\\d{1,2})?$"
     },
-    "max_weight": {
-      "type": ["string", "number"],
-      "pattern": "^\\d+(\\.\\d{1,2})?$"
-    },
-    "min_price": {
-      "type": ["string", "number"],
-      "pattern": "^\\d+(\\.\\d{1,2})?$"
-    },
-    "max_price": {
+    "max": {
       "type": ["string", "number"],
       "pattern": "^\\d+(\\.\\d{1,2})?$"
     }
   },
   "additionalProperties": true,
   "required": [
-    "name",
-    "cost",
-    "condition_type"
+    "condition_type",
+    "calculation_type"
   ]
 }

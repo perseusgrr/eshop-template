@@ -9,8 +9,12 @@
       "pattern": "^\\d+(\\.\\d{1,2})?$"
     },
     "is_enabled": {
-      "type": ["integer", "string"],
-      "enum": [0, 1, "0", "1"]
+      "type": ["integer", "string", "boolean"],
+      "enum": [0, 1, "0", "1", true, false]
+    },
+    "calculation_type": {
+      "type": "string",
+      "enum": ["flat_rate", "api"]
     },
     "calculate_api": {
       "type": "string"
@@ -19,19 +23,11 @@
       "type": "string",
       "enum": ["weight", "price", "none"]
     },
-    "min_weight": {
+    "min": {
       "type": ["string", "number"],
       "pattern": "^\\d+(\\.\\d{1,2})?$"
     },
-    "max_weight": {
-      "type": ["string", "number"],
-      "pattern": "^\\d+(\\.\\d{1,2})?$"
-    },
-    "min_price": {
-      "type": ["string", "number"],
-      "pattern": "^\\d+(\\.\\d{1,2})?$"
-    },
-    "max_price": {
+    "max": {
       "type": ["string", "number"],
       "pattern": "^\\d+(\\.\\d{1,2})?$"
     }

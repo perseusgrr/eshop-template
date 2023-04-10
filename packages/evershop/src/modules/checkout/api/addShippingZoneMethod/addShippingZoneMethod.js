@@ -22,12 +22,11 @@ module.exports = async (request, response, deledate, next) => {
     method_id,
     cost,
     is_enabled,
+    calculation_type,
     calculate_api,
     condition_type,
-    max_weight,
-    min_weight,
-    max_price,
-    min_price
+    max,
+    min
   } = request.body;
   // Make sure cost or calculate_api is provided
   if (
@@ -47,13 +46,13 @@ module.exports = async (request, response, deledate, next) => {
 
   if (condition_type === 'none') {
     condition_type = null;
-    max_weight = min_weight = max_price = min_price = null;
+    min = max = null;
+  }
+
+  if (calculation_type === 'api') {
+    cost = null;
   } else {
-    if (condition_type === 'weight') {
-      max_price = min_price = null;
-    } else {
-      max_weight = min_weight = null;
-    }
+    calculate_api = null;
   }
 
   const connection = await getConnection();
@@ -103,10 +102,9 @@ module.exports = async (request, response, deledate, next) => {
         cost,
         is_enabled,
         calculate_api,
-        max_weight,
-        min_weight,
-        max_price,
-        min_price
+        condition_type,
+        max,
+        min
       })
       .execute(connection);
     await commit(connection);
