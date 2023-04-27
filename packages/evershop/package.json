@@ -13,6 +13,7 @@
     "prepublishOnly": "node prepublish.js",
     "prepack": "node prepublish.js",
     "dev": "evershop dev",
+    "dev:debug": "evershop dev --debug",
     "build": "evershop build",
     "start": "evershop start",
     "test": "jest"
@@ -60,6 +61,7 @@
     "clean-css": "^5.3.1",
     "config": "^3.3.6",
     "cookie-parser": "^1.4.6",
+    "cross-spawn": "^7.0.3",
     "css-loader": "^6.7.1",
     "csv-parser": "^3.0.0",
     "dayjs": "^1.10.6",
