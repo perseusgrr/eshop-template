@@ -1,14 +1,32 @@
-const { execute } = require('@evershop/mysql-query-builder');
-const { pool } = require('../../../lib/mysql/connection');
+const { execute } = require('@evershop/postgres-query-builder');
 
 // eslint-disable-next-line no-multi-assign
-module.exports = exports = async () => {
-  await execute(pool, `ALTER TABLE \`cart\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`cart_id\``);
-  await execute(pool, `ALTER TABLE \`order\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`order_id\``);
-  await execute(pool, `ALTER TABLE \`cart_item\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`cart_item_id\``);
-  await execute(pool, `ALTER TABLE \`order_item\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`order_item_id\``);
-  await execute(pool, `ALTER TABLE \`cart_address\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`cart_address_id\``);
-  await execute(pool, `ALTER TABLE \`order_address\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`order_address_id\``);
-  await execute(pool, `ALTER TABLE \`payment_transaction\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`payment_transaction_id\``);
-  await execute(pool, `ALTER TABLE \`shipment\` ADD \`uuid\` varchar(255) DEFAULT replace(uuid(),'-','') AFTER \`shipment_id\``);
+module.exports = exports = async (connection) => {
+  // Reduce product stock when order is placed if product manage stock is true
+  await execute(
+    connection,
+    `CREATE OR REPLACE FUNCTION reduce_product_stock_when_order_placed()
+        RETURNS TRIGGER 
+        LANGUAGE PLPGSQL
+        AS
+      $$
+      BEGIN
+        UPDATE product_inventory SET qty = qty - NEW.qty WHERE product_id = NEW.product_id AND manage_stock = TRUE;
+        RETURN NEW;
+      END
+      $$;`
+  );
+
+  // Remove the trigger if it exists
+  await execute(
+    connection,
+    `DROP TRIGGER IF EXISTS "TRIGGER_AFTER_INSERT_ORDER_ITEM" ON "order_item"`
+  );
+
+  await execute(
+    connection,
+    `CREATE TRIGGER "TRIGGER_AFTER_INSERT_ORDER_ITEM" AFTER INSERT ON "order_item" FOR EACH ROW
+    EXECUTE PROCEDURE reduce_product_stock_when_order_placed();
+    `
+  );
 };
