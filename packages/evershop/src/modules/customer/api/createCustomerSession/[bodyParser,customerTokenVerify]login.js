@@ -21,7 +21,6 @@ module.exports = async (request, response, delegate, next) => {
   const customer = await select()
     .from('customer')
     .where('email', '=', email)
-    .and('status', '=', 1)
     .load(pool);
 
   if (!customer) {
