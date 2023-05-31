@@ -50,25 +50,25 @@ async function install() {
     {
       type: 'input',
       name: 'databaseHost',
-      message: 'Postgres Database Host (localhost)',
+      message: 'PostgreSQL Database Host (localhost)',
       initial: 'localhost'
     },
     {
       type: 'input',
       name: 'databasePort',
-      message: 'Postgres Database Port (5432)',
+      message: 'PostgreSQL Database Port (5432)',
       initial: 5432
     },
     {
       type: 'input',
       name: 'databaseName',
-      message: 'Postgres Database Name (evershop)',
+      message: 'PostgreSQL Database Name (evershop)',
       initial: 'evershop'
     },
     {
       type: 'input',
       name: 'databaseUser',
-      message: 'Postgres Database User (postgres)',
+      message: 'PostgreSQL Database User (postgres)',
       initial: 'postgres'
     },
     {
