@@ -14,7 +14,6 @@ const { getTaxRates } = require('../../../tax/services/getTaxRates');
 const {
   calculateTaxAmount
 } = require('../../../tax/services/calculateTaxAmount');
-const { getConfig } = require('@evershop/evershop/src/lib/util/getConfig');
 // eslint-disable-next-line no-multi-assign
 module.exports = exports = {};
 
@@ -59,7 +58,7 @@ exports.Cart = class Cart extends DataObject {
       key: 'currency',
       resolvers: [
         async function resolver() {
-          const currency = getConfig('shop.currency', 'USD');
+          const currency = await getSetting('storeCurrency', 'USD');
           return currency;
         }
       ]

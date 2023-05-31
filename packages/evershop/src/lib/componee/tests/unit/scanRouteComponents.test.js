@@ -35,6 +35,8 @@ describe('test scanRouteComponents function', () => {
       themePath
     );
 
+    console.log(components);
+
     expect(components).toBeInstanceOf(Object);
   });
 
@@ -44,6 +46,8 @@ describe('test scanRouteComponents function', () => {
       [...modules, ...extensions],
       themePath
     );
+
+    console.log(components);
 
     expect(components).toEqual({
       'all/Menu.jsx': path.resolve(
@@ -68,6 +72,8 @@ describe('test scanRouteComponents function', () => {
       themePath
     );
 
+    console.log(components);
+
     expect(components['productView/Price.jsx']).toEqual(
       path.resolve(
         __dirname,
@@ -83,6 +89,8 @@ describe('test scanRouteComponents function', () => {
       themePath
     );
 
+    console.log(components);
+
     expect(components['productView/Name.jsx']).toEqual(
       path.resolve(
         __dirname,
@@ -97,6 +105,8 @@ describe('test scanRouteComponents function', () => {
       [...modules, ...extensions],
       path.resolve(__dirname, './__mocks__/themes/justatheme')
     );
+
+    console.log(components);
 
     expect(components['all/Shipping.jsx']).toEqual(
       path.resolve(

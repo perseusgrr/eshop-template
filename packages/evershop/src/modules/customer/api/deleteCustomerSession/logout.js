@@ -11,11 +11,10 @@ module.exports = async (request, response, delegate, next) => {
     const { id } = request.params;
     // Delete the secret from the database
     await del('user_token_secret').where('user_id', '=', id).execute(pool);
-    response.status(OK);
-    response.$body = {
+
+    return response.status(OK).json({
       data: {}
-    };
-    next();
+    });
   } catch (e) {
     response.status(INTERNAL_SERVER_ERROR);
     return response.json({
