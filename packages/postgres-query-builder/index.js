@@ -16,7 +16,9 @@ class Select {
     } else {
       f += `"${field}"`;
     }
-    if (alias) f += ` AS "${alias}"`;
+    if (alias) {
+      f += ` AS "${alias}"`;
+    }
 
     this._fields.push(f);
     return this;
@@ -275,7 +277,9 @@ class Join {
 
     let stm = '';
     this._joins.forEach((join) => {
-      stm += `${join.type} ${join.table} AS ${join.alias} ${join.on.render()} `;
+      stm += `${join.type} "${join.table}" AS "${
+        join.alias
+      }" ${join.on.render()} `;
       Object.assign(this._query._binding, join.on.getBinding());
     });
     return stm;
@@ -603,7 +607,7 @@ class SelectQuery extends Query {
     } catch (e) {
       if (e.code === '42703') {
         this.removeOrderBy();
-        return await super.execute(connection, releaseConnection);
+        return await super.execute(connection, false);
       } else if (e.code.toLowerCase() === '22p02') {
         // In case of invalid input type, we consider it as empty result
         return [];
