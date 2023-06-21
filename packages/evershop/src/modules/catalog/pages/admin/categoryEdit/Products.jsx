@@ -8,9 +8,9 @@ import AddProducts from '@components/admin/catalog/category/categoryEdit/AddProd
 import Spinner from '@components/common/Spinner';
 
 const ProductsQuery = `
-  query Query ($id: Int, $filters: [FilterInput!]) {
+  query Query ($id: Int, $page: String!, $name: String!) {
     category (id: $id) {
-      products (filters: $filters) {
+      products (filters: [{key: "page", operation: "=", value: $page}, {key: "limit", operation: "=", value: "10"}, {key: "name", operation: "=", value: $name}]) {
         items {
           productId
           uuid
@@ -33,8 +33,10 @@ const ProductsQuery = `
   }
 `;
 
-export default function Products({ category: { categoryId, addProductApi } }) {
-  const [keyword, setKeyword] = React.useState('');
+export default function Products({
+  category: { categoryId, code, addProductApi }
+}) {
+  const [name, setName] = React.useState('');
   const [page, setPage] = React.useState(1);
   const [removing, setRemoving] = React.useState([]);
   const modal = useModal();
@@ -42,19 +44,7 @@ export default function Products({ category: { categoryId, addProductApi } }) {
   // Run query again when page changes
   const [result, reexecuteQuery] = useQuery({
     query: ProductsQuery,
-    variables: {
-      id: parseInt(categoryId),
-      filters: !keyword
-        ? [
-            { key: 'page', operation: '=', value: page.toString() },
-            { key: 'limit', operation: '=', value: '10' }
-          ]
-        : [
-            { key: 'page', operation: '=', value: page.toString() },
-            { key: 'limit', operation: '=', value: '10' },
-            { key: 'keyword', operation: '=', value: keyword }
-          ]
-    },
+    variables: { id: parseInt(categoryId), page: page.toString(), name: name },
     pause: true
   });
 
@@ -87,7 +77,7 @@ export default function Products({ category: { categoryId, addProductApi } }) {
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, [keyword]);
+  }, [name]);
 
   React.useEffect(() => {
     if (result.fetching) {
@@ -143,9 +133,9 @@ export default function Products({ category: { categoryId, addProductApi } }) {
             <div className="border rounded border-divider mb-2">
               <input
                 type="text"
-                value={keyword}
+                value={name}
                 placeholder="Search products"
-                onChange={(e) => setKeyword(e.target.value)}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             {data && (
@@ -236,7 +226,7 @@ export default function Products({ category: { categoryId, addProductApi } }) {
                             onClick={async (e) => {
                               e.preventDefault();
                               await removeProduct(
-                                p.removeFromCategoryUrl,
+                                p.removeFromCollectionUrl,
                                 p.uuid
                               );
                             }}

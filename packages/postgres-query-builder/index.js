@@ -43,32 +43,6 @@ class Select {
   }
 }
 
-class RawLeaf {
-  constructor(link, rawSql, binding = {}) {
-    this._link = link;
-    this._binding = binding;
-    this._rawSql = rawSql;
-  }
-
-  getBinding() {
-    return this._binding;
-  }
-
-  parent() {
-    return this._parent;
-  }
-
-  render() {
-    return `${this._link} ${this._rawSql}`;
-  }
-
-  clone(node) {
-    let cp = new RawLeaf(this._link, this._rawSql, this._binding);
-    cp._parent = node;
-    return cp;
-  }
-}
-
 class Leaf {
   constructor(link, field, operator, value, node) {
     this._binding = [];
@@ -167,11 +141,6 @@ class Node {
     return this;
   }
 
-  addRaw(link, sql, binding = {}) {
-    this._tree.push(new RawLeaf(link, sql, binding));
-    return this;
-  }
-
   addNode(node) {
     node._parent = this;
     this._tree.push(node);
@@ -187,9 +156,7 @@ class Node {
   }
 
   getLeafs() {
-    return this._tree.filter(
-      (e) => e.constructor.name === 'Leaf' || e.constructor.name === 'RawLeaf'
-    );
+    return this._tree.filter((e) => e.constructor.name === 'Leaf');
   }
 
   getNodes() {
@@ -265,7 +232,7 @@ class Node {
     cp._link = this._link;
     cp._parent = parent;
     cp._tree = this._tree.map((t) => {
-      if (t.constructor === Leaf || t.constructor === RawLeaf) {
+      if (t.constructor === Leaf) {
         return t.clone(cp);
       } else {
         return t.clone(query, cp);
@@ -471,7 +438,6 @@ class OrderBy {
 class Query {
   constructor() {
     this._where = new Where(this);
-    this._where._link = 'AND';
     this._binding = [];
   }
 
@@ -641,7 +607,7 @@ class SelectQuery extends Query {
     } catch (e) {
       if (e.code === '42703') {
         this.removeOrderBy();
-        return await super.execute(connection, false);
+        return await super.execute(connection, releaseConnection);
       } else if (e.code.toLowerCase() === '22p02') {
         // In case of invalid input type, we consider it as empty result
         return [];

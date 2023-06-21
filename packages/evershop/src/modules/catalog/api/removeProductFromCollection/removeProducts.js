@@ -7,6 +7,7 @@ const {
   INTERNAL_SERVER_ERROR
 } = require('@evershop/evershop/src/lib/util/httpStatus');
 const {
+  insert,
   startTransaction,
   rollback,
   commit,
@@ -24,7 +25,6 @@ module.exports = async (request, response, delegate, next) => {
       .from('collection')
       .where('uuid', '=', collection_id)
       .load(connection);
-
     if (!collection) {
       response.status(INVALID_PAYLOAD);
       response.json({
@@ -38,7 +38,6 @@ module.exports = async (request, response, delegate, next) => {
       .from('product')
       .where('uuid', '=', product_id)
       .load(connection);
-
     if (!product) {
       response.status(INVALID_PAYLOAD);
       response.json({

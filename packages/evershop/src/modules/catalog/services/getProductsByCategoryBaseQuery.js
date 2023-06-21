@@ -1,12 +1,26 @@
-const { execute } = require('@evershop/postgres-query-builder');
+const { select, node, execute } = require('@evershop/postgres-query-builder');
+const { getConfig } = require('@evershop/evershop/src/lib/util/getConfig');
 const { pool } = require('@evershop/evershop/src/lib/postgres/connection');
-const { getProductsBaseQuery } = require('./getProductsBaseQuery');
 
 module.exports.getProductsByCategoryBaseQuery = async (
   categoryId,
   fromSubCategories = false
 ) => {
-  const query = getProductsBaseQuery();
+  const query = select().from('product');
+  query
+    .leftJoin('product_description')
+    .on(
+      'product_description.product_description_product_id',
+      '=',
+      'product.product_id'
+    );
+  query
+    .innerJoin('product_inventory')
+    .on(
+      'product_inventory.product_inventory_product_id',
+      '=',
+      'product.product_id'
+    );
 
   if (!fromSubCategories) {
     query.where('product.category_id', '=', categoryId);
@@ -25,6 +39,16 @@ module.exports.getProductsByCategoryBaseQuery = async (
     const categoryIds = subCategories.map((category) => category.category_id);
     query.where('product.category_id', 'IN', categoryIds);
   }
+  query.andWhere('product.status', '=', 1);
 
+  if (getConfig('catalog.showOutOfStockProduct', false) === false) {
+    query
+      .andWhere('product_inventory.manage_stock', '=', false)
+      .addNode(
+        node('OR')
+          .addLeaf('AND', 'product_inventory.qty', '>', 0)
+          .addLeaf('AND', 'product_inventory.stock_availability', '=', true)
+      );
+  }
   return query;
 };

@@ -24,17 +24,7 @@ type Product {
   deleteApi: String!
 }
 
-"""
-Returns a collection of products.
-"""
-type ProductCollection {
-  items: [Product]
-  currentPage: Int!
-  total: Int!
-  currentFilters: [Filter]
-}
-
 extend type Query {
   product(id: ID): Product
-  products(filters: [FilterInput]): ProductCollection
+  searchProducts(query: String, page: Int, limit: Int): ProductCollection
 }
