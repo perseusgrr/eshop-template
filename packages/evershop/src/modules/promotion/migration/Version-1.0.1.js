@@ -1,17 +1,24 @@
-const { execute } = require('@evershop/mysql-query-builder');
+const { execute } = require('@evershop/postgres-query-builder');
 
 // eslint-disable-next-line no-multi-assign
 module.exports = exports = async (connection) => {
   await execute(
     connection,
-    'ALTER TABLE `coupon` MODIFY `condition` TEXT NULL DEFAULT NULL'
+    `ALTER TABLE "coupon" ALTER COLUMN "target_products" TYPE jsonb USING "target_products"::jsonb`
   );
+
   await execute(
     connection,
-    "ALTER TABLE `coupon` MODIFY uuid varchar(36) NOT NULL DEFAULT (replace(uuid(),'-',''))"
+    `ALTER TABLE "coupon" ALTER COLUMN "condition" TYPE jsonb USING "condition"::jsonb`
   );
+
   await execute(
     connection,
-    'ALTER TABLE `coupon` ADD UNIQUE KEY `COUPON_UUID` (`uuid`)'
+    `ALTER TABLE "coupon" ALTER COLUMN "user_condition" TYPE jsonb USING "user_condition"::jsonb`
+  );
+
+  await execute(
+    connection,
+    `ALTER TABLE "coupon" ALTER COLUMN "buyx_gety" TYPE jsonb USING "buyx_gety"::jsonb`
   );
 };
