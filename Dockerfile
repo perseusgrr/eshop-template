@@ -1,9 +1,9 @@
-FROM mariadb:latest
+FROM node:18-alpine
+WORKDIR /app
+RUN npm install -g npm@9
+COPY package*.json .
+RUN npm install
+RUN npm run build
 
-ENV MARIADB_ROOT_PASSWORD 123456
-ENV MARIADB_RANDOM_ROOT_PASSWORD ''
-ENV MARIADB_DATABASE nodejscart
-ENV MARIADB_USER admin
-ENV MARIADB_PASSWORD 123456
-
-COPY /db.sql /docker-entrypoint-initdb.d/
+EXPOSE 80
+CMD ["npm", "run", "start:prod"]
