@@ -11,16 +11,24 @@ function getUrls(image) {
   const listingVersion = image.replace(/.([^.]*)$/, '-list.$1');
   const thumb = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, thumbVersion))
     ? `/assets${thumbVersion}`
-    : null;
+    : `/assets/theme/frontStore${getConfig(
+        'catalog.product.image.placeHolder'
+      )}`;
   const single = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, singleVersion))
     ? `/assets${singleVersion}`
-    : null;
+    : `/assets/theme/frontStore${getConfig(
+        'catalog.product.image.placeHolder'
+      )}`;
   const listing = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, listingVersion))
     ? `/assets${listingVersion}`
-    : null;
+    : `/assets/theme/frontStore${getConfig(
+        'catalog.product.image.placeHolder'
+      )}`;
   const origin = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, image))
     ? `/assets${image}`
-    : null;
+    : `/assets/theme/frontStore${getConfig(
+        'catalog.product.image.placeHolder'
+      )}`;
   return {
     thumb,
     single,

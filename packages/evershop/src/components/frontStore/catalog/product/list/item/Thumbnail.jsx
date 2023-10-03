@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import '@components/frontStore/catalog/product/list/item/Thumbnail.scss';
-import ProductNoThumbnail from '@components/common/ProductNoThumbnail';
+import NoThumbnail from '@components/frontStore/catalog/product/single/NoThumbnail';
 
 function Thumbnail({ url, imageUrl, alt }) {
   return (
@@ -13,7 +13,7 @@ function Thumbnail({ url, imageUrl, alt }) {
       )}
       {!imageUrl && (
         <a href={url}>
-          <ProductNoThumbnail width={100} height={100} />
+          <NoThumbnail width={100} height={100} />
         </a>
       )}
     </div>
