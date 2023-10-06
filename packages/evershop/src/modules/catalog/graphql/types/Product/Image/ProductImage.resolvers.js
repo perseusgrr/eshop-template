@@ -3,7 +3,6 @@ const path = require('path');
 const { select } = require('@evershop/postgres-query-builder');
 const uniqid = require('uniqid');
 const { CONSTANTS } = require('@evershop/evershop/src/lib/helpers');
-const { getConfig } = require('@evershop/evershop/src/lib/util/getConfig');
 
 function getUrls(image) {
   const thumbVersion = image.replace(/.([^.]*)$/, '-thumb.$1');
@@ -11,24 +10,16 @@ function getUrls(image) {
   const listingVersion = image.replace(/.([^.]*)$/, '-list.$1');
   const thumb = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, thumbVersion))
     ? `/assets${thumbVersion}`
-    : `/assets/theme/frontStore${getConfig(
-        'catalog.product.image.placeHolder'
-      )}`;
+    : null;
   const single = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, singleVersion))
     ? `/assets${singleVersion}`
-    : `/assets/theme/frontStore${getConfig(
-        'catalog.product.image.placeHolder'
-      )}`;
+    : null;
   const listing = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, listingVersion))
     ? `/assets${listingVersion}`
-    : `/assets/theme/frontStore${getConfig(
-        'catalog.product.image.placeHolder'
-      )}`;
+    : null;
   const origin = fs.existsSync(path.join(CONSTANTS.MEDIAPATH, image))
     ? `/assets${image}`
-    : `/assets/theme/frontStore${getConfig(
-        'catalog.product.image.placeHolder'
-      )}`;
+    : null;
   return {
     thumb,
     single,
