@@ -3,8 +3,9 @@ import React from 'react';
 import { useAppState } from '@components/common/context/app';
 import { Card } from '@components/admin/cms/Card';
 
-export default function BestCustomers({ listUrl, setting }) {
+export default function BestCustomers({ listUrl }) {
   const context = useAppState();
+  const currency = context.currency || 'USD';
   const customers = context.bestCustomers || [];
 
   return (
@@ -32,7 +33,7 @@ export default function BestCustomers({ listUrl, setting }) {
             {customers.map((c, i) => {
               const grandTotal = new Intl.NumberFormat('en', {
                 style: 'currency',
-                currency: setting.storeCurrency
+                currency
               }).format(c.total);
               return (
                 // eslint-disable-next-line react/no-array-index-key
@@ -53,17 +54,5 @@ export default function BestCustomers({ listUrl, setting }) {
 }
 
 BestCustomers.propTypes = {
-  setting: PropTypes.shape({
-    storeCurrency: PropTypes.string
-  }).isRequired,
   listUrl: PropTypes.string.isRequired
 };
-
-export const query = `
-  query Query {
-    setting {
-      storeCurrency
-    }
-    listUrl: url(routeId: "productGrid")
-  }
-`;
