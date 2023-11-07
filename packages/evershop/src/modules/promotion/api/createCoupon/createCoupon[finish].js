@@ -1,9 +1,10 @@
-const createProduct = require('../../services/product/createProduct');
+const createCoupon = require('../../services/coupon/createCoupon');
 
 // eslint-disable-next-line no-unused-vars
 module.exports = async (request, response, delegate) => {
-  const result = await createProduct(request.body, {
+  const coupon = await createCoupon(request.body, {
     routeId: request.currentRoute.id
   });
-  return result;
+
+  return coupon;
 };

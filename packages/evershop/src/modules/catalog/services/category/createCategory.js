@@ -46,45 +46,58 @@ async function insertCategoryData(data, connection) {
     }
   }
 
-  const result = await insert('category').given(data).execute(connection);
+  const category = await insert('category').given(data).execute(connection);
   const description = await insert('category_description')
     .given(data)
-    .prime('category_description_category_id', result.insertId)
+    .prime('category_description_category_id', category.insertId)
     .execute(connection);
 
   return {
     ...description,
-    ...result
+    ...category
   };
 }
 
 /**
  * Create category service. This service will create a category with all related data
  * @param {Object} data
+ * @param {Object} connection
  */
-async function createCategory(data) {
+async function createCategory(data, connection) {
+  const categoryData = await getValue('categoryDataBeforeCreate', data);
+  // Validate category data
+  validateCategoryDataBeforeInsert(categoryData);
+
+  // Insert category data
+  const category = await hookable(insertCategoryData, { connection })(
+    categoryData,
+    connection
+  );
+
+  return category;
+}
+
+module.exports = async (data, context) => {
   const connection = await getConnection();
   await startTransaction(connection);
   try {
-    const categoryData = await getValue('categoryDataBeforeCreate', data);
-    // Validate category data
-    validateCategoryDataBeforeInsert(categoryData);
-
-    // Insert category data
-    const category = await hookable(insertCategoryData, { connection })(
-      categoryData,
+    const hookContext = {
+      connection
+    };
+    // Make sure the context is either not provided or is an object
+    if (context && typeof context !== 'object') {
+      throw new Error('Context must be an object');
+    }
+    // Merge hook context with context
+    Object.assign(hookContext, context);
+    const category = await hookable(createCategory, hookContext)(
+      data,
       connection
     );
-
     await commit(connection);
     return category;
   } catch (e) {
     await rollback(connection);
     throw e;
   }
-}
-
-module.exports = async (data) => {
-  const result = await hookable(createCategory)(data);
-  return result;
 };
