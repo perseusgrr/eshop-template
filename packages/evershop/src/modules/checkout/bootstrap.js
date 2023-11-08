@@ -1,30 +1,36 @@
-const { request } = require('express');
-const { getContextValue } = require('../graphql/services/contextHelper');
-const { getCartByUUID } = require('./services/getCartByUUID');
+const { error } = require('../../lib/log/debuger');
+const { addProcessor, addFinalProcessor } = require('../../lib/util/registry');
+const { sortFields } = require('./services/cart/sortFields');
+const {
+  registerCartBaseFields
+} = require('./services/cart/registerCartBaseFields');
+
+const {
+  registerCartItemBaseFields
+} = require('./services/cart/registerCartItemBaseFields');
 
 module.exports = () => {
-  /**
-   * This method get the current cart object
-   * It requires a jwt token must be available, else it will return null
-   * If this function is called with a cartId,
-   * it will return the cart by that id. Else it will return the cart by the token payload
-   * @returns {Promise<Cart>}
-   * @returns {Promise<null>}
-   */
-  request.getCart = async function getCart(uuid) {
-    this.locals = this.locals || {};
-    if (this.locals?.cart) {
-      return this.locals.cart;
-    }
-    if (uuid) {
-      this.locals.cart = await getCartByUUID(uuid);
-    } else {
-      const id = getContextValue(this, 'cartId');
-      if (id) {
-        this.locals.cart = await getCartByUUID(id);
-      }
-    }
+  addProcessor('cartFields', registerCartBaseFields, 0);
 
-    return this.locals.cart || null;
-  };
+  addProcessor('cartItemFields', registerCartItemBaseFields, 0);
+
+  addFinalProcessor('cartFields', (fields) => {
+    try {
+      const sortedFields = sortFields(fields);
+      return sortedFields;
+    } catch (e) {
+      error(e);
+      throw e;
+    }
+  });
+
+  addFinalProcessor('cartItemFields', (fields) => {
+    try {
+      const sortedFields = sortFields(fields);
+      return sortedFields;
+    } catch (e) {
+      error(e);
+      throw e;
+    }
+  });
 };
