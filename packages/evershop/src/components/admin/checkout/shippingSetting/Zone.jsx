@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import { Card } from '@components/admin/cms/Card';
 import MapIcon from '@heroicons/react/solid/esm/LocationMarkerIcon';
 import { useModal } from '@components/common/modal/useModal';
-import ZoneForm from './ZoneForm';
-import { Methods } from './Methods';
-
-Zone.propTypes = {};
+import ZoneForm from '@components/admin/checkout/shippingSetting/ZoneForm';
+import { Methods } from '@components/admin/checkout/shippingSetting/Methods';
 
 function Zone({ zone, countries, getZones }) {
   const modal = useModal();
@@ -15,7 +15,7 @@ function Zone({ zone, countries, getZones }) {
       title={
         <div className="flex justify-between items-center gap-2">
           <div>{zone.name}</div>
-          <div>
+          <div className="flex justify-between gap-2">
             <a
               href="#"
               className="text-interactive"
@@ -25,6 +25,33 @@ function Zone({ zone, countries, getZones }) {
               }}
             >
               Edit Zone
+            </a>
+            <a
+              className="text-critical"
+              href="#"
+              onClick={async (e) => {
+                e.preventDefault();
+                try {
+                  const response = await axios.delete(zone.deleteApi);
+                  if (response.status === 200) {
+                    // Toast success
+                    toast.success('Zone removed successfully');
+                    // Delay for 2 seconds
+                    setTimeout(() => {
+                      // Reload page
+                      window.location.reload();
+                    }, 1500);
+                  } else {
+                    // Toast error
+                    toast.error('Failed to remove zone');
+                  }
+                } catch (error) {
+                  // Toast error
+                  toast.error('Failed to remove zone');
+                }
+              }}
+            >
+              Remove Zone
             </a>
           </div>
         </div>
@@ -37,7 +64,7 @@ function Zone({ zone, countries, getZones }) {
           </div>
           <div className="flex-grow px-1">
             <div>
-              <b>{zone.country.name}</b>
+              <b>{zone.country?.name || 'Worldwide'}</b>
             </div>
             <div>
               {zone.provinces
@@ -81,5 +108,40 @@ function Zone({ zone, countries, getZones }) {
     </Card.Session>
   );
 }
+
+Zone.propTypes = {
+  zone: PropTypes.shape({
+    name: PropTypes.string,
+    country: PropTypes.shape({
+      name: PropTypes.string
+    }),
+    provinces: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string
+      })
+    ),
+    methods: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string
+      })
+    ),
+    addMethodApi: PropTypes.string,
+    deleteApi: PropTypes.string,
+    updateApi: PropTypes.string
+  }).isRequired,
+  countries: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      code: PropTypes.string,
+      provinces: PropTypes.arrayOf(
+        PropTypes.shape({
+          name: PropTypes.string,
+          code: PropTypes.string
+        })
+      )
+    })
+  ).isRequired,
+  getZones: PropTypes.func.isRequired
+};
 
 export default Zone;

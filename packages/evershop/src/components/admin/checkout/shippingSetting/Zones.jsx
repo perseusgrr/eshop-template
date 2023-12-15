@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Zone from './Zone';
+import Zone from '@components/admin/checkout/shippingSetting/Zone';
 
 export function Zones({ countries, getZones, zones }) {
   return (
     <>
-      {zones.map((zone) => {
-        return <Zone zone={zone} getZones={getZones} countries={countries} />;
-      })}
+      {zones.map((zone) => (
+        <Zone zone={zone} getZones={getZones} countries={countries} />
+      ))}
     </>
   );
 }
@@ -36,7 +36,8 @@ Zones.propTypes = {
           uuid: PropTypes.string.isRequired,
           name: PropTypes.string.isRequired
         })
-      ).isRequired
+      ).isRequired,
+      deleteApi: PropTypes.string.isRequired
     })
   ).isRequired,
   getZones: PropTypes.func.isRequired

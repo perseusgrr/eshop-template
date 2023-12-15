@@ -10,6 +10,8 @@ import CreatableSelect from 'react-select/creatable';
 import Spinner from '@components/common/Spinner';
 import { useQuery } from 'urql';
 import { toast } from 'react-toastify';
+import PriceBasedPrice from '@components/admin/checkout/shippingSetting/PriceBasedPrice';
+import WeightBasedPrice from '@components/admin/checkout/shippingSetting/WeightBasedPrice';
 
 const MethodsQuery = `
   query Methods {
@@ -36,54 +38,65 @@ function Condition({ method }) {
           value={type}
         />
       </div>
-      {type === 'price' && (
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <Field
-              name="min"
-              label={
-                method.conditionType === 'price'
-                  ? 'Minimum order price'
-                  : 'Minimum order weight'
-              }
-              placeholder={
-                method.conditionType === 'price'
-                  ? 'Minimum order price'
-                  : 'Minimum order weight'
-              }
-              type="text"
-              value={method?.min}
-              validationRules={['notEmpty']}
-            />
-          </div>
-          <div>
-            <Field
-              name="max"
-              label={
-                method.conditionType === 'price'
-                  ? 'Maximum order price'
-                  : 'Maximum order weight'
-              }
-              placeholder={
-                method.conditionType === 'price'
-                  ? 'Maximum order price'
-                  : 'Maximum order weight'
-              }
-              type="text"
-              value={method?.max}
-              validationRules={['notEmpty']}
-            />
-          </div>
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <Field
+            name="min"
+            label={
+              type === 'price' ? 'Minimum order price' : 'Minimum order weight'
+            }
+            placeholder={
+              type === 'price' ? 'Minimum order price' : 'Minimum order weight'
+            }
+            type="text"
+            value={method?.min}
+            validationRules={['notEmpty']}
+          />
         </div>
-      )}
+        <div>
+          <Field
+            name="max"
+            label={
+              type === 'price' ? 'Maximum order price' : 'Maximum order weight'
+            }
+            placeholder={
+              type === 'price' ? 'Maximum order price' : 'Maximum order weight'
+            }
+            type="text"
+            value={method?.max}
+            validationRules={['notEmpty']}
+          />
+        </div>
+      </div>
     </div>
   );
 }
 
+Condition.propTypes = {
+  method: PropTypes.shape({
+    conditionType: PropTypes.string,
+    min: PropTypes.string,
+    max: PropTypes.string
+  })
+};
+
+Condition.defaultProps = {
+  method: null
+};
+
 function MethodForm({ saveMethodApi, closeModal, getZones, method }) {
-  const [type, setType] = React.useState(
-    method?.calculateApi ? 'api' : 'flat_rate'
-  );
+  const [type, setType] = React.useState(() => {
+    if (method?.calculateApi) {
+      return 'api';
+    }
+    if (method?.priceBasedCost) {
+      return 'price_based_rate';
+    }
+    if (method?.weightBasedCost) {
+      return 'weight_based_rate';
+    }
+    return 'flat_rate';
+  });
   const [isLoading, setIsLoading] = React.useState(false);
   const [shippingMethod, setMethod] = React.useState(
     method
@@ -94,7 +107,7 @@ function MethodForm({ saveMethodApi, closeModal, getZones, method }) {
       : null
   );
   const [hasCondition, setHasCondition] = React.useState(
-    method?.conditionType ? true : false
+    !!method?.conditionType
   );
 
   const [result, reexecuteQuery] = useQuery({
@@ -136,6 +149,7 @@ function MethodForm({ saveMethodApi, closeModal, getZones, method }) {
           if (!response.error) {
             await getZones({ requestPolicy: 'network-only' });
             closeModal();
+            toast.success('Shipping method saved successfully');
           } else {
             toast.error(response.error.message);
           }
@@ -164,6 +178,8 @@ function MethodForm({ saveMethodApi, closeModal, getZones, method }) {
             name="calculation_type"
             options={[
               { text: 'Flat rate', value: 'flat_rate' },
+              { text: 'Price based rate', value: 'price_based_rate' },
+              { text: 'Weight based rate', value: 'weight_based_rate' },
               { text: 'API calculate', value: 'api' }
             ]}
             defaultValue={method?.calculateApi ? 'api' : 'flat_rate'}
@@ -181,6 +197,12 @@ function MethodForm({ saveMethodApi, closeModal, getZones, method }) {
               value={method?.cost?.value}
             />
           )}
+          {type === 'price_based_rate' && (
+            <PriceBasedPrice lines={method?.priceBasedCost || []} />
+          )}
+          {type === 'weight_based_rate' && (
+            <WeightBasedPrice lines={method?.weightBasedCost || []} />
+          )}
           {type === 'api' && (
             <Field
               name="calculate_api"
@@ -196,13 +218,13 @@ function MethodForm({ saveMethodApi, closeModal, getZones, method }) {
             className="text-interactive"
             onClick={(e) => {
               e.preventDefault();
-              hasCondition ? setHasCondition(false) : setHasCondition(true);
+              setHasCondition(!hasCondition);
             }}
           >
             {hasCondition ? 'Remove condition' : 'Add condition'}
           </a>
           {!hasCondition && (
-            <input name="condition_type" type="hidden" value={'none'} />
+            <input name="condition_type" type="hidden" value="none" />
           )}
           {hasCondition && <Condition method={method} />}
         </Card.Session>
@@ -233,10 +255,41 @@ MethodForm.propTypes = {
   closeModal: PropTypes.func.isRequired,
   getZones: PropTypes.func.isRequired,
   method: PropTypes.shape({
+    methodId: PropTypes.string,
     name: PropTypes.string,
-    cost: PropTypes.string,
-    calculate_api: PropTypes.string
+    isEnabled: PropTypes.bool,
+    calculateApi: PropTypes.string,
+    cost: PropTypes.shape({
+      value: PropTypes.string
+    }),
+    priceBasedCost: PropTypes.arrayOf(
+      PropTypes.shape({
+        minPrice: PropTypes.shape({
+          value: PropTypes.number
+        }),
+        cost: PropTypes.shape({
+          value: PropTypes.number
+        })
+      })
+    ),
+    weightBasedCost: PropTypes.arrayOf(
+      PropTypes.shape({
+        minWeight: PropTypes.shape({
+          value: PropTypes.number
+        }),
+        cost: PropTypes.shape({
+          value: PropTypes.number
+        })
+      })
+    ),
+    conditionType: PropTypes.string,
+    min: PropTypes.string,
+    max: PropTypes.string
   })
+};
+
+MethodForm.defaultProps = {
+  method: null
 };
 
 export default MethodForm;
