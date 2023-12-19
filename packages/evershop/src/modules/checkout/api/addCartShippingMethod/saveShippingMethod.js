@@ -4,10 +4,6 @@ const {
   INTERNAL_SERVER_ERROR,
   INVALID_PAYLOAD
 } = require('@evershop/evershop/src/lib/util/httpStatus');
-const { error } = require('@evershop/evershop/src/lib/log/logger');
-const {
-  translate
-} = require('@evershop/evershop/src/lib/locale/translate/translate');
 const { getCartByUUID } = require('../../services/getCartByUUID');
 const { saveCart } = require('../../services/saveCart');
 
@@ -41,11 +37,10 @@ module.exports = async (request, response, delegate, next) => {
       next();
     }
   } catch (e) {
-    error(e);
     response.status(INTERNAL_SERVER_ERROR);
     response.json({
       error: {
-        message: translate('Failed to set shipping method'),
+        message: e.message,
         status: INTERNAL_SERVER_ERROR
       }
     });

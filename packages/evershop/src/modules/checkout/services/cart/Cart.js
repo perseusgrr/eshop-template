@@ -87,7 +87,7 @@ class Cart extends DataObject {
       if (!duplicateItem) {
         items = items.concat(item);
       }
-      await this.setData('items', items, true);
+      await this.setData('items', items);
       return duplicateItem || item;
     }
   }

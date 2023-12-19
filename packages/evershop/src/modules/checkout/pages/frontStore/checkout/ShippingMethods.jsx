@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { useClient } from 'urql';
 import { useFormContext } from '@components/common/form/Form';
 import { Field } from '@components/common/form/Field';
@@ -106,29 +105,17 @@ export default function ShippingMethods({
     async function saveMethods() {
       // Get the selected method
       const selectedMethod = methods.find((m) => m.selected === true);
-      try {
-        const response = await axios.post(
-          addShippingMethodApi,
-          {
-            method_code: selectedMethod.code,
-            method_name: selectedMethod.name
-          },
-          {
-            validateStatus: () => true
-          }
+      const response = await axios.post(addShippingMethodApi, {
+        method_code: selectedMethod.code,
+        method_name: selectedMethod.name
+      });
+      if (!response.data.error) {
+        const result = await client.query(QUERY, { cartId }).toPromise();
+        const address = result.data.cart.shippingAddress;
+        completeStep(
+          'shipment',
+          `${address.address1}, ${address.city}, ${address.country.name}`
         );
-        if (!response.data.error) {
-          const result = await client.query(QUERY, { cartId }).toPromise();
-          const address = result.data.cart.shippingAddress;
-          completeStep(
-            'shipment',
-            `${address.address1}, ${address.city}, ${address.country.name}`
-          );
-        } else {
-          toast.error(response.data.error.message);
-        }
-      } catch (error) {
-        toast.error(error.message);
       }
     }
     if (formContext.state === 'submitSuccess') {

@@ -10,8 +10,7 @@ class Registry {
       // If the initValue and the context are identical, return the cached value. Skip the processors
       if (
         isEqual(initValue, this.values[name].initValue) &&
-        isEqual(this.values[name].context, context) &&
-        Object.prototype.hasOwnProperty.call(this.values[name], 'value')
+        isEqual(this.values[name].context, context)
       ) {
         return this.values[name].value;
       }
@@ -66,8 +65,7 @@ class Registry {
       // If the initValue and the context are identical, return the cached value. Skip the processors
       if (
         isEqual(initValue, this.values[name].initValue) &&
-        isEqual(this.values[name].context, context) &&
-        Object.prototype.hasOwnProperty.call(this.values[name], 'value')
+        isEqual(this.values[name].context, context)
       ) {
         return this.values[name].value;
       }

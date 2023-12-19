@@ -51,12 +51,6 @@ async function updateProductInventory(inventoryData, productId, connection) {
   }
 }
 
-/**
- * @param {number} productId
- * @param {[{attribute_code: string, value}]} attributes
- * @param {*} connection
- * @returns
- */
 async function saveProductAttributes(productId, attributes, connection) {
   for (let i = 0; i < attributes.length; i += 1) {
     const attribute = attributes[i];

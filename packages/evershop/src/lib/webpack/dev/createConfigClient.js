@@ -97,7 +97,5 @@ module.exports.createConfigClient = function createConfigClient(route) {
     poll: 1000
   };
 
-  // Enable source maps
-  config.devtool = 'eval-cheap-module-source-map';
   return config;
 };
