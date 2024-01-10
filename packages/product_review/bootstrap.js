@@ -1,11 +1,19 @@
-const config = require('config');
+const { addProcessor } = require('@evershop/evershop/src/lib/util/registry');
+const {
+  defaultPaginationFilters
+} = require('@evershop/evershop/src/lib/util/defaultPaginationFilters');
+const registerDefaultReviewCollectionFilters = require('./services/registerDefaultReviewCollectionFilters');
 
 module.exports = () => {
-  // Default configuration
-  const checkoutConfig = {
-      name: 'Shipped',
-      badge: 'success',
-      progress: 'complete'
-    };
-  config.util.setModuleDefaults('checkout.order.shipmentStatus.shipped', checkoutConfig);
+  // Reigtering the default filters for attribute collection
+  addProcessor(
+    'productReviewCollectionFilters',
+    registerDefaultReviewCollectionFilters,
+    1
+  );
+  addProcessor(
+    'productReviewCollectionFilters',
+    (filters) => [...filters, ...defaultPaginationFilters],
+    2
+  );
 };
