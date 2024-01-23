@@ -1,7 +1,6 @@
 const { select } = require('@evershop/postgres-query-builder');
 const { pool } = require('@evershop/evershop/src/lib/postgres/connection');
 const { camelCase } = require('@evershop/evershop/src/lib/util/camelCase');
-const { buildUrl } = require('@evershop/evershop/src/lib/router/buildUrl');
 
 module.exports = {
   Query: {
@@ -12,8 +11,5 @@ module.exports = {
         .execute(pool);
       return shippingMethods.map((row) => camelCase(row));
     }
-  },
-  ShippingMethod: {
-    updateApi: ({ uuid }) => buildUrl('updateShippingMethod', { id: uuid })
   }
 };

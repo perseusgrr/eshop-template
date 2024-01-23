@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
 import CogIcon from '@heroicons/react/outline/CogIcon';
 import { useModal } from '@components/common/modal/useModal';
 import MethodForm from '@components/admin/checkout/shippingSetting/MethodForm';
@@ -45,35 +44,6 @@ function Method({ method, getZones }) {
             }}
           >
             Edit
-          </a>
-          <a
-            href="#"
-            className="text-critical ml-2"
-            onClick={async (e) => {
-              e.preventDefault();
-              try {
-                const response = await fetch(method.deleteApi, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  credentials: 'include'
-                });
-                if (response.ok) {
-                  await getZones();
-                  // Toast success
-                  toast.success('Method removed successfully');
-                } else {
-                  // Toast error
-                  toast.error('Failed to remove method');
-                }
-              } catch (error) {
-                // Toast error
-                toast.error('Failed to remove method');
-              }
-            }}
-          >
-            Delete
           </a>
         </td>
       </>
@@ -121,8 +91,7 @@ Method.propTypes = {
     conditionType: PropTypes.string.isRequired,
     min: PropTypes.number.isRequired,
     max: PropTypes.number.isRequired,
-    updateApi: PropTypes.string.isRequired,
-    deleteApi: PropTypes.string.isRequired
+    updateApi: PropTypes.string.isRequired
   }).isRequired,
   getZones: PropTypes.func.isRequired
 };
