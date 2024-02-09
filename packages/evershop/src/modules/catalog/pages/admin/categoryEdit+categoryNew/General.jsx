@@ -48,16 +48,18 @@ function ParentCategory({ currentId, parent }) {
         </a>
       )}
       {selecting && (
-        <CategoryTree
-          selectedCategory={category}
-          setSelectedCategory={(c) => {
-            if (c.categoryId === currentId) {
-              return;
-            }
-            setCategory(c);
-            setSelecting(false);
-          }}
-        />
+        <div className="absolute top-5 left-0 right-0 bg-[#eff2f5] z-50 border rounded border-[#c9cccf] p-[10px]">
+          <CategoryTree
+            selectedCategory={category}
+            setSelectedCategory={(c) => {
+              if (c.categoryId === currentId) {
+                return;
+              }
+              setCategory(c);
+              setSelecting(false);
+            }}
+          />
+        </div>
       )}
       <input
         type="hidden"

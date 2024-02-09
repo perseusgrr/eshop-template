@@ -32,7 +32,12 @@ function CategoryItem({ category, selectedCategory, setSelectedCategory }) {
   const { data, fetching, error } = result;
 
   if (error) {
-    return <p className="text-critical">{error.message}</p>;
+    return (
+      <p>
+        Oh no...
+        {error.message}
+      </p>
+    );
   }
   return (
     <li>
