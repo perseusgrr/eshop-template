@@ -39,7 +39,7 @@ export default function ReviewForm({ action, product }) {
             method="POST"
             onSuccess={onSuccess}
             isJSON
-            btnText={_("Submit review")}
+            btnText="Submit review"
           >
             <label htmlFor="rating">{_('Your Rating')}</label>
             <div className="rating__stars">
@@ -68,13 +68,13 @@ export default function ReviewForm({ action, product }) {
             />
             <Field
               name="customer_name"
-              label={_("Your Name")}
+              label="Your Name"
               type="text"
               validationRules={['notEmpty']}
             />
             <Field
               name="comment"
-              label={_("Your Comment")}
+              label="Your Comment"
               type="textarea"
               validationRules={['notEmpty']}
             />
