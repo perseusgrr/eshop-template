@@ -1,5 +1,4 @@
 const config = require('config');
-const { merge } = require('@evershop/evershop/src/lib/util/merge');
 const { addProcessor } = require('../../lib/util/registry');
 const registerDefaultProductCollectionFilters = require('./services/registerDefaultProductCollectionFilters');
 const registerDefaultCategoryCollectionFilters = require('./services/registerDefaultCategoryCollectionFilters');
@@ -10,90 +9,16 @@ const {
 } = require('../../lib/util/defaultPaginationFilters');
 
 module.exports = () => {
-  addProcessor('configuratonSchema', (schema) => {
-    merge(schema, {
-      properties: {
-        catalog: {
-          type: 'object',
-          properties: {
-            product: {
-              type: 'object',
-              properties: {
-                image: {
-                  type: 'object',
-                  properties: {
-                    thumbnail: {
-                      type: 'object',
-                      properties: {
-                        width: {
-                          type: 'integer'
-                        },
-                        height: {
-                          type: 'integer'
-                        }
-                      }
-                    },
-                    listing: {
-                      type: 'object',
-                      properties: {
-                        width: {
-                          type: 'integer'
-                        },
-                        height: {
-                          type: 'integer'
-                        }
-                      }
-                    },
-                    single: {
-                      type: 'object',
-                      properties: {
-                        width: {
-                          type: 'integer'
-                        },
-                        height: {
-                          type: 'integer'
-                        }
-                      }
-                    },
-                    placeHolder: {
-                      type: 'string',
-                      format: 'uri-reference'
-                    }
-                  }
-                }
-              }
-            },
-            showOutOfStockProduct: {
-              type: 'boolean'
-            }
-          }
-        },
-        pricing: {
-          type: 'object',
-          properties: {
-            rounding: {
-              type: 'string',
-              enum: ['round', 'floor', 'ceil']
-            },
-            precision: {
-              type: 'integer'
-            }
-          }
-        }
-      }
-    });
-    return schema;
-  });
-  const defaultCatalogConfig = {
+  const catalogConfig = {
     product: {
       image: {
         thumbnail: {
-          width: 100.6,
-          height: 100.5
+          width: 100,
+          height: 100
         },
         listing: {
-          width: 300.5,
-          height: 300.5
+          width: 300,
+          height: 300
         },
         single: {
           width: 500,
@@ -104,14 +29,14 @@ module.exports = () => {
     },
     showOutOfStockProduct: false
   };
-  config.util.setModuleDefaults('catalog', defaultCatalogConfig);
+  config.util.setModuleDefaults('catalog', catalogConfig);
 
-  // Default pricing configuration
-  const defaultPricingConfig = {
+  // Pricing configuration
+  const pricingConfig = {
     rounding: 'round',
     precision: 2
   };
-  config.util.setModuleDefaults('pricing', defaultPricingConfig);
+  config.util.setModuleDefaults('pricing', pricingConfig);
   // Getting config value like this: config.get('catalog.product.image.thumbnail.width');
 
   // Reigtering the default filters for product collection
