@@ -2,7 +2,10 @@ import ProductList from '@components/frontStore/catalog/product/list/List';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-export default function FeaturedProducts({ collection }) {
+export default function CollectionProducts({
+  collection,
+  collectionProductsWidget: { count }
+}) {
   if (!collection) {
     return null;
   }
@@ -10,15 +13,18 @@ export default function FeaturedProducts({ collection }) {
     <div className="pt-12">
       <div className="page-width">
         <h3 className="mt-12 mb-12 text-center uppercase h5 tracking-widest">
-          {collection.name}
+          {collection?.name}
         </h3>
-        <ProductList products={collection.products.items} countPerRow={4} />
+        <ProductList
+          products={collection?.products?.items}
+          countPerRow={count}
+        />
       </div>
     </div>
   );
 }
 
-FeaturedProducts.propTypes = {
+CollectionProducts.propTypes = {
   collection: PropTypes.shape({
     collectionId: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
@@ -46,24 +52,25 @@ FeaturedProducts.propTypes = {
         })
       ).isRequired
     }).isRequired
+  }).isRequired,
+  collectionProductsWidget: PropTypes.shape({
+    count: PropTypes.number
   }).isRequired
 };
 
-export const layout = {
-  areaId: 'content',
-  sortOrder: 15
-};
-
 export const query = `
-  query query {
-    collection (code: "homepage") {
+  query Query($collection: String) {
+    collection (code: $collection) {
       collectionId
       name
-      products (filters: [{key: "limit", operation: eq, value: "4"}]) {
+      products (filters: [{key: "limit", operation: eq, value: "5"}]) {
         items {
           ...Product
         }
       }
+    }
+    collectionProductsWidget(collection: $collection) {
+      count
     }
   }
 `;
@@ -81,7 +88,7 @@ export const fragments = `
         value
         text
       }
-      }
+    }
     image {
       alt
       url: listing
@@ -89,3 +96,7 @@ export const fragments = `
     url
   }
 `;
+
+export const variables = `{
+  collection: getWidgetSetting("collection")
+}`;
