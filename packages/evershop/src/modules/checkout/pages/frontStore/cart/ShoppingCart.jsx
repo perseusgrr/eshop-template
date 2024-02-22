@@ -32,7 +32,7 @@ export default function ShoppingCart({ cart, setting, removeUrl }) {
   } else {
     return (
       <div>
-        <div className="cart page-width">
+        <div className="cart">
           <Area
             id="shoppingCartTop"
             className="cart-page-top"
@@ -77,14 +77,14 @@ ShoppingCart.propTypes = {
     uuid: PropTypes.string.isRequired
   }).isRequired,
   setting: PropTypes.shape({
-    priceIncludingTax: PropTypes.bool
+    displayCheckoutPriceIncludeTax: PropTypes.bool
   }).isRequired,
   removeUrl: PropTypes.string.isRequired
 };
 
 export const layout = {
   areaId: 'content',
-  sortOrder: 1
+  sortOrder: 10
 };
 
 export const query = `
@@ -116,19 +116,11 @@ export const query = `
           value
           text
         }
-        lineTotal {
+        subTotal {
           value
           text
         }
-        lineTotal {
-          value
-          text
-        }
-        lineTotalInclTax {
-          value
-          text
-        }
-        lineTotalInclTax {
+        total {
           value
           text
         }
@@ -137,7 +129,7 @@ export const query = `
       }
     }
     setting {
-      priceIncludingTax
+      displayCheckoutPriceIncludeTax
     }
   }
 `;

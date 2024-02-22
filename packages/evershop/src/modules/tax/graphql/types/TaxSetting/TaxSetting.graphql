@@ -1,3 +1,4 @@
 extend type Setting {
-  priceIncludingTax: Boolean
+  displayCatalogPriceIncludeTax: Boolean
+  displayCheckoutPriceIncludeTax: Boolean
 }

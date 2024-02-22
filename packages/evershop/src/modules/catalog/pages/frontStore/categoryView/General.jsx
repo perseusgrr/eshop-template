@@ -2,23 +2,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './General.scss';
-import { CKEditor } from '@components/common/CKEditor';
+import Editor from '@components/common/Editor';
 
 export default function CategoryInfo({
   category: { name, description, image }
 }) {
   return (
-    <div className="page-width">
-      <div className="mb-4 md:mb-8 category__general">
-        {image && (
-          <img src={image.url} alt={name} className="category__image" />
-        )}
-        <div className="category__info">
-          <div>
-            <h1 className="category__name">{name}</h1>
-            <div className="category__description">
-              <CKEditor content={description} />
-            </div>
+    <div className="mb-4 md:mb-8 category__general">
+      {image && <img src={image.url} alt={name} className="category__image" />}
+      <div className="category__info">
+        <div>
+          <h1 className="category__name">{name}</h1>
+          <div className="category__description">
+            <Editor rows={description} />
           </div>
         </div>
       </div>

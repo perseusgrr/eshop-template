@@ -10,7 +10,7 @@ exports.toPrice = function toPrice(value, forDisplay = false) {
   }
   const rounding = getConfig('pricing.rounding', 'round');
   const precision = getConfig('pricing.precision', 2);
-  const precisionFix = 10**precision;
+  const precisionFix = parseInt(`1${'0'.repeat(precision)}`, 10);
   switch (rounding) {
     case 'up':
       price = Math.ceil(price * precisionFix) / precisionFix;

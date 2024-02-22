@@ -5,6 +5,8 @@ const {
   defaultPaginationFilters
 } = require('../../lib/util/defaultPaginationFilters');
 const { addProcessor } = require('../../lib/util/registry');
+const registerDefaultWidgetCollectionFilters = require('./services/registerDefaultWidgetCollectionFilters');
+const { buildUrl } = require('../../lib/router/buildUrl');
 
 module.exports = () => {
   addProcessor('configuratonSchema', (schema) => {
@@ -146,11 +148,81 @@ module.exports = () => {
     copyRight: `© 2022 Evershop. All Rights Reserved.`
   };
   config.util.setModuleDefaults('themeConfig', defaultThemeConfig);
+
+  // Set the default file storage to local
   config.util.setModuleDefaults('system', {
     file_storage: 'local'
   });
 
-  // Reigtering the default filters for attribute collection
+  // Register default widgets
+  const defaultWidgets = {
+    hero_banner: {
+      setting_component:
+        '@evershop/evershop/src/components/frontStore/widgets/Banner.jsx',
+      component:
+        '@evershop/evershop/src/components/frontStore/widgets/Banner.jsx',
+      name: 'Hero Banner',
+      description: 'A large banner that appears at the top of your store',
+      default_setting: {
+        title: 'Welcome to Example.com',
+        subtitle: 'The best place to shop online',
+        cta: {
+          text: 'Shop Now',
+          link: '/products'
+        },
+        image: {
+          src: 'https://via.placeholder.com/1920x1080',
+          alt: 'Hero Banner'
+        }
+      },
+      enabled: true
+    },
+    text_block: {
+      setting_component:
+        '@evershop/evershop/src/components/admin/widgets/TextBlockSetting.jsx',
+      component:
+        '@evershop/evershop/src/components/frontStore/widgets/TextBlock.jsx',
+      name: 'Text block',
+      description: 'A large banner that appears at the top of your store',
+      default_setting: {
+        text: 'Welcome to Example.com',
+        subtitle: 'The best place to shop online',
+        cta: {
+          text: 'Shop Now',
+          link: '/products'
+        },
+        image: {
+          src: 'https://via.placeholder.com/1920x1080',
+          alt: 'Hero Banner'
+        }
+      },
+      enabled: true
+    },
+    featured_products: {
+      setting_component:
+        '@evershop/evershop/src/components/frontStore/widgets/FeaturedProducts.jsx',
+      component:
+        '@evershop/evershop/src/components/frontStore/widgets/FeaturedProducts.jsx',
+      name: 'Featured products',
+      description: 'A large banner that appears at the top of your store',
+      default_setting: {
+        title: 'Welcome to Example.com',
+        subtitle: 'The best place to shop online',
+        cta: {
+          text: 'Shop Now',
+          link: '/products'
+        },
+        image: {
+          src: 'https://via.placeholder.com/1920x1080',
+          alt: 'Hero Banner'
+        }
+      },
+      enabled: true
+    }
+  };
+  config.util.setModuleDefaults('widgets', defaultWidgets);
+
+  // Reigtering the default filters for cms page collection
   addProcessor(
     'cmsPageCollectionFilters',
     registerDefaultPageCollectionFilters,
@@ -160,5 +232,48 @@ module.exports = () => {
     'cmsPageCollectionFilters',
     (filters) => [...filters, ...defaultPaginationFilters],
     2
+  );
+
+  // Reigtering the default filters for widget collection
+  addProcessor(
+    'widgetCollectionFilters',
+    registerDefaultWidgetCollectionFilters,
+    1
+  );
+  addProcessor(
+    'widgetCollectionFilters',
+    (filters) => [...filters, ...defaultPaginationFilters],
+    2
+  );
+
+  addProcessor('widgets', (widgets) =>
+    widgets.map((w) => {
+      const replacements = {
+        '&lt;': '<',
+        '&gt;': '>'
+      };
+      if (w.id === 'text_block') {
+        const { settings } = w;
+        // Un escape the html of the `text` field
+        settings.text = settings.text.replace(
+          /&lt;|&gt;/g,
+          (match) => replacements[match]
+        );
+
+        settings.text = JSON.parse(settings.text);
+        return {
+          ...w,
+          props: {
+            ...settings,
+            browserApi: buildUrl('fileBrowser', { 0: '' }),
+            deleteApi: buildUrl('fileDelete', { 0: '' }),
+            uploadApi: buildUrl('imageUpload', { 0: '' }),
+            folderCreateApi: buildUrl('folderCreate')
+          }
+        };
+      } else {
+        return w;
+      }
+    })
   );
 };

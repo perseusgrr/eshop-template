@@ -16,20 +16,24 @@ function OrderSummary({
   discountAmount,
   coupon,
   grandTotal,
-  priceIncludingTax
+  displayCheckoutPriceIncludeTax
 }) {
   return (
     <div className="checkout-summary-block">
       <Subtotal
         count={items.length}
-        total={priceIncludingTax ? subTotalInclTax.text : subTotal.text}
+        total={
+          displayCheckoutPriceIncludeTax ? subTotalInclTax.text : subTotal.text
+        }
       />
       <Shipping method={shippingMethodName} cost={shippingFeeInclTax.text} />
-      {!priceIncludingTax && <Tax taxClass="" amount={taxAmount.text} />}
+      {!displayCheckoutPriceIncludeTax && (
+        <Tax taxClass="" amount={taxAmount.text} />
+      )}
       <Discount code={coupon} discount={discountAmount.text} />
       <Total
         total={grandTotal.text}
-        priceIncludingTax={priceIncludingTax}
+        displayCheckoutPriceIncludeTax={displayCheckoutPriceIncludeTax}
         taxAmount={taxAmount.text}
       />
     </div>
@@ -67,7 +71,7 @@ OrderSummary.propTypes = {
   taxAmount: PropTypes.shape({
     text: PropTypes.string
   }),
-  priceIncludingTax: PropTypes.bool.isRequired
+  displayCheckoutPriceIncludeTax: PropTypes.bool.isRequired
 };
 
 OrderSummary.defaultProps = {

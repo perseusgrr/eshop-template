@@ -2,16 +2,13 @@
 const { select } = require('@evershop/postgres-query-builder');
 const { pool } = require('@evershop/evershop/src/lib/postgres/connection');
 const { getConfig } = require('@evershop/evershop/src/lib/util/getConfig');
+const { getCartTotalBeforeDiscount } = require('./getCartTotalBeforeDiscount');
 const { toPrice } = require('../../checkout/services/toPrice');
 
 module.exports.registerDefaultCalculators =
   function registerDefaultCalculators() {
     return [
       async function percentageDiscountToEntireOrderCalculator(cart, coupon) {
-        const priceIncludingTax = getConfig(
-          'pricing.tax.price_including_tax',
-          false
-        );
         if (coupon.discount_type !== 'percentage_discount_to_entire_order') {
           return false;
         }
@@ -20,70 +17,9 @@ module.exports.registerDefaultCalculators =
           return false;
         }
 
-        const cartSubTotal = priceIncludingTax
-          ? cart.getData('sub_total_incl_tax')
-          : cart.getData('sub_total');
         const cartDiscountAmount = toPrice(
-          (discountPercent * cartSubTotal) / 100
+          (discountPercent * getCartTotalBeforeDiscount(cart)) / 100
         );
-        let distributedAmount = 0;
-        const discounts = {};
-        const items = cart.getItems();
-        items.forEach((item, index) => {
-          let sharedDiscount = 0;
-          if (index === items.length - 1) {
-            const precision = getConfig('pricing.precision', '2');
-            const precisionFix = 10**precision;
-            sharedDiscount =
-              (cartDiscountAmount * precisionFix -
-                distributedAmount * precisionFix) /
-              precisionFix;
-            // Fix for rounding error
-            sharedDiscount = parseFloat(sharedDiscount.toFixed(precision));
-          } else {
-            const lineTotal = priceIncludingTax
-              ? item.getData('line_total_incl_tax')
-              : item.getData('line_total');
-            sharedDiscount = toPrice(
-              (lineTotal * cartDiscountAmount) / cartSubTotal,
-              0
-            );
-          }
-          if (
-            discounts[item.getId()] ||
-            discounts[item.getId()] !== sharedDiscount
-          ) {
-            discounts[item.getId()] = sharedDiscount;
-          }
-          distributedAmount += sharedDiscount;
-        });
-        await Promise.all(
-          items.map(async (item) => {
-            await item.setData('discount_amount', discounts[item.getId()] || 0);
-          })
-        );
-
-        return true;
-      },
-      async function fixedDiscountToEntireOrderCalculator(cart, coupon) {
-        const priceIncludingTax = getConfig(
-          'pricing.tax.price_including_tax',
-          false
-        );
-        if (coupon.discount_type !== 'fixed_discount_to_entire_order')
-          return false;
-
-        let cartDiscountAmount = toPrice(
-          parseFloat(coupon.discount_amount) || 0
-        );
-        if (cartDiscountAmount < 0) {
-          return false;
-        }
-        const cartSubTotal = priceIncludingTax
-          ? cart.getData('sub_total_incl_tax')
-          : cart.getData('sub_total');
-        cartDiscountAmount =
-          cartSubTotal > cartDiscountAmount ? cartDiscountAmount : cartSubTotal;
         let distributedAmount = 0;
         const discounts = {};
         const items = cart.getItems();
@@ -99,11 +35,62 @@ module.exports.registerDefaultCalculators =
             // Fix for rounding error
             sharedDiscount = parseFloat(sharedDiscount.toFixed(precision));
           } else {
-            const lineTotal = priceIncludingTax
-              ? item.getData('line_total_incl_tax')
-              : item.getData('line_total');
+            const rowTotal = item.getData('final_price') * item.getData('qty');
             sharedDiscount = toPrice(
-              (lineTotal * cartDiscountAmount) / cartSubTotal,
+              (rowTotal * cartDiscountAmount) /
+                getCartTotalBeforeDiscount(cart),
+              0
+            );
+          }
+          if (
+            discounts[item.getId()] ||
+            discounts[item.getId()] !== sharedDiscount
+          ) {
+            discounts[item.getId()] = sharedDiscount;
+          }
+          distributedAmount += sharedDiscount;
+        });
+
+        await Promise.all(
+          items.map(async (item) => {
+            await item.setData('discount_amount', discounts[item.getId()] || 0);
+          })
+        );
+
+        return true;
+      },
+      async function fixedDiscountToEntireOrderCalculator(cart, coupon) {
+        if (coupon.discount_type !== 'fixed_discount_to_entire_order')
+          return false;
+
+        let cartDiscountAmount = toPrice(
+          parseFloat(coupon.discount_amount) || 0
+        );
+        if (cartDiscountAmount < 0) {
+          return false;
+        }
+        const cartTotal = getCartTotalBeforeDiscount(cart);
+        cartDiscountAmount =
+          cartTotal > cartDiscountAmount ? cartDiscountAmount : cartTotal;
+        let distributedAmount = 0;
+        const discounts = {};
+        const items = cart.getItems();
+        items.forEach((item, index) => {
+          let sharedDiscount = 0;
+          if (index === items.length - 1) {
+            const precision = getConfig('pricing.precision', '2');
+            const precisionFix = parseInt(`1${'0'.repeat(precision)}`, 10);
+            sharedDiscount =
+              (cartDiscountAmount * precisionFix -
+                distributedAmount * precisionFix) /
+              precisionFix;
+            // Fix for rounding error
+            sharedDiscount = parseFloat(sharedDiscount.toFixed(precision));
+          } else {
+            const rowTotal = item.getData('final_price') * item.getData('qty');
+            sharedDiscount = toPrice(
+              (rowTotal * cartDiscountAmount) /
+                getCartTotalBeforeDiscount(cart),
               0
             );
           }
@@ -123,10 +110,6 @@ module.exports.registerDefaultCalculators =
         return true;
       },
       async function discountToSpecificProductsCalculator(cart, coupon) {
-        const priceIncludingTax = getConfig(
-          'pricing.tax.price_including_tax',
-          false
-        );
         if (
           ![
             'fixed_discount_to_specific_products',
@@ -278,21 +261,18 @@ module.exports.registerDefaultCalculators =
             return;
           }
           if (coupon.discount_type === 'fixed_discount_to_specific_products') {
-            discountAmount = Math.min(
-              discountAmount,
-              priceIncludingTax
-                ? item.getData('final_price_incl_tax')
-                : item.getData('final_price')
-            );
+            if (discountAmount > item.getData('final_price')) {
+              discountAmount = item.getData('final_price');
+            }
             discounts[item.getId()] =
-              Math.min(item.getData('qty'), maxQty) * discountAmount;
+              maxQty > item.getData('qty')
+                ? toPrice(discountAmount * item.getData('qty'))
+                : toPrice(discountAmount * maxQty);
           } else {
             const discountPercent = Math.min(discountAmount, 100);
             discounts[item.getId()] = toPrice(
               (Math.min(item.getData('qty'), maxQty) *
-                (priceIncludingTax
-                  ? item.getData('final_price_incl_tax')
-                  : item.getData('final_price') * discountPercent)) /
+                (item.getData('final_price') * discountPercent)) /
                 100
             );
           }
@@ -306,10 +286,6 @@ module.exports.registerDefaultCalculators =
         return true;
       },
       async function buyXGetYCalculator(cart, coupon) {
-        const priceIncludingTax = getConfig(
-          'pricing.tax.price_including_tax',
-          false
-        );
         if (coupon.discount_type !== 'buy_x_get_y') {
           return true;
         }
@@ -335,11 +311,7 @@ module.exports.registerDefaultCalculators =
               item.getData('qty') >= buyQty + getQty
             ) {
               const discountPerUnit = toPrice(
-                (discount *
-                  (priceIncludingTax
-                    ? item.getData('final_price_incl_tax')
-                    : item.getData('final_price'))) /
-                  100
+                (discount * item.getData('final_price')) / 100
               );
               const discountAbleUnits =
                 Math.floor(item.getData('qty') / buyQty) * getQty;
