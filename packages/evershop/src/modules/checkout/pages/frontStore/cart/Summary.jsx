@@ -56,7 +56,7 @@ function Summary({
     coupon,
     discountAmount
   },
-  setting: { priceIncludingTax }
+  setting: { displayCheckoutPriceIncludeTax }
 }) {
   if (totalQty === undefined || totalQty <= 0) {
     return null;
@@ -72,7 +72,9 @@ function Summary({
             {
               component: { default: Subtotal },
               props: {
-                subTotal: priceIncludingTax ? subTotalInclTax : subTotal
+                subTotal: displayCheckoutPriceIncludeTax
+                  ? subTotalInclTax
+                  : subTotal
               },
               sortOrder: 10,
               id: 'shoppingCartSubtotal'
@@ -86,7 +88,7 @@ function Summary({
             {
               // eslint-disable-next-line react/no-unstable-nested-components
               component: {
-                default: priceIncludingTax ? () => null : Tax
+                default: displayCheckoutPriceIncludeTax ? () => null : Tax
               },
               props: {
                 amount: taxAmount.text
@@ -102,7 +104,7 @@ function Summary({
               props: {
                 total: grandTotal.text,
                 taxAmount: taxAmount.text,
-                priceIncludingTax
+                displayCheckoutPriceIncludeTax
               },
               sortOrder: 30,
               id: 'tax'
@@ -144,7 +146,7 @@ Summary.propTypes = {
     })
   }).isRequired,
   setting: PropTypes.shape({
-    priceIncludingTax: PropTypes.bool
+    displayCheckoutPriceIncludeTax: PropTypes.bool
   }).isRequired
 };
 
@@ -163,15 +165,14 @@ export const query = `
         value
         text
       }
-      subTotalInclTax {
-        value
-        text
-      }
       grandTotal {
         value
         text
       }
-      
+      subTotalInclTax {
+        value
+        text
+      }
       taxAmount {
         value
         text
@@ -183,7 +184,7 @@ export const query = `
       coupon
     }
     setting {
-      priceIncludingTax
+      displayCheckoutPriceIncludeTax
     }
     checkoutUrl: url(routeId: "checkout")
   }

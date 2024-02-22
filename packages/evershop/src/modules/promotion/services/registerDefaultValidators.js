@@ -2,7 +2,7 @@
 const { select } = require('@evershop/postgres-query-builder');
 const { DateTime } = require('luxon');
 const { pool } = require('@evershop/evershop/src/lib/postgres/connection');
-const { getConfig } = require('@evershop/evershop/src/lib/util/getConfig');
+const { getCartTotalBeforeDiscount } = require('./getCartTotalBeforeDiscount');
 
 module.exports.registerDefaultValidators =
   function registerDefaultValidators() {
@@ -76,10 +76,6 @@ module.exports.registerDefaultValidators =
         return true;
       },
       function subTotalValidator(cart, coupon) {
-        const priceIncludingTax = getConfig(
-          'pricing.tax.price_including_tax',
-          false
-        );
         const conditions = coupon.condition;
         const minimumSubTotal = !Number.isNaN(
           parseFloat(conditions.order_total)
@@ -87,9 +83,8 @@ module.exports.registerDefaultValidators =
           ? parseFloat(conditions.order_total)
           : null;
         if (
-          minimumSubTotal && priceIncludingTax
-            ? cart.getData('sub_total_incl_tax')
-            : cart.getData('sub_total') < minimumSubTotal
+          minimumSubTotal &&
+          parseFloat(getCartTotalBeforeDiscount(cart)) < minimumSubTotal
         ) {
           return false;
         }
@@ -285,10 +280,6 @@ module.exports.registerDefaultValidators =
         return flag;
       },
       async function requiredProductByPriceValidator(cart, coupon) {
-        const priceIncludingTax = getConfig(
-          'pricing.tax.price_including_tax',
-          false
-        );
         let flag = true;
         const items = cart.getItems();
         const conditions = coupon.condition;
@@ -315,11 +306,8 @@ module.exports.registerDefaultValidators =
               operator = '===';
             }
             items.forEach((item) => {
-              const price = priceIncludingTax
-                ? item.getData('final_price_incl_tax')
-                : item.getData('final_price');
               // eslint-disable-next-line no-eval
-              if (eval(`${price} ${operator} ${value}`)) {
+              if (eval(`${item.getData('final_price')} ${operator} ${value}`)) {
                 qty += item.getData('qty');
               }
             });

@@ -8,10 +8,6 @@ const {
 const {
   registerCartItemBaseFields
 } = require('./services/cart/registerCartItemBaseFields');
-const {
-  getProductsBaseQuery
-} = require('../catalog/services/getProductsBaseQuery');
-const { pool } = require('../../lib/postgres/connection');
 
 module.exports = () => {
   addProcessor('cartFields', registerCartBaseFields, 0);
@@ -37,12 +33,4 @@ module.exports = () => {
       throw e;
     }
   });
-
-  addProcessor('cartItemProductLoaderFunction', () => async (id) => {
-      const productQuery = getProductsBaseQuery();
-      const product = await productQuery
-        .where('product_id', '=', id)
-        .load(pool);
-      return product;
-    });
 };

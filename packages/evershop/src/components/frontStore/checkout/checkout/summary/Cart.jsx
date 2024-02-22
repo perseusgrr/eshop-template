@@ -16,21 +16,23 @@ function CartSummary({
   shippingMethodName,
   shippingFeeInclTax,
   coupon,
-  priceIncludingTax
+  displayCheckoutPriceIncludeTax
 }) {
   return (
     <div className="checkout-summary-block">
       <Subtotal
         count={totalQty}
-        total={priceIncludingTax ? subTotalInclTax.text : subTotal.text}
+        total={
+          displayCheckoutPriceIncludeTax ? subTotalInclTax.text : subTotal.text
+        }
       />
       <Shipping method={shippingMethodName} cost={shippingFeeInclTax.text} />
-      {!priceIncludingTax && <Tax amount={taxAmount.text} />}
+      {!displayCheckoutPriceIncludeTax && <Tax amount={taxAmount.text} />}
       <Discount code={coupon} discount={discountAmount.text} />
       <Total
         taxAmount={taxAmount.text}
         total={grandTotal.text}
-        priceIncludingTax={priceIncludingTax}
+        displayCheckoutPriceIncludeTax={displayCheckoutPriceIncludeTax}
       />
     </div>
   );
@@ -58,7 +60,7 @@ CartSummary.propTypes = {
     text: PropTypes.string.isRequired
   }),
   totalQty: PropTypes.string,
-  priceIncludingTax: PropTypes.bool
+  displayCheckoutPriceIncludeTax: PropTypes.bool
 };
 
 CartSummary.defaultProps = {
@@ -83,7 +85,7 @@ CartSummary.defaultProps = {
     text: ''
   },
   totalQty: '',
-  priceIncludingTax: false
+  displayCheckoutPriceIncludeTax: false
 };
 
 export { CartSummary };

@@ -70,7 +70,7 @@ async function loadEvents(count) {
   }
 
   if (events.length > 0) {
-    query.andWhere(
+    query.and(
       'uuid',
       'NOT IN',
       events.map((event) => event.uuid)

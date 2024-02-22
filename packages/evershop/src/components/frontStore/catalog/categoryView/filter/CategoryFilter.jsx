@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './CategoryFilter.scss';
 import { _ } from '@evershop/evershop/src/lib/locale/translate';
 
 export function CategoryFilter({ currentFilters, categories, updateFilter }) {

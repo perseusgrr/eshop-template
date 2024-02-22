@@ -1,4 +1,5 @@
-const { info } = require('@evershop/evershop/src/lib/log/logger');
+const { select } = require('@evershop/postgres-query-builder');
+const { pool } = require('@evershop/evershop/src/lib/postgres/connection');
 const { getValueSync } = require('@evershop/evershop/src/lib/util/registry');
 
 /**
@@ -9,9 +10,11 @@ const { getValueSync } = require('@evershop/evershop/src/lib/util/registry');
  */
 async function validateCoupon(cart, couponCode) {
   const validatorFunctions = getValueSync('couponValidatorFunctions', []);
-  const couponLoader = getValueSync('couponLoaderFunction');
   let flag = true;
-  const coupon = await couponLoader(couponCode);
+  const coupon = await select()
+    .from('coupon')
+    .where('coupon', '=', couponCode)
+    .load(pool);
   if (!coupon) {
     return false;
   }
@@ -24,11 +27,11 @@ async function validateCoupon(cart, couponCode) {
           flag = false;
         }
       } catch (e) {
-        info(e);
         flag = false;
       }
     })
   );
+
   return flag;
 }
 

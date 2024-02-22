@@ -5,7 +5,10 @@ import { CartSummary } from '@components/frontStore/checkout/checkout/summary/Ca
 import Area from '@components/common/Area';
 import './SummaryMobile.scss';
 
-export default function Summary({ cart, setting: { priceIncludingTax } }) {
+export default function Summary({
+  cart,
+  setting: { displayCheckoutPriceIncludeTax }
+}) {
   return (
     <Area
       id="checkoutSummary"
@@ -13,13 +16,13 @@ export default function Summary({ cart, setting: { priceIncludingTax } }) {
       coreComponents={[
         {
           component: { default: Items },
-          props: { items: cart.items, priceIncludingTax },
+          props: { items: cart.items, displayCheckoutPriceIncludeTax },
           sortOrder: 20,
           id: 'checkoutOrderSummaryItems'
         },
         {
           component: { default: CartSummary },
-          props: { ...cart, priceIncludingTax },
+          props: { ...cart, displayCheckoutPriceIncludeTax },
           sortOrder: 30,
           id: 'checkoutOrderSummaryCart'
         }
@@ -36,10 +39,10 @@ Summary.propTypes = {
         productName: PropTypes.string,
         variantOptions: PropTypes.string,
         qty: PropTypes.number,
-        lineTotalInclTax: PropTypes.shape({
+        total: PropTypes.shape({
           text: PropTypes.string
         }),
-        lineTotal: PropTypes.shape({
+        subTotal: PropTypes.shape({
           text: PropTypes.string
         })
       })
@@ -67,7 +70,7 @@ Summary.propTypes = {
     coupon: PropTypes.string
   }).isRequired,
   setting: PropTypes.shape({
-    priceIncludingTax: PropTypes.bool
+    displayCheckoutPriceIncludeTax: PropTypes.bool
   }).isRequired
 };
 
@@ -112,18 +115,18 @@ export const query = `
         productSku
         qty
         variantOptions
-        lineTotalInclTax {
+        total {
           value
           text
         }
-        lineTotal {
+        subTotal {
           value
           text
         }
       }
     }
     setting {
-      priceIncludingTax
+      displayCheckoutPriceIncludeTax
     }
   }
 `;
