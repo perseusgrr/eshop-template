@@ -6,7 +6,7 @@ import Button from '@components/common/form/Button';
 import { Card } from '@components/admin/cms/Card';
 import RenderIfTrue from '@components/common/RenderIfTrue';
 
-export default function CaptureButton({
+export default function StripeCaptureButton({
   captureAPI,
   order: { paymentStatus, uuid, paymentMethod }
 }) {
@@ -31,7 +31,9 @@ export default function CaptureButton({
 
   return (
     <RenderIfTrue
-      condition={paymentStatus.code === 'pending' && paymentMethod === 'cod'}
+      condition={
+        paymentStatus.code === 'authorized' && paymentMethod === 'stripe'
+      }
     >
       <Card.Session>
         <div className="flex justify-end">
@@ -42,7 +44,7 @@ export default function CaptureButton({
   );
 }
 
-CaptureButton.propTypes = {
+StripeCaptureButton.propTypes = {
   captureAPI: PropTypes.string.isRequired,
   order: PropTypes.shape({
     paymentStatus: PropTypes.shape({
@@ -60,7 +62,7 @@ export const layout = {
 
 export const query = `
   query Query {
-    captureAPI: url(routeId: "codCapturePayment")
+    captureAPI: url(routeId: "capturePaymentIntent")
     order(uuid: getContextValue("orderId")) {
       uuid
       paymentStatus {
