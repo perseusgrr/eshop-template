@@ -85,7 +85,7 @@ module.exports = async (request, response, delegate, next) => {
           await insert('order_activity')
             .given({
               order_activity_order_id: order.order_id,
-              comment: `Customer paid by using credit card. Transaction ID: ${paymentIntent.id}`
+              comment: `Customer paid by using Stripe. Transaction ID: ${paymentIntent.id}`
             })
             .execute(connection);
 
@@ -109,7 +109,9 @@ module.exports = async (request, response, delegate, next) => {
             transaction_id: paymentIntent.id,
             transaction_type: 'online',
             payment_action:
-              paymentIntent.capture_method === 'manual' ? 'Manual' : 'Automatic'
+              paymentIntent.capture_method === 'manual'
+                ? 'authorize'
+                : 'capture'
           })
           .execute(connection);
 
@@ -119,7 +121,7 @@ module.exports = async (request, response, delegate, next) => {
           await insert('order_activity')
             .given({
               order_activity_order_id: order.order_id,
-              comment: `Customer authorized by using credit card. Transaction ID: ${paymentIntent.id}`
+              comment: `Customer authorized by using Stripe. Transaction ID: ${paymentIntent.id}`
             })
             .execute(connection);
 
