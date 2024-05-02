@@ -1,11 +1,16 @@
 import path from 'path';
+import { fileURLToPath } from 'url';
 import TerserPlugin from 'terser-webpack-plugin';
-import { getCoreModules } from '@evershop/evershop/bin/lib/loadModules.js';
-import { getEnabledExtensions } from '@evershop/evershop/bin/extension/index.js';
+import { getCoreModules } from '../../bin/lib/loadModules.js';
+import { getEnabledExtensions } from '../../bin/extension/index.js';
 import { CONSTANTS } from '../helpers.js';
 import isProductionMode from '../util/isProductionMode.js';
 import { getConfig } from '../util/getConfig.js';
 import { loadCsvTranslationFiles } from './loaders/loadTranslationFromCsv.js';
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export function createBaseConfig(isServer) {
   const extenions = getEnabledExtensions();
@@ -14,7 +19,7 @@ export function createBaseConfig(isServer) {
 
   const loaders = [
     {
-      test: /\.jsx$/,
+      test: /\.(jsx)$/,
       exclude: {
         and: [/node_modules/],
         not: [
@@ -116,14 +121,23 @@ export function createBaseConfig(isServer) {
     module: {
       rules: loaders
     },
-    target: isServer === true ? 'node12.18' : 'web',
+    target: isServer === true ? 'node18' : 'web',
     output,
     plugins: [],
     cache: { type: 'memory' }
   };
 
+  if (isServer) {
+    config.experiments = { outputModule: true };
+  }
+
   // Resolve aliases
-  const alias = {};
+  const alias = {
+    '@evershop/evershop/src/components': path.resolve(
+      __dirname,
+      '../../components'
+    )
+  };
   if (theme) {
     alias['@components'] = [
       path.resolve(CONSTANTS.THEMEPATH, theme, 'components')
@@ -151,7 +165,7 @@ export function createBaseConfig(isServer) {
 
   config.resolve = {
     alias,
-    extensions: ['.js', '.jsx', '.json', '.wasm']
+    extensions: ['.js', '.jsx', '.json', '.wasm', '.ts', '.tsx']
   };
 
   config.optimization = {};

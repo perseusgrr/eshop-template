@@ -1,7 +1,7 @@
 import fs from 'fs';
 import uniqid from 'uniqid';
 import JSON5 from 'json5';
-import isResolvable from 'is-resolvable';
+import { isResolvable } from '../../util/isResolvable.js';
 import { CONSTANTS } from '../../helpers.js';
 import { parseGraphqlByFile } from './parseGraphqlByFile.js';
 import { generateComponentKey } from './keyGenerator.js';
@@ -24,7 +24,7 @@ export function parseGraphql(modules) {
     let moduleKey;
     // If the module is resolvable, get the apsolute path
     if (!fs.existsSync(module)) {
-      modulePath = require.resolve(module);
+      modulePath = new URL(import.meta.resolve(module)).pathname;
       moduleKey = generateComponentKey(module);
     } else {
       modulePath = module;

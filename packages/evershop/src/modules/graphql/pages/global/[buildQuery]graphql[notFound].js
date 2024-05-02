@@ -1,6 +1,11 @@
-import { execute, parse, specifiedRules, NoUnusedFragmentsRule } from 'graphql';
-import { validate } from 'graphql/validation';
-import { debug } from '@evershop/evershop/src/lib/log/logger.js';
+import {
+  execute,
+  parse,
+  specifiedRules,
+  NoUnusedFragmentsRule,
+  validateSchema
+} from 'graphql';
+import { debug } from '../../../../lib/log/logger.js';
 import adminSchema from '../../services/buildSchema.js';
 import storeFrontSchema from '../../services/buildStoreFrontSchema.js';
 import { getContext } from '../../services/contextHelper.js';
@@ -25,7 +30,7 @@ export default async function graphql(request, response, delegate, next) {
       } else {
         const document = parse(graphqlQuery);
         // Validate the query
-        const validationErrors = validate(
+        const validationErrors = validateSchema(
           schema,
           document,
           specifiedRules.filter((rule) => rule !== NoUnusedFragmentsRule)

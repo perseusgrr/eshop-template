@@ -1,11 +1,11 @@
-const { pool } = require('@evershop/evershop/src/lib/postgres/connection');
-const { getConfig } = require('@evershop/evershop/src/lib/util/getConfig');
-const {
+import { pool } from '../../../../lib/postgres/connection.js';
+import { getConfig } from '../../../../lib/util/getConfig.js';
+import {
   setContextValue,
   hasContextValue
-} = require('../../../graphql/services/contextHelper');
+} from '../../../graphql/services/contextHelper.js';
 
-module.exports = (request, response) => {
+export default (request, response) => {
   response.context = {};
   /** Some default context value */
   if (!hasContextValue(request, 'pool')) {

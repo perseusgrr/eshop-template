@@ -4,22 +4,40 @@
   "type": "module",
   "description": "The React Ecommerce platform. Built with React and Postgres. Open-source and free. Fast and customizable.",
   "files": [
-    "bin",
-    "src"
+    "dist"
   ],
   "bin": {
-    "evershop": "./bin/evershop"
+    "evershop": "./dist/bin/evershop.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./lib/util": {
+      "import": "./dist/lib/util/index.js",
+      "types": "./dist/lib/util/index.d.ts"
+    },
+    "./components/common/*": {
+      "import": "./dist/components/common/index.jsx",
+      "types": "./dist/components/common/index.d.ts"
+    },
+    "./package.json": "./package.json"
   },
   "scripts": {
     "prepublishOnly": "node prepublish.js",
-    "prepack": "node prepublish.js",
-    "postpack": "node postpack.js",
-    "dev": "evershop dev",
-    "build": "evershop build",
+    "prepack": "rimraf dist && npm run build:ts",
+    "dev": "tsx ./bin/dev/index.ts",
+    "build": "rimraf dist && npm run build:ts",
     "start": "evershop start",
     "user:create": "evershop user:create",
     "user:changePassword": "evershop user:changePassword",
-    "test": "jest"
+    "test": "jest",
+    "build:ts": "tsc",
+    "build:watch": "tsc --watch",
+    "typecheck": "tsc --noEmit"
   },
   "author": "The Nguyen (https://evershop.io)",
   "license": "GNU GENERAL PUBLIC LICENSE 3.0",
@@ -51,8 +69,8 @@
     "@evershop/editorjs-image": "^1.0.0",
     "@evershop/postgres-query-builder": "^1.2.0",
     "@graphql-tools/load-files": "^6.6.1",
-    "@graphql-tools/merge": "^8.3.5",
-    "@graphql-tools/schema": "^9.0.3",
+    "@graphql-tools/merge": "^8.4.2",
+    "@graphql-tools/schema": "^9.0.19",
     "@hapi/topo": "^5.0.0",
     "@heroicons/react": "^1.0.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
@@ -69,7 +87,7 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "boxen": "^5.1.2",
-    "chokidar": "^3.5.3",
+    "chokidar": "^4.0.3",
     "clean-css": "^5.3.1",
     "config": "^3.3.6",
     "connect-pg-simple": "^9.0.0",
@@ -134,7 +152,16 @@
     "webpack-hot-middleware": "^2.25.1",
     "webpackbar": "^5.0.2",
     "winston": "^3.3.3",
-    "yargs": "^16.2.0",
+    "yargs": "^17.7.2",
     "zero-decimal-currencies": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/config": "^3.3.5",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.14.1",
+    "@types/react": "^19.1.2",
+    "ts-loader": "^9.5.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
   }
 }

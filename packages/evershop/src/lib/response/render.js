@@ -1,12 +1,14 @@
 /* eslint-disable global-require */
 import path from 'path';
+import fs from 'fs';
 import jsesc from 'jsesc';
 import { getRoutes } from '../router/Router.js';
-import { get } from '../util/get.js';
+import { get } from '../util/get';
 import isProductionMode from '../util/isProductionMode.js';
 import { getRouteBuildPath } from '../webpack/getRouteBuildPath.js';
 import { getConfig } from '../util/getConfig.js';
 import { getNotifications } from '../../modules/base/services/notifications.js';
+import { error } from 'console';
 
 function normalizeAssets(assets) {
   if (typeof assets === 'object' && !Array.isArray(assets) && assets !== null) {
@@ -82,16 +84,17 @@ function renderProduction(request, response) {
     : frontNotFound;
   const route = response.statusCode === 404 ? notFound : request.currentRoute;
   const langCode = route.isAdmin === true ? 'en' : language;
-  const { renderHtml } = require(path.resolve(
+  const serverIndexPath = path.resolve(
     getRouteBuildPath(route),
     'server',
-    'index.js'
-  ));
-  const assets = require(path.resolve(
+    'index.cjs'
+  );
+  const assetsPath = path.resolve(
     getRouteBuildPath(route),
     'client',
     'index.json'
-  ));
+  );
+  const assets = JSON.parse(fs.readFileSync(assetsPath, 'utf8'));
   const contextValue = {
     graphqlResponse: get(response, 'locals.graphqlResponse', {}),
     propsMap: get(response, 'locals.propsMap', {}),
@@ -102,8 +105,22 @@ function renderProduction(request, response) {
     json: true,
     isScriptContext: true
   });
-  const source = renderHtml(assets.js, assets.css, safeContextValue, langCode);
-  response.send(source);
+  console.log('aaaaaaaaaaa');
+  import(serverIndexPath)
+    .then((module) => {
+      console.log('bbbbbb');
+      // const source = renderHtml(
+      //   assets.js,
+      //   assets.css,
+      //   safeContextValue,
+      //   langCode
+      // );
+      // response.send(source);
+    })
+    .catch((error) => {
+      console.log('cccccccccc');
+      console.log(error);
+    });
 }
 
 export function render(request, response) {
