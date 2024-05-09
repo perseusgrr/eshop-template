@@ -3,8 +3,8 @@ import type { ElementType } from 'react';
 import { useAppState } from '@components/common/context/app.jsx';
 
 interface Component {
-  id: string;
-  sortOrder: number;
+  id?: string;
+  sortOrder?: number;
   props?: Record<string, any>;
   component: {
     default: React.ElementType | React.ReactNode;
@@ -51,7 +51,7 @@ function Area(props: AreaProps) {
   const areaComponents = (() => {
     const areaCoreComponents = coreComponents || [];
     const widgets = context.widgets || [];
-    const wildCardWidgets = components['*'] || {};
+    const wildCardWidgets = components?.['*'] || {};
     const assignedWidgets: Component[] = [];
 
     widgets.forEach((widget: Widget) => {
@@ -66,12 +66,14 @@ function Area(props: AreaProps) {
       }
     });
     const cs =
-      components[id] === undefined
+      components?.[id] === undefined
         ? areaCoreComponents.concat(assignedWidgets)
         : areaCoreComponents
             .concat(Object.values(components[id]))
             .concat(assignedWidgets);
-    return cs.sort((obj1, obj2) => obj1.sortOrder - obj2.sortOrder);
+    return cs.sort(
+      (obj1, obj2) => (obj1.sortOrder || 0) - (obj2.sortOrder || 0)
+    );
   })();
   const { propsMap } = context;
   let WrapperComponent: ElementType = React.Fragment;
@@ -99,7 +101,7 @@ function Area(props: AreaProps) {
 
         const { id } = w;
         const propsData = context.graphqlResponse;
-        const propKeys = propsMap[id] || [];
+        const propKeys = id !== undefined ? propsMap[id] || [] : [];
 
         const componentProps = propKeys.reduce(
           (acc: Record<string, any>, map: Record<string, any>) => {
