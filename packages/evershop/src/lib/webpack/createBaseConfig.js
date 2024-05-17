@@ -1,6 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import TerserPlugin from 'terser-webpack-plugin';
+import { SwcMinifyWebpackPlugin } from 'swc-minify-webpack-plugin';
 import { getEnabledExtensions } from '../../bin/extension/index.js';
 import { getCoreModules } from '../../bin/lib/loadModules.js';
 import { CONSTANTS } from '../helpers.js';
@@ -19,41 +19,13 @@ export function createBaseConfig(isServer) {
 
   const loaders = [
     {
-      test: /\.ts$/,
-      exclude: {
-        and: [/node_modules/],
-        not: [
-          /@evershop[\\/]evershop/,
-          ...extenions.map((ext) => {
-            const regex = new RegExp(
-              ext.resolve.replace(/\\/g, '[\\\\\\]').replace(/\//g, '[\\\\/]')
-            );
-            return regex;
-          })
-        ]
-      },
-      use: [
-        {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              '@babel/preset-env',
-              [
-                '@babel/preset-typescript',
-                {
-                  isTSX: false,
-                  allExtensions: true,
-                  allowNamespaces: true,
-                  onlyRemoveTypeImports: true
-                }
-              ]
-            ]
-          }
-        }
-      ]
+      test: /\.m?js$/,
+      resolve: {
+        fullySpecified: false
+      }
     },
     {
-      test: /\.(jsx|tsx)$/,
+      test: /^[A-Z].*\.js$/,
       exclude: {
         and: [/node_modules/],
         not: [
@@ -78,37 +50,6 @@ export function createBaseConfig(isServer) {
             CONSTANTS.LIBPATH,
             'webpack/loaders/GraphqlLoader.js'
           )
-        },
-        {
-          loader: 'babel-loader?cacheDirectory',
-          options: {
-            sourceType: 'unambiguous',
-            cacheDirectory: true,
-            presets: [
-              [
-                '@babel/preset-env',
-                {
-                  targets: {
-                    esmodules: true
-                  },
-                  exclude: [
-                    '@babel/plugin-transform-regenerator',
-                    '@babel/plugin-transform-async-to-generator'
-                  ]
-                }
-              ],
-              '@babel/preset-react',
-              [
-                '@babel/preset-typescript',
-                {
-                  isTSX: true,
-                  allExtensions: true,
-                  allowNamespaces: true,
-                  onlyRemoveTypeImports: true
-                }
-              ]
-            ]
-          }
         },
         {
           loader: path.resolve(
@@ -168,7 +109,7 @@ export function createBaseConfig(isServer) {
     module: {
       rules: loaders
     },
-    target: isServer === true ? 'node18' : 'web',
+    target: 'web',
     output,
     plugins: [],
     cache: { type: 'memory' }
@@ -180,10 +121,7 @@ export function createBaseConfig(isServer) {
 
   // Resolve aliases
   const alias = {
-    '@evershop/evershop/src/components': path.resolve(
-      __dirname,
-      '../../components'
-    )
+    '@evershop/evershop/components': path.resolve(__dirname, '../../components')
   };
   if (theme) {
     alias['@components'] = [
@@ -215,13 +153,15 @@ export function createBaseConfig(isServer) {
       'pages'
     );
   });
-
+  alias['webpack-hot-middleware'] = path.resolve(
+    CONSTANTS.ROOTPATH,
+    'node_modules/webpack-hot-middleware'
+  );
   config.resolve = {
     alias,
     extensions: ['.js', '.jsx', '.json', '.wasm', '.ts', '.tsx'],
     extensionAlias: {
-      '.js': ['.ts', '.js'],
-      '.jsx': ['.tsx', '.jsx']
+      '.jsx': ['.js']
     }
   };
 
@@ -233,24 +173,15 @@ export function createBaseConfig(isServer) {
     config.optimization = Object.assign(config.optimization, {
       minimize: !skipMinify,
       minimizer: [
-        new TerserPlugin({
-          terserOptions: {
-            parse: {
-              ecma: 2020
-            },
-            compress: {
-              unused: true,
-              dead_code: true
-            },
-            mangle: {
-              safari10: true
-            },
-            output: {
-              ecma: 5,
-              comments: false,
-              ascii_only: true
-            }
-          }
+        new SwcMinifyWebpackPlugin({
+          compress: true,
+          mangle: true,
+          module: true,
+          sourceMap: true,
+          keep_classnames: false,
+          keep_fnames: false,
+          safari10: true,
+          sourceMap: true
         })
       ]
     });
