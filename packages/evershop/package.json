@@ -1,8 +1,8 @@
 {
   "name": "@evershop/evershop",
-  "version": "1.2.2",
+  "version": "2.0.0",
   "type": "module",
-  "description": "The React Ecommerce platform. Built with React and Postgres. Open-source and free. Fast and customizable.",
+  "description": "The React Ecommerce platform. Built with Typescript, React and Postgres. Open-source and free. Fast and customizable.",
   "files": [
     "dist",
     ".swcrc"
@@ -52,6 +52,10 @@
     "./lib/cronjob": {
       "import": "./dist/lib/cronjob/jobManager.js",
       "types": "./dist/lib/cronjob/jobManager.d.ts"
+    },
+    "./lib/middleware/delegate": {
+      "import": "./dist/lib/middleware/delegate.js",
+      "types": "./dist/lib/middleware/delegate.d.ts"
     },
     "./components/common": {
       "import": "./dist/components/common/index.jsx",
