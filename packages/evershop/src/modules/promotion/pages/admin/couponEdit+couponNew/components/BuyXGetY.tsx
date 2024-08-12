@@ -18,13 +18,12 @@ const SkuSelector: React.FC<{
 }> = ({ product, updateProduct }) => {
   const modal = useModal();
 
-  const onSelect = async (sku) => {
+  const onSelect = (sku) => {
     updateProduct({
       ...product,
       sku
     });
     modal.close();
-    return Promise.resolve();
   };
 
   return (
@@ -73,8 +72,8 @@ interface BuyXGetY {
 const BuyXGetYList: React.FC<{
   requireProducts: Array<Product>;
 }> = ({ requireProducts }) => {
-  const { setValue, unregister } = useFormContext();
-  const { fields, append, remove, replace } = useFieldArray<BuyXGetY>({
+  const { unregister } = useFormContext();
+  const { fields, append, remove, update, replace } = useFieldArray<BuyXGetY>({
     name: 'buyx_gety'
   });
 
@@ -138,7 +137,10 @@ const BuyXGetYList: React.FC<{
                 <SkuSelector
                   product={p}
                   updateProduct={(product) => {
-                    setValue(`buyx_gety.${i}.sku`, product.sku);
+                    update(i, {
+                      ...p,
+                      sku: product.sku
+                    });
                   }}
                 />
               </td>
@@ -217,7 +219,7 @@ const BuyXGetYList: React.FC<{
           ))}
         </tbody>
       </table>
-      <div className="mt-4 flex justify-start">
+      <div className="mt-2 flex justify-start">
         <div className="items-center flex">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -235,7 +237,7 @@ const BuyXGetYList: React.FC<{
             />
           </svg>
         </div>
-        <div className="pl-4">
+        <div className="pl-2">
           <a
             href="#"
             onClick={(e) => {
