@@ -6,6 +6,6 @@ export default function SortingWrapper() {
 }
 
 export const layout = {
-  areaId: 'rightColumn',
+  areaId: 'oneColumn',
   sortOrder: 15
 };
