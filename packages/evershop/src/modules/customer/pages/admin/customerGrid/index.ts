@@ -2,10 +2,10 @@ import { setPageMetaInfo } from '../../../../cms/services/pageMetaInfo.js';
 import { buildFilterFromUrl } from '../../../../../lib/util/buildFilterFromUrl.js';
 import { setContextValue } from '../../../../graphql/services/contextHelper.js';
 
-export default (request) => {
+export default (request, response) => {
   setPageMetaInfo(request, {
-    title: 'Coupons',
-    description: 'Coupons'
+    title: 'Customers',
+    description: 'Customers'
   });
   setContextValue(request, 'filtersFromUrl', buildFilterFromUrl(request));
 };

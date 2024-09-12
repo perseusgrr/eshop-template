@@ -1,6 +1,5 @@
 import { select } from '@evershop/postgres-query-builder';
 import { pool } from '../../../../../lib/postgres/connection.js';
-import { buildUrl } from '../../../../../lib/router/buildUrl.js';
 import { setContextValue } from '../../../../graphql/services/contextHelper.js';
 import { setPageMetaInfo } from '../../../../cms/services/pageMetaInfo.js';
 import { EvershopResponse } from '../../../../../types/response.js';
@@ -8,18 +7,19 @@ import { EvershopResponse } from '../../../../../types/response.js';
 export default async (request, response: EvershopResponse, next) => {
   try {
     const query = select();
-    query.from('coupon');
-    query.andWhere('coupon.uuid', '=', request.params.id);
-    const coupon = await query.load(pool);
+    query.from('customer');
+    query.andWhere('customer.uuid', '=', request.params.id);
+    const customer = await query.load(pool);
 
-    if (coupon === null) {
-      response.redirect(302, buildUrl('couponGrid'));
+    if (customer === null) {
+      response.status(404);
+      next();
     } else {
-      setContextValue(request, 'couponId', parseInt(coupon.coupon_id, 10));
-      setContextValue(request, 'couponUuid', coupon.uuid);
+      setContextValue(request, 'customerId', customer.customer_id);
+      setContextValue(request, 'customerUuid', customer.uuid);
       setPageMetaInfo(request, {
-        title: coupon.coupon,
-        description: coupon.coupon
+        title: customer.full_name,
+        description: customer.full_name
       });
       next();
     }
