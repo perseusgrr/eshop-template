@@ -16,14 +16,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/evershopcommerce/evershop.git"
+    "url": "git+https://github.com/perseusgrr/eshop-template.git"
   },
   "author": "The Nguyen",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/evershopcommerce/evershop/issues"
+    "url": "https://github.com/perseusgrr/eshop-template/issues"
   },
-  "homepage": "https://github.com/evershopcommerce/evershop#readme",
+  "homepage": "https://github.com/perseusgrr/eshop-template#readme",
   "dependencies": {
     "boxen": "^5.1.2",
     "chalk": "^4.1.2",

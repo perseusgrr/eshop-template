@@ -116,7 +116,7 @@
   "license": "GNU GENERAL PUBLIC LICENSE 3.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/evershopcommerce/evershop.git"
+    "url": "git+https://github.com/perseusgrr/eshop-template.git"
   },
   "keywords": [
     "ecommerce",
@@ -124,7 +124,7 @@
     "cart"
   ],
   "bugs": {
-    "url": "https://github.com/evershopcommerce/evershop/issues"
+    "url": "https://github.com/perseusgrr/eshop-template/issues"
   },
   "homepage": "http://evershop.io/",
   "dependencies": {

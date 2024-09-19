@@ -2,7 +2,7 @@
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 <p align="center">
   <a href="https://evershop.io" target="_blank">
-    <img alt="evershop-logo" height="65" alt="EverShop Logo" src="https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/evershop-logo.svg"/>
+    <img alt="evershop-logo" height="65" alt="EverShop Logo" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/evershop-logo.svg"/>
   </a>
 </p>
 <p align="center">
@@ -59,19 +59,19 @@ export const query = `
 Explore our demo store.
 
 <p align="center">
-<img alt="EverShop Admin Demo" width="950" src="https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/evershop-backend-demo.png"/>
+<img alt="EverShop Admin Demo" width="950" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/evershop-backend-demo.png"/>
 </p>
 <p align="center">
   <a href="https://demo.evershop.io/admin" target="_blank">
-    <img alt="evershop-backend-demo" height="35" alt="EverShop Admin Demo" src="https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/evershop-admin-demo.png"/>
+    <img alt="evershop-backend-demo" height="35" alt="EverShop Admin Demo" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/evershop-admin-demo.png"/>
   </a>
 </p>
 <p align="center">
-<img alt="EverShop Store Demo" width="950" src="https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/evershop-product-detail.png"/>
+<img alt="EverShop Store Demo" width="950" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/evershop-product-detail.png"/>
 </p>
 <p align="center">
   <a href="https://demo.evershop.io/" target="_blank">
-    <img alt="evershop-store-demo" height="35" alt="EverShop Store Demo" src="https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/evershop-store-front-demo.png"/>
+    <img alt="evershop-store-demo" height="35" alt="EverShop Store Demo" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/evershop-store-front-demo.png"/>
   </a>
 </p>
 
@@ -103,16 +103,16 @@ Check out [EverShop docs](https://evershop.io/docs/development/getting-started/i
 
 You can ask questions, and participate in discussions about EverShop-related topics in the EverShop Discord channel.
 
-<a href="https://discord.gg/GSzt7dt7RM"><img src="https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/discord_banner_github.svg" /></a>
+<a href="https://discord.gg/GSzt7dt7RM"><img src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/discord_banner_github.svg" /></a>
 
 ### Create a bug report
 
-If you see an error message or run into an issue, please [create bug report](https://github.com/evershopcommerce/evershop/issues/new). This effort is valued and it will help all EverShop users.
+If you see an error message or run into an issue, please [create bug report](https://github.com/perseusgrr/eshop-template/issues/new). This effort is valued and it will help all EverShop users.
 
 
 ### Submit a feature request
 
-If you have an idea, or you're missing a capability that would make development easier and more robust, please [Submit feature request](https://github.com/evershopcommerce/evershop/issues/new).
+If you have an idea, or you're missing a capability that would make development easier and more robust, please [Submit feature request](https://github.com/perseusgrr/eshop-template/issues/new).
 
 If a similar feature request already exists, don't forget to leave a "+1".
 If you add some more information such as your thoughts and vision about the feature, your comments will be embraced warmly :)
@@ -125,4 +125,4 @@ Please refer to our [Contribution Guidelines](./CONTRIBUTING.md) and [Code of Co
 
 ## License
 
-[GPL-3.0 License](https://github.com/evershopcommerce/evershop/blob/main/LICENSE)
+[GPL-3.0 License](https://github.com/perseusgrr/eshop-template/blob/main/LICENSE)

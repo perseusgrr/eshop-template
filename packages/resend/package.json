@@ -4,7 +4,7 @@
   "description": "A Resend extension for EverShop.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/evershopcommerce/evershop/tree/main/packages/resend"
+    "url": "git+https://github.com/perseusgrr/eshop-template/tree/main/packages/resend"
   },
   "keywords": [
     "EverShop email",
@@ -13,9 +13,9 @@
   "author": "The Nguyen (https://evershop.io/)",
   "license": "GNU GENERAL PUBLIC LICENSE 3.0",
   "bugs": {
-    "url": "https://github.com/evershopcommerce/evershop/issues"
+    "url": "https://github.com/perseusgrr/eshop-template/issues"
   },
-  "homepage": "https://github.com/evershopcommerce/evershop/tree/main/packages/resend",
+  "homepage": "https://github.com/perseusgrr/eshop-template/tree/main/packages/resend",
   "dependencies": {
     "handlebars": "^4.7.8",
     "resend": "^3.2.0"

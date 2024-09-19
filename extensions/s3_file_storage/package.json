@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/evershopcommerce/evershop/tree/main/packages/s3_file_storage"
+    "url": "git+https://github.com/perseusgrr/eshop-template/tree/main/packages/s3_file_storage"
   },
   "keywords": [
     "EverShop AWS s3 file storage"
@@ -16,9 +16,9 @@
   "author": "The Nguyen (https://evershop.io/)",
   "license": "GNU GENERAL PUBLIC LICENSE 3.0",
   "bugs": {
-    "url": "https://github.com/evershopcommerce/evershop/issues"
+    "url": "https://github.com/perseusgrr/eshop-template/issues"
   },
-  "homepage": "https://github.com/evershopcommerce/evershop/tree/main/packages/s3_file_storage",
+  "homepage": "https://github.com/perseusgrr/eshop-template/tree/main/packages/s3_file_storage",
   "engines": {
     "node": ">= 14.0.0"
   },

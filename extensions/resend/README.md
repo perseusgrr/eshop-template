@@ -116,4 +116,4 @@ config
 }
 ```
 
-> **Note**: You can check the example email templates [here](https://github.com/evershopcommerce/evershop/tree/main/packages/resend/email_template_examples).
+> **Note**: You can check the example email templates [here](https://github.com/perseusgrr/eshop-template/tree/main/packages/resend/email_template_examples).
