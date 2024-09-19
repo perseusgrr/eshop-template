@@ -1,13 +1,13 @@
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 <p align="center">
-<img width="60" height="68" alt="eShop Template Logo" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/logo-green.png"/>
+<img width="60" height="68" alt="eShop Template Logo" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/main/.github/images/logo-green.png"/>
 </p>
 <p align="center">
   <h1 align="center">eShop Template</h1>
 </p>
 
 <p align="center">
-<img alt="eShop Template" width="950" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/dev/.github/images/banner.png"/>
+<img alt="eShop Template" width="950" src="https://raw.githubusercontent.com/perseusgrr/eshop-template/main/.github/images/banner.png"/>
 </p>
 
 ## Introduction
